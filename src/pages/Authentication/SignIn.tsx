@@ -2,12 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
-import Breadcrumb from '../../components/Breadcrumb';
+// import Breadcrumb from '../../components/Breadcrumb';
 
 const SignIn: React.FC = () => {
   return (
     <>
-      <Breadcrumb pageName="Sign In" />
+      {/* <Breadcrumb pageName="Sign In" /> */}
 
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">

@@ -11,7 +11,7 @@ import TaskKanban from './pages/Task/TaskKanban';
 import TaskList from './pages/Task/TaskList';
 import FormElements from './pages/Form/FormElements';
 import FormLayout from './pages/Form/FormLayout';
-import Tables from './pages/Tables';
+import Tables from './pages/Organisations';
 import Settings from './pages/Pages/Settings';
 import FileManager from './pages/Pages/FileManager';
 import DataTables from './pages/Pages/DataTables';
@@ -46,6 +46,7 @@ import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
+import Packages from './pages/Packages'
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
@@ -67,7 +68,7 @@ function App() {
             index
             element={
               <>
-                <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                <PageTitle title="Dashboard" />
                 <ECommerce />
               </>
             }
@@ -154,11 +155,47 @@ function App() {
             }
           />
           <Route
-            path="/tables"
+            path="/organisations"
             element={
               <>
-                <PageTitle title="Tables | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                <PageTitle title="Organisations" />
                 <Tables />
+              </>
+            }
+          />
+          <Route
+            path="/Packages"
+            element={
+              <>
+                <PageTitle title="Packages" />
+                <Packages />
+              </>
+            }
+          />
+          <Route
+            path="/Setup/users"
+            element={
+              <>
+                <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                <FormElements />
+              </>
+            }
+          />
+          <Route
+            path="/Setup/roles"
+            element={
+              <>
+                <PageTitle title="Form Layout | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                <FormLayout />
+              </>
+            }
+          />
+           <Route
+            path="/Setup/permissions"
+            element={
+              <>
+                <PageTitle title="Form Layout | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                <FormLayout />
               </>
             }
           />

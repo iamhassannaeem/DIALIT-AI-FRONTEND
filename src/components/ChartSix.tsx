@@ -22,6 +22,10 @@ const ChartSix: React.FC = () => {
         name: 'Product Two',
         data: [268, 185, 251, 198, 287, 205, 281, 199, 259, 185, 150, 111],
       },
+       {
+        name: 'Product Three',
+        data: [100, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220],
+      },
     ],
   });
 
@@ -40,7 +44,7 @@ const ChartSix: React.FC = () => {
       position: 'top',
       horizontalAlign: 'left',
     },
-    colors: ['#13C296', '#3C50E0'],
+    colors: ['#13C296', '#3C50E0', 'yellow'],
     chart: {
       fontFamily: 'Satoshi, sans-serif',
       height: 200,
@@ -52,7 +56,7 @@ const ChartSix: React.FC = () => {
     fill: {
       gradient: {
         // enabled: true,
-        opacityFrom: 0.55,
+        opacityFrom: 0.25,
         opacityTo: 0,
       },
     },
@@ -75,7 +79,7 @@ const ChartSix: React.FC = () => {
       },
     ],
     stroke: {
-      width: [2, 2],
+      width: [1, 1,1],
       curve: 'smooth',
     },
 
@@ -90,7 +94,7 @@ const ChartSix: React.FC = () => {
       strokeDashArray: 7,
       xaxis: {
         lines: {
-          show: true,
+          show: false,
         },
       },
       yaxis: {

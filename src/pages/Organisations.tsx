@@ -1,4 +1,4 @@
-import DataTableTwo from '../components/DataTableTwo'
+import OrganisationTable from '../components/OrganisationTable'
 import ModalOne from '../components/ModalOne';
 
 const organisations = () => {
@@ -13,7 +13,7 @@ const organisations = () => {
       <ModalOne />
     </div>
 
-    <DataTableTwo />
+    <OrganisationTable />
       
     </>
   );

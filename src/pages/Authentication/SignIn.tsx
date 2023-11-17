@@ -1,20 +1,63 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, {  useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import LogoDark from '../../images/logo/logo-dark.svg';
-import Logo from '../../images/logo/logo.svg';
+// import { login } from '../../api/modules/Swiftsync.class';
+// import { loginUser } from '../../redux/slice/authSlice';
+import { AuthService,  } from '../../services/authService';
+import Toaster from '../../components/Toast/Toast'
+import { useDispatch,  } from 'react-redux';
+import { loginSuccess,  } from '../../redux/slices/authSlice';
 // import Breadcrumb from '../../components/Breadcrumb';
 
 const SignIn: React.FC = () => {
+  const dispatch = useDispatch();
+  const navigate=useNavigate()
+  const [error, setError] = useState({ success: "", error: "" });
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    try {
+      const { access, refresh } = await AuthService.login(formData.email, formData.password);
+      dispatch(loginSuccess({ access, refresh }));
+      
+      localStorage.setItem('access', access);
+      localStorage.setItem('refresh', refresh);
+      navigate('/');
+      window.location.reload()
+    } catch (error) {
+      setError({ success: '', error: 'Invalid credentials. Please try again.' });
+      // You can also log the error for debugging:
+      console.error('Login error:', error);
+    }
+    
+    
+  };
+  
+
   return (
     <>
+    <Toaster message={error} />
       {/* <Breadcrumb pageName="Sign In" /> */}
-
+<div className='p-5 sm:p-20'>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="py-17.5 px-26 text-center">
               <Link className="mb-5.5 inline-block" to="/">
-                <img className="hidden dark:block" src={Logo} alt="Logo" />
+                
                 <img className="dark:hidden" src={LogoDark} alt="Logo" />
               </Link>
 
@@ -150,9 +193,9 @@ const SignIn: React.FC = () => {
 
           <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-              <span className="mb-1.5 block font-medium">Start for free</span>
+              
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Sign In to TailAdmin
+              Sign In to Swift Sync
               </h2>
 
               <form>
@@ -163,6 +206,9 @@ const SignIn: React.FC = () => {
                   <div className="relative">
                     <input
                       type="email"
+                      name='email'
+                      value={formData?.email}
+                      onChange={handleChange}
                       placeholder="Enter your email"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
@@ -189,11 +235,14 @@ const SignIn: React.FC = () => {
 
                 <div className="mb-6">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Re-type Password
+                   Password
                   </label>
                   <div className="relative">
                     <input
                       type="password"
+                      name='password'
+                      value={formData?.password}
+                      onChange={handleChange}
                       placeholder="6+ Characters, 1 Capital letter"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
@@ -225,12 +274,13 @@ const SignIn: React.FC = () => {
                 <div className="mb-5">
                   <input
                     type="submit"
+                    onClick={handleSubmit}
                     value="Sign In"
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                   />
                 </div>
 
-                <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
+                {/* <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
                   <span>
                     <svg
                       width="20"
@@ -265,20 +315,21 @@ const SignIn: React.FC = () => {
                     </svg>
                   </span>
                   Sign in with Google
-                </button>
+                </button> */}
 
-                <div className="mt-6 text-center">
+                {/* <div className="mt-6 text-center">
                   <p>
                     Don’t have any account?{' '}
-                    <Link to="/auth/signup" className="text-primary">
+                    <Link to="/signup" className="text-primary">
                       Sign Up
                     </Link>
                   </p>
-                </div>
+                </div> */}
               </form>
             </div>
           </div>
         </div>
+      </div>
       </div>
     </>
   );

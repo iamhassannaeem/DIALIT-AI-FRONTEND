@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-import UserOne from '../images/user/user-01.png';
+import {  logout } from '../redux/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import user from '../images/avatar-icon_791764-2881.jpg'
 
 const DropdownUser = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const profile = useSelector((state) => state.isAdmin.isAdmin);
 
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+const dispatch =useDispatch()
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
-
+const navigate = useNavigate();
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }: MouseEvent) => {
@@ -34,7 +38,16 @@ const DropdownUser = () => {
     document.addEventListener('keydown', keyHandler);
     return () => document.removeEventListener('keydown', keyHandler);
   });
+  const handleLogout = async () => {
+    localStorage.removeItem('access');
+localStorage.removeItem('refresh');
+    dispatch(logout());
+    
+    navigate('/signin')
 
+
+  }
+  
   return (
     <div className="relative">
       <Link
@@ -45,13 +58,13 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+           {profile?.name}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          
         </span>
 
-        <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+        <span className="w-12 rounded-full border-2 border-blue-100">
+          <img src={user} alt="User"   style={{borderRadius:"50%"}}  className="h-12 w-12"/>
         </span>
 
         <svg
@@ -83,6 +96,7 @@ const DropdownUser = () => {
         <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
           <li>
             <Link
+             onClick={()=>setDropdownOpen(false)}
               to="/profile"
               className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
             >
@@ -106,7 +120,7 @@ const DropdownUser = () => {
               My Profile
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link
               to="#"
               className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
@@ -151,9 +165,9 @@ const DropdownUser = () => {
               </svg>
               Account Settings
             </Link>
-          </li>
+          </li> */}
         </ul>
-        <button className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+        <button className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base" onClick={handleLogout}>
           <svg
             className="fill-current"
             width="22"

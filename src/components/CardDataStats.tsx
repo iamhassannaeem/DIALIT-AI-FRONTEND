@@ -16,6 +16,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
   levelUp,
   levelDown,
   children,
+  
 }) => {
   return (
     <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -31,7 +32,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
           <span className="text-sm font-medium">{title}</span>
         </div>
 
-        <span
+        {/* <span
           className={`flex items-center gap-1 text-sm font-medium ${
             levelUp && 'text-meta-3'
           } ${levelDown && 'text-meta-5'} `}
@@ -68,7 +69,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
               />
             </svg>
           )}
-        </span>
+        </span> */}
       </div>
     </div>
   );

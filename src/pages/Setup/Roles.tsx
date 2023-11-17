@@ -1,11 +1,20 @@
+import RolesTable from '../../components/RolesTable'
 
-const FormLayout = () => {
+const Roles = () => {
+ 
   return (
     <>
-    <h1>Roles</h1>
-     
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mt-5">
+      <h2 className="text-title-md2 font-semibold text-black dark:text-white">
+      Roles
+      </h2>
+    
+      
+    </div>
+
+    <RolesTable />
     </>
   );
 };
 
-export default FormLayout;
+export default Roles;

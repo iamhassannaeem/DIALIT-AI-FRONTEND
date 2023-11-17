@@ -1,141 +1,153 @@
 import { lazy, useEffect, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
-
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Router,
+  Routes,
+} from 'react-router-dom';
 import ECommerce from './pages/Dashboard/ECommerce';
 import Profile from './pages/Profile';
-import FormElements from './pages/Form/FormElements';
-import FormLayout from './pages/Form/FormLayout';
-import Tables from './pages/Organisations';
+import Users from './pages/Setup/Users'
+import Roles from './pages/Setup/Roles'
+import Organisations from './pages/organisation/Organisations';
 import ErrorPage from './pages/Pages/ErrorPage';
 import ResetPassword from './pages/Authentication/ResetPassword';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
-import Packages from './pages/Packages'
+import Packages from './pages/Packages';
+import OrganisationsDetail from './pages/OrganisationsDetail';
+import ProtectedRoutes from './auth/PrivateRoute';
+import { useDispatch, useSelector } from 'react-redux';
+import {  isAdminfetchAdminStatus } from './services/authService';
+import Noperm from './components/Noperm'
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
-
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
-
+  const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
   }, []);
+  const isAdmin = useSelector((state)=>state.isAdmin?.isAdmin?.is_admin); 
+  const perm = useSelector((state)=>state.isAdmin?.isAdmin?.group); 
+
+  
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(isAdminfetchAdminStatus());
+  }, [dispatch]);
+
+
 
   return loading ? (
     <Loader />
   ) : (
-    <>
+    <>  
       <Routes>
-        <Route element={<DefaultLayout />}>
-          <Route
-            index
-            element={
-              <>
-                <PageTitle title="Dashboard" />
-                <ECommerce />
-              </>
-            }
-          />
+        <Route element={<DefaultLayout/>}>
+  
+  <Route path="/signin" element={<SignIn />} />
+  {isAuthenticated ? 
+  <> 
+  <Route
+        path="/"
+        element={
+          isAdmin ?
+          <>
+            <PageTitle title="Dashboard" />
+            <ECommerce />
+          </>:<>
+          <Noperm />
+          </>
+        }
+      />
+      
+      <Route
+        path="/organisations"
+        element={
+          isAdmin || perm?.view_organization ?
+          <>
+            <Organisations />
+            <PageTitle title="Organisations" />
+          </>:<>
+          <Noperm/></>
+        }
+      />
+      <Route
+        path="/packages"
+        element={
+          isAdmin ?
+          <>
+            <PageTitle title="Packages" />
+            <Packages />
+          </>:<Noperm/>
+        }
+      />
+      <Route
+        path="/organisationsDetail/:id"
+        element={
+          isAdmin ?
+          <>
+            <PageTitle title="OrganisationDetails" />
+            <OrganisationsDetail />
+          </>:<Noperm/>
+        }
+      />
+      <Route
+        path="/setup/users"
+        element={
+          isAdmin ?
+          <>
           
-          <Route
-            path="/profile"
-            element={
-              <>
-                <PageTitle title="Profile | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Profile />
-              </>
-            }
-          />
-          <Route
-            path="/organisations"
-            element={
-              <>
-                <PageTitle title="Organisations" />
-                <Tables />
-              </>
-            }
-          />
-          <Route
-            path="/Packages"
-            element={
-              <>
-                <PageTitle title="Packages" />
-                <Packages />
-              </>
-            }
-          />
-          <Route
-            path="/Setup/users"
-            element={
-              <>
-                <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <FormElements />
-              </>
-            }
-          />
-          <Route
-            path="/Setup/roles"
-            element={
-              <>
-                <PageTitle title="Form Layout | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <FormLayout />
-              </>
-            }
-          />
-           <Route
-            path="/Setup/permissions"
-            element={
-              <>
-                <PageTitle title="Form Layout | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <FormLayout />
-              </>
-            }
-          />
+            <PageTitle title="Users" />
+            <Users />
+          </>:<Noperm/>
+        }
+      />
+      <Route
+        path="/setup/roles"
+        element={
+          isAdmin ?
+          <>
           
-          <Route
-            path="/pages/error-page"
-            element={
-              <>
-                <PageTitle title="Error Page | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <ErrorPage />
-              </>
-            }
-          />
-          
-          <Route
-            path="/auth/signin"
-            element={
-              <>
-                <PageTitle title="Signin | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <SignIn />
-              </>
-            }
-          />
-          <Route
-            path="/auth/signup"
-            element={
-              <>
-                <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <SignUp />
-              </>
-            }
-          />
-          <Route
-            path="/auth/reset-password"
-            element={
-              <>
-                <PageTitle title="Reset Password | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <ResetPassword />
-              </>
-            }
-          />
-        </Route>
-      </Routes>
+            <PageTitle title="Roles" />
+            <Roles />
+          </>:<Noperm/>
+        }
+      />
+     
+      <Route
+        path="/profile"
+        element={
+          isAdmin ?
+          <>
+            <PageTitle title="Profile" />
+            <Profile />
+          </>:<Noperm/>
+        }
+      />
+      </>
+     :     
+         
+     
+
+<Route
+      path="*"
+      element={<SignIn to="/signin" replace />}
+    />
+     }
+      
+    
+    </Route>
+</Routes>  
     </>
   );
 }
 
 export default App;
+

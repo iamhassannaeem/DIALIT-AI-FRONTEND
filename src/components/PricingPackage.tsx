@@ -1,112 +1,81 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import highlight from '../images/organisation/highlight.svg';
-import del from '../images/packages/delete.svg'
+import del from '../images/packages/delete.svg';
+import { getPackages } from '../api/modules/Swiftsync.class';
+
 const PricingPackage: React.FC = () => {
-  return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
-      {/* <!-- Pricing Item --> */}
-      <div className="relative rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark md:p-9 xl:p-11.5">
-      <span className="flex gap-2 absolute right-3">
-          <img src={del} alt="Banner" />
-          <img src={highlight} alt="Banner" />
-        </span>
-        <span className="mb-2.5 block text-title-sm2 font-bold text-black dark:text-white">
-          Starter
-        </span>
-        <h3>
-          <span className="text-xl font-medium text-black dark:text-white">
-            $
-          </span>
-          <span className="text-title-xxl2 font-bold text-black dark:text-white">
-            25.00
-          </span>
-          <span className="font-medium"> Per Month</span>
-        </h3>
+  const [packages, setPackages] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getPackages();
+        setPackages(res);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-        <h4 className="mt-7.5 mb-5 text-lg font-medium text-black dark:text-white">
-          Features
-        </h4>
+    fetchData();
+  }, []);
 
-        <ul className="flex flex-col gap-3.5">
-          <li className="font-medium">Get Figma Source File</li>
-          <li className="font-medium">Use on Unlimited Projects</li>
-          <li className="font-medium">Personal & Commercial Use</li>
-          <li className="font-medium">Downloadable Offline Files</li>
-          <li className="font-medium">Lifetime Free Updates</li>
-        </ul>
+  if (loading) {
+    // You can render a loading indicator here if needed
+    return <div>Loading...</div>;
+  }
+  if (Array.isArray(packages)) {
+    return (
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
+        {/* <!-- Pricing Item --> */}
 
-        
+        {packages?.map((item, index) => (
+          <div
+            className="relative rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark md:p-9 xl:p-11.5"
+            key={index}
+          >
+            {/* <span className="absolute right-3 flex gap-2">
+              <img src={del} alt="Banner" />
+              <img src={highlight} alt="Banner" />
+            </span> */}
+            <span className="mb-2.5 block text-title-sm2 font-bold text-black dark:text-white">
+              {item?.name}
+            </span>
+            <h3>
+              <span className="text-xl font-medium text-black dark:text-white">
+                $
+              </span>
+              <span className="text-title-xxl2 font-bold text-black dark:text-white">
+                {item?.monthly_price}
+              </span>
+              <span className="font-medium"> Per Month</span>
+            </h3>
+            <h3>
+              <span className="text-xl font-medium text-black dark:text-white">
+                $
+              </span>
+              <span className="text-title-xxl2 font-bold text-black dark:text-white">
+                {item?.annual_price}
+              </span>
+              <span className="font-medium"> Per Year</span>
+            </h3>
+
+            <h4 className="mt-7.5 mb-5 text-lg font-medium text-black dark:text-white">
+              Features
+            </h4>
+
+            <ul className="flex flex-col gap-3.5">
+  {item?.description.split('\n').map((line, index) => (
+    <li key={index}>{line}</li>
+  ))}
+</ul>
       </div>
-
-      {/* <!-- Pricing Item --> */}
-      <div className="relative rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark md:p-9 xl:p-11.5">
-        <span className="flex gap-2 absolute right-3">
-          <img src={del} alt="Banner" />
-          <img src={highlight} alt="Banner" />
-        </span>
-        <span className="mb-2.5 block text-title-sm2 font-bold text-black dark:text-white">
-          Basic
-        </span>
-        <h3>
-          <span className="text-xl font-medium text-black dark:text-white">
-            $
-          </span>
-          <span className="text-title-xxl2 font-bold text-black dark:text-white">
-            59.00
-          </span>
-          <span className="font-medium"> Per Month</span>
-        </h3>
-
-        <h4 className="mt-7.5 mb-5 text-lg font-medium text-black dark:text-white">
-          Features
-        </h4>
-
-        <ul className="flex flex-col gap-3.5">
-          <li className="font-medium">Get Figma Source File</li>
-          <li className="font-medium">Use on Unlimited Projects</li>
-          <li className="font-medium">Personal & Commercial Use</li>
-          <li className="font-medium">Downloadable Offline Files</li>
-          <li className="font-medium">Lifetime Free Updates</li>
-        </ul>
-
-        
-      </div>
-
-      {/* <!-- Pricing Item --> */}
-      <div className="relative rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark md:p-9 xl:p-11.5">
-      <span className="flex gap-2 absolute right-3">
-          <img src={del} alt="Banner" />
-          <img src={highlight} alt="Banner" />
-        </span>
-        <span className="mb-2.5 block text-title-sm2 font-bold text-black dark:text-white">
-          Premium
-        </span>
-        <h3>
-          <span className="text-xl font-medium text-black dark:text-white">
-            $
-          </span>
-          <span className="text-title-xxl2 font-bold text-black dark:text-white">
-            99.00
-          </span>
-          <span className="font-medium"> Per Month</span>
-        </h3>
-
-        <h4 className="mt-7.5 mb-5 text-lg font-medium text-black dark:text-white">
-          Features
-        </h4>
-
-        <ul className="flex flex-col gap-3.5">
-          <li className="font-medium">Get Figma Source File</li>
-          <li className="font-medium">Use on Unlimited Projects</li>
-          <li className="font-medium">Personal & Commercial Use</li>
-          <li className="font-medium">Downloadable Offline Files</li>
-          <li className="font-medium">Lifetime Free Updates</li>
-        </ul>
-
-        
-      </div>
+    ))}
     </div>
-  );
+    );
+  } else {
+    return <div>No packages available.</div>;
+  }
 };
 
 export default PricingPackage;

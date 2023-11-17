@@ -14,7 +14,7 @@ const Statistics: React.FC = (props) => {
 
 </div>
 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
-<CardDataStats title="Total Users" total="1.5k" rate="0.95%" levelDown>
+<CardDataStats title="Total Users" total={props?.migrations?.users} rate="0.95%" levelDown >
   <svg
     className="fill-primary dark:fill-white"
     width="22"
@@ -37,7 +37,7 @@ const Statistics: React.FC = (props) => {
     />
   </svg>
 </CardDataStats>
-<CardDataStats title="Total Migrations" total="$3.456K" rate="0.43%" levelUp>
+<CardDataStats title="Total Migrations" total={props?.migrations?.migrations_total} rate="0.43%" levelUp>
   <svg
     className="fill-primary dark:fill-white"
     width="22"

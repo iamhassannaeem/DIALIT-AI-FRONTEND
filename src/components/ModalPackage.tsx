@@ -1,12 +1,70 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPackage } from '../api/modules/Swiftsync.class';
+import Toaster from '../components/Toast/Toast';
 
 const ModalPackage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [error, setError] = useState({ success: '', error: '' });
+
+  const [formData, setFormData] = useState({
+    name: '',
+    user_count: '',
+    data_quota: '',
+    monthly_price: '',
+    annual_price: '',
+    description: '',
+  });
 
   const trigger = useRef<any>(null);
   const modal = useRef<any>(null);
 
-  // close on click outside
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const description = e.target.value
+
+    setFormData({
+      ...formData,
+      description,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const res = await createPackage(formData);
+      const user=(res?.message?.response?.data)
+      if (res?.id) {
+        setError((prev) => ({
+          ...prev,
+          success: 'Package created successfully',
+          error: '',
+        }));
+      } else {
+        const errorMessages = [];
+      
+        for (const key in user) {
+          const errorMessage = `${key}: ${user[key]}`;
+       
+          errorMessages.push(errorMessage);
+        }
+      
+        setError({ success: "", error: errorMessages.join("\n") });
+      }
+    }catch (error) {
+      console.log(error);
+    }
+
+    setModalOpen(false);
+  };
+
   useEffect(() => {
     const clickHandler = ({ target }: MouseEvent) => {
       if (!modal.current) return;
@@ -16,24 +74,20 @@ const ModalPackage: React.FC = () => {
         trigger.current.contains(target) ||
         (target instanceof Node &&
           target.parentElement &&
-          (target.parentElement.closest("form") ||
-            target.parentElement.querySelector(".next-button")))
+          (target.parentElement.closest('form') ||
+            target.parentElement.querySelector('.next-button')))
       )
         return;
       setModalOpen(false);
     };
     document.addEventListener('click', clickHandler);
     return () => document.removeEventListener('click', clickHandler);
-  });
-  
+  }, [modalOpen]);
 
-  
-  const handleSave=()=>{
-    setModalOpen(false)
-    
-  }
   return (
     <div>
+      <Toaster message={error} />
+
       <button
         ref={trigger}
         onClick={() => setModalOpen(!modalOpen)}
@@ -46,92 +100,102 @@ const ModalPackage: React.FC = () => {
           modalOpen ? 'block' : 'hidden'
         }`}
       >
-        <div
-          ref={modal}
-          
-          className="w-full max-w-142.5 rounded-lg"
-        >
+        <div ref={modal} className="w-full max-w-142.5 rounded-lg">
+          <div className="flex flex-col gap-9">
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark-bg-boxdark">
+              <form action="#">
+                <div className="p-6.5">
+                  <div className="mb-1.5">
+                    <label className="mb-2.5 block text-sm font-semibold ">
+                      Package Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData?.name}
+                      onChange={handleChange}
+                      placeholder="Enter Package Name"
+                      className="w-full rounded border-[1.5px] text-sm font-semibold border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary"
+                    />
+                  </div>
+                  <div className="mb-4.5">
+                    <label className="mb-2.5 block text-sm font-semibold ">
+                      User Count
+                    </label>
+                    <input
+                      type="text"
+                      name="user_count"
+                      value={formData?.user_count}
+                      onChange={handleChange}
+                      placeholder="Enter user count"
+                      className="w-full rounded border-[1.5px] text-sm font-semibold border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary"
+                    />
+                  </div>
+                  <div className="mb-4.5">
+                    <label className="mb-2.5 block text-sm font-semibold ">
+                      Data Quota
+                    </label>
+                    <input
+                      type="text"
+                      name="data_quota"
+                      value={formData?.data_quota}
+                      onChange={handleChange}
+                      placeholder="Enter Data Quota"
+                      className="w-full rounded border-[1.5px] text-sm font-semibold border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary"
+                    />
+                  </div>
 
-       <div className="flex flex-col gap-9">
-          {/* <!-- Contact Form --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-           
-            <form action="#">
-              <div className="p-6.5">
-              
-              <div className="mb-4.5">
-                  <label className="mb-2.5 block text-sm font-semibold ">
-                  Package Name 
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="Enter Package Name"
-                    className="w-full rounded border-[1.5px] text-sm font-semibold border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
+                  <div className="mb-4.5">
+                    <label className="mb-2.5 block text-sm font-semibold ">
+                      Package Monthly Price
+                    </label>
+                    <input
+                      type="text"
+                      name="monthly_price"
+                      value={formData?.monthly_price}
+                      onChange={handleChange}
+                      placeholder="Enter Package Monthly Price"
+                      className="w-full rounded border-[1.5px] text-sm font-semibold border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary"
+                    />
+                  </div>
+                  <div className="mb-4.5">
+                    <label className="mb-2.5 block text-sm font-semibold ">
+                      Package Annual Price
+                    </label>
+                    <input
+                      type="text"
+                      name="annual_price"
+                      value={formData?.annual_price}
+                      onChange={handleChange}
+                      placeholder="Enter Package Annual Price"
+                      className="w-full rounded border-[1.5px] text-sm font-semibold border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary"
+                    />
+                  </div>
+
+                  <div className="mb-4.5">
+                    <label className="mb-2.5 block text-sm font-semibold ">
+                      Package Features (One per line)
+                    </label>
+                    <textarea
+                      rows={4}
+                      name="description"
+                      value={formData?.description}
+                      onChange={handleDescriptionChange}
+                      placeholder="Enter Package Features (one per line)"
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary"
+                    ></textarea>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray"
+                  >
+                    Save
+                  </button>
                 </div>
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-sm font-semibold ">
-                  Package Price
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter Package Price"
-                    className="w-full rounded border-[1.5px] text-sm font-semibold border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                </div>
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-sm font-semibold ">
-                  Package Duration
-                  </label>
-                  
-                  <div className="relative z-20 bg-transparent dark:bg-form-input">
-                      <select className="relative z-20 w-full appearance-none text-sm font-semibold rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
-                        <option value="" >Select Package Duration</option>
-                        <option value="">Premium</option>
-                        <option value="">USA</option>
-                        <option value="">UK</option>
-                       
-                      </select>
-                      <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
-                        <svg
-                          className="fill-current"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <g opacity="0.8">
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                              fill=""
-                            ></path>
-                          </g>
-                        </svg>
-                      </span>
-                    </div>
-                </div>
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-sm font-semibold ">
-                  Package Features
-                  </label>
-                  <textarea
-                    rows={6}
-                    placeholder="Enter Package Features"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  ></textarea>
-                </div>
-                <button type='button' onClick={handleSave} className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
-                  Save
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
-        </div>
-
-       
         </div>
       </div>
     </div>

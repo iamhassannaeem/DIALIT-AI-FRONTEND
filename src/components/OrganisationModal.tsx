@@ -209,7 +209,7 @@ const OrganisationModal: React.FC = () => {
   
                   
   
-                  <button onClick={handleSave} className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
+                  <button onClick={handleSave} type='submit' className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
                     Save
                   </button>
                 </div>

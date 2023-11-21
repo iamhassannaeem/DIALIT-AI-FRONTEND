@@ -41,6 +41,7 @@ const ModalPackage: React.FC = () => {
     try {
       const res = await createPackage(formData);
       const user=(res?.message?.response?.data)
+      console.log(res)
       if (res?.id) {
         setError((prev) => ({
           ...prev,
@@ -100,8 +101,8 @@ const ModalPackage: React.FC = () => {
           modalOpen ? 'block' : 'hidden'
         }`}
       >
-        <div ref={modal} className="w-full max-w-142.5 rounded-lg">
-          <div className="flex flex-col gap-9">
+        <div className="w-full max-w-142.5 rounded-lg" ref={modal} style={{ overflow: 'hidden' }}>
+            <div className="flex flex-col gap-9"    style={{ overflowY: 'scroll', maxHeight: '95vh' }}>
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark-bg-boxdark">
               <form action="#">
                 <div className="p-6.5">

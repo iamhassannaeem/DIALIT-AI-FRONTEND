@@ -2,13 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { DelRole, PlatformDel, PostUser, activeUser } from '../api/modules/Swiftsync.class';
 import Toaster from './Toast/Toast'
 import ban from '../images/organisation/ban.svg'
+import { useNavigate } from 'react-router-dom';
+import BeatLoader from 'react-spinners/BeatLoader'
 const Inactive: React.FC = ({id}) => {
   const [modalOpen, setModalOpen] = useState(false);
-
+  const navigate=useNavigate()
   const trigger = useRef<any>(null);
   const modal = useRef<any>(null);
   const [error, setError] = useState({ success: "", error: "" });
-  
+  const[loading,setLoading] = useState(false);
   
 
 
@@ -35,9 +37,16 @@ const Inactive: React.FC = ({id}) => {
 
   
   const handleDelete=async() => {
+    const onNavigate = (path: To) => {
+      navigate(path)
+      console.log(`Navigating to ${path}`);  
+    };
     try {
-      await activeUser({id:id});
+      setLoading(true)
+      await activeUser({id:id},onNavigate);
       setModalOpen(false)
+      setLoading(false)
+
       setError({ success: 'User Inactive Succesfully', error: '' });
       setInterval(() => {
         window.location.reload();
@@ -82,7 +91,7 @@ const Inactive: React.FC = ({id}) => {
 <h1 className='text-center font-bold font-size-60'>Are you sure to want to Inactive?</h1>
 <div className='flex justify-between gap-6 mt-7'>
               <button type='submit' onClick={handleDelete} className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90">
-                Inactive
+              {loading ? <BeatLoader color='white'/>:"Inactive"}
               </button> 
 
               <button onClick={()=>setModalOpen(false)} className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90">

@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import './ecommerce.css'
+import './ecommerce.css';
 import Statistics from '../../components/Statistics';
-import calender from '../../images/data-time/calender.svg'
-import time from '../../images/data-time/time.svg'
-import site from '../../images/data-time/site.svg'
+import calender from '../../images/data-time/calender.svg';
+import time from '../../images/data-time/time.svg';
+import site from '../../images/data-time/site.svg';
 // import ChartFour from '../../components/ChartFour';
 import DataStats from '../../components/DataStats';
-import { Filter, GetStats, filterStats, organisationget } from '../../api/modules/Swiftsync.class';
+import {
+  filterStats,
+  organisationget,
+} from '../../api/modules/Swiftsync.class';
+import { useNavigate } from 'react-router-dom';
+import Loader from '../../common/Loader';
 // import ChartSix from '../../components/ChartSix';
 const ECommerce: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -16,56 +21,70 @@ const ECommerce: React.FC = () => {
   const [selectedOrganization, setSelectedOrganization] = useState();
 
   const [migrations, setMigrations] = useState(null);
-  const [organisations, setOrganisations]=useState()
-
+  const [organisations, setOrganisations] = useState();
+  const navigate = useNavigate();
+  const [isloaing, setIsloading] = useState(false);
+  const onNavigate = (path: To) => {
+    navigate(path);
+    console.log(`Navigating to ${path}`);
+  };
   useEffect(() => {
     try {
-      
-      organisationget().then((res)=>{
-        setOrganisations(res)}).catch((error) => {console.log(error);});
+      organisationget(onNavigate)
+        .then((res) => {
+          setOrganisations(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } catch (error) {
       console.log(error);
     }
-
   }, []);
-  
+
   const handleDateChange = (date) => {
-   
     setSelectedDate(date);
   };
   const handleEndDateChange = (date) => {
-   
     setEndDate(date);
   };
-  
- 
+
   useEffect(() => {
-    
     handleFilter();
   }, [selectedDate, endDate, selectedOrganization]);
   const handleFilter = async () => {
+    const onNavigate = (path: To) => {
+      navigate(path);
+      console.log(`Navigating to ${path}`);
+    };
     try {
-      const result = await filterStats(selectedOrganization, endDate, selectedDate);
+      setIsloading(true);
+      const result = await filterStats(
+        selectedOrganization,
+        endDate,
+        selectedDate,
+        onNavigate
+      );
       setMigrations(result);
+      setIsloading(false);
+
     } catch (error) {
       console.log(error);
     }
   };
   return (
     <>
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5 mb-9 mt-3">
-
-
+    {isloaing && <Loader/>}
+      <div className="mb-9 mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
         <div className="flex flex-col gap-5.5">
           <div className="relative">
             <DatePicker
               selected={selectedDate}
               onChange={handleDateChange}
               dateFormat="yyyy MMM dd"
-              className="custom-input-date customsize custom-input-date-2 w-full rounded border-[1.5px] border-stroke bg-white py-2 px-4 pl-10 font-medium outline-none transition focus-border-primary active-border-primary dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"
+              className="custom-input-date customsize custom-input-date-2 focus-border-primary active-border-primary dark:focus-border-primary w-full rounded border-[1.5px] border-stroke bg-white py-2 px-4 pl-10 font-medium outline-none transition dark:border-form-strokedark dark:bg-form-input"
             />
- <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
+            <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
               <svg
                 width="24"
                 height="24"
@@ -87,7 +106,6 @@ const ECommerce: React.FC = () => {
               <img src={calender} alt="" />
             </div>
           </div>
-
         </div>
         <div className="flex flex-col gap-5.5">
           <div className="relative">
@@ -95,9 +113,9 @@ const ECommerce: React.FC = () => {
               selected={endDate}
               onChange={handleEndDateChange}
               dateFormat="yyyy MMM dd"
-              className="custom-input-date customsize custom-input-date-2 w-full rounded border-[1.5px] border-stroke bg-white py-2 px-4 pl-10 font-medium outline-none transition focus-border-primary active-border-primary dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"
+              className="custom-input-date customsize custom-input-date-2 focus-border-primary active-border-primary dark:focus-border-primary w-full rounded border-[1.5px] border-stroke bg-white py-2 px-4 pl-10 font-medium outline-none transition dark:border-form-strokedark dark:bg-form-input"
             />
- <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
+            <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
               <svg
                 width="24"
                 height="24"
@@ -119,29 +137,28 @@ const ECommerce: React.FC = () => {
               <img src={calender} alt="" />
             </div>
           </div>
-
         </div>
         <div className="flex flex-col gap-5.5">
-
-
           <div className="relative  bg-white dark:bg-form-input">
             <span className="absolute top-1/2 left-4 z-30 -translate-y-1/2">
               <img src={site} alt="" />
             </span>
-            <select className="relative customsize w-full appearance-none rounded border border-stroke bg-transparent py-2 px-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-            onChange={(e)=>setSelectedOrganization(e.target.value)}>
-            <option value="">Organisation Name</option>
-            
-            {Array.isArray(organisations) ? (
-  organisations.map((item, index) => (
-    <option key={index} value={item?.id}>
-      {item?.name}
-    </option>
-  ))
-) : (
-  // Handle the case when organisations is not an array
-  <option value="">No organisations available</option>
-)}
+            <select
+              className="customsize relative w-full appearance-none rounded border border-stroke bg-transparent py-2 px-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
+              onChange={(e) => setSelectedOrganization(e.target.value)}
+            >
+              <option value="">Organisation Name</option>
+
+              {Array.isArray(organisations) ? (
+                organisations.map((item, index) => (
+                  <option key={index} value={item?.id}>
+                    {item?.name}
+                  </option>
+                ))
+              ) : (
+                // Handle the case when organisations is not an array
+                <option value="">No organisations available</option>
+              )}
             </select>
             <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
               <svg
@@ -162,17 +179,13 @@ const ECommerce: React.FC = () => {
               </svg>
             </span>
           </div>
-
         </div>
-
-
       </div>
 
       <Statistics title="Application Statistics" migrations={migrations} />
-      <DataStats migrations={migrations}/>
+      <DataStats migrations={migrations} />
       {/* <Statistics title="Financial Statistics" /> */}
       {/* <ChartSix /> */}
-      
 
       {/* <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />

@@ -40,12 +40,9 @@ export const organisationCreate = async (
 ): Promise<ApiResponse> => {
   try {
     const response = await axios.post(endpoints.organisationCreate, payload);
-    console.log('before',response);
     return response.data as ApiResponse;
-    
   } catch (error: any) {
-    console.log('after',error);
-
+    
     return handleTokenRefresh(error, onNavigate);
   }
 };
@@ -79,9 +76,9 @@ export const createPackage = async (payload: payload,onNavigate:any): Promise<Ap
 }; 
 
 // package get
-export const getPackages = async (payload: payload,onNavigate:any): Promise<ApiResponse> => {
+export const getPackages = async (onNavigate:any): Promise<ApiResponse> => {
   try {
-    const response = await axios.get(endpoints.getPackages, payload);
+    const response = await axios.get(endpoints.getPackages);
     return response.data as ApiResponse;
   } catch (error: any) {
     return handleTokenRefresh(error, onNavigate);
@@ -160,15 +157,7 @@ export const PostUserData = async (payload: payload,onNavigate:any): Promise<Api
     return handleTokenRefresh(error, onNavigate);
   }
 };
-//  get Stat
-export const GetStats = async (onNavigate:any): Promise<ApiResponse> => {
-  try {
-    const response = await axios.get(endpoints.GetStats);
-    return response.data as ApiResponse;
-  } catch (error: any) {
-    return handleTokenRefresh(error, onNavigate);
-  }
-};
+
 //  filter Stat
 export const filterStats = async (organization, to, from,onNavigate:any) => {
   try {

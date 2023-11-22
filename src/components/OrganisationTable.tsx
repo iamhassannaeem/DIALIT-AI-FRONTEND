@@ -4,8 +4,9 @@ import './datatables.css';
 import eye from '../images/organisation/eye.svg';
 import ban from '../images/organisation/ban.svg';
 import highlight from '../images/organisation/highlight.svg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { organisationget } from '../api/modules/Swiftsync.class';
+import Loader from '../common/Loader';
 
 interface Employee {
   Name: string;
@@ -27,11 +28,17 @@ const OrganisationTable: React.FC = () => {
     console.log(OrganisationTable);
   });
   const [organisation, setOrganisation] = useState<Employee[]>([]);
-
+  const [isloaing, setIsloading] = useState(false);
+  const navigate=useNavigate()
+  const onNavigate = (path: To) => {
+    navigate(path)
+    console.log(`Navigating to ${path}`);  
+  };
   useEffect(() => {
     try {
       const api = async () => {
-        const res = await organisationget();
+        setIsloading(true)
+        const res = await organisationget(onNavigate);
         
         const mappedData = res?.map((item) => ({
           Name: item?.owner_name,
@@ -42,7 +49,10 @@ const OrganisationTable: React.FC = () => {
           Action: 'Actions', // You can set a default value for Action
         }));
         setOrganisation(mappedData);
+      setIsloading(false)
+
       };
+
       api();
     } catch (error) {
       console.log(error);
@@ -52,7 +62,9 @@ const OrganisationTable: React.FC = () => {
 
 
   return (
-    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark-bg-boxdark">
+    <>
+    {isloaing && <Loader/>}
+     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark-bg-boxdark">
       <h6 style={{ fontSize: "20px", fontWeight: "700", color: "black", borderBottom: "1px solid #E2E8F0" }} className='p-9'>ALL Organizations</h6>
       <div className="data-table-common data-table-two max-w-full overflow-x-auto">
         
@@ -88,6 +100,8 @@ const OrganisationTable: React.FC = () => {
         </table>
       </div>
     </div>
+    </>
+   
   );
 };
 

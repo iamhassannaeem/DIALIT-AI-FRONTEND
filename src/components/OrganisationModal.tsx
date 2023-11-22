@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { organisationCreate } from '../api/modules/Swiftsync.class';
 import Toaster from './Toast/Toast';
+import { useNavigate } from 'react-router-dom';
+import { BeatLoader } from 'react-spinners';
 const OrganisationModal: React.FC = () => {
   const [error, setError] = useState({ success: "", error: "" });
   const [modalOpen, setModalOpen] = useState(false);
@@ -12,6 +14,7 @@ const OrganisationModal: React.FC = () => {
     orgName: "",
     
   });
+  const [isloaing, setIsloading] = useState(false);
   const trigger = useRef<any>(null);
   const modal = useRef<any>(null);
 
@@ -36,12 +39,16 @@ const OrganisationModal: React.FC = () => {
   });
   
 
+const navigate=useNavigate()
  
 
   const handleSave =async () => {
     
-    
-   
+    const onNavigate = (path: To) => {
+      navigate(path)
+      console.log(`Navigating to ${path}`);  
+    };
+    setIsloading(true)
      await organisationCreate({
         user: {
           name: formData.ownerName,
@@ -49,29 +56,30 @@ const OrganisationModal: React.FC = () => {
           password: formData.password,
         },
         user_org: formData.orgName,
-      })
+      },onNavigate)
         .then((res) => {
           console.log(res);
           
          
-          if (res?.success === false) {
-            
-            setError((prev) => ({
-              ...prev,
-              success: "",
-              error:  'Enter Correct Email',
-            }));
-          } else {
+         
             setError((prev) => ({
               ...prev,
               success: "Organization created successfully",
               error:"",
             }));
-          }
+          
         })
         .catch((err) => {
-          console.error(err);
+          setError((prev) => ({
+            ...prev,
+            success: "",
+            error:  'Check All  Feilds',
+          }));
+          console.error('no',err);
+         
         });
+    setIsloading(false)
+
         setModalOpen(false);
         setShowAdditionalDiv(false);
     } 
@@ -210,7 +218,7 @@ const OrganisationModal: React.FC = () => {
                   
   
                   <button onClick={handleSave} type='submit' className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
-                    Save
+                    {isloaing? <BeatLoader color='white'/>:"Save"}
                   </button>
                 </div>
               </form>

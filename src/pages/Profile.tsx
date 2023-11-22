@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import Toaster from '../components/Toast/Toast'
 import { PostUserData, uploadProfile } from '../api/modules/Swiftsync.class';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 const Profile = () => {
   const profile = useSelector((state) => state.isAdmin.isAdmin);
 
@@ -21,9 +22,13 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    const navigate=useNavigate()
+    const onNavigate = (path: To) => {
+      navigate(path)
+      console.log(`Navigating to ${path}`);  
+    };
     try {
-      const res = await PostUserData({ name });
+      const res = await PostUserData({ name },onNavigate);
      
       if (res.status === 200) {
         setError({ success: '', error: 'Name field should not be empty' });
@@ -46,12 +51,16 @@ const Profile = () => {
   
     const formData = new FormData();
     formData.append('profile_image', selectedFile);
-  
+    const navigate=useNavigate()
+    const onNavigate = (path: To) => {
+      navigate(path)
+      console.log(`Navigating to ${path}`);  
+    };
     try {
       const res = await uploadProfile( formData, {
         headers: {
           'Content-Type': 'multipart/form-data', 
-        },
+        },onNavigate
       });
   
       if (res.success ===false) {

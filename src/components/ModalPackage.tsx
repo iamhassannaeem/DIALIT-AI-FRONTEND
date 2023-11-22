@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPackage } from '../api/modules/Swiftsync.class';
 import Toaster from '../components/Toast/Toast';
+import BeatLoader from 'react-spinners/BeatLoader';
+import { useNavigate } from 'react-router-dom';
 
 const ModalPackage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [error, setError] = useState({ success: '', error: '' });
+  const [isloaing, setIsloading] = useState(false);
+    const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -37,9 +41,15 @@ const ModalPackage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const onNavigate = (path) => {
+      navigate(path);
+      console.log(`Navigating to ${path}`);
+    };
     try {
-      const res = await createPackage(formData);
+      setIsloading(true);
+      const res = await createPackage(formData,onNavigate);
+      setIsloading(false);
+
       const user=(res?.message?.response?.data)
       console.log(res)
       if (res?.id) {
@@ -191,7 +201,7 @@ const ModalPackage: React.FC = () => {
                     onClick={handleSubmit}
                     className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray"
                   >
-                    Save
+                    {isloaing?<BeatLoader color='white'/>:"Save"}
                   </button>
                 </div>
               </form>

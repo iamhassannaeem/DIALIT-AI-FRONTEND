@@ -6,6 +6,7 @@ import RoleAssign from '../components/RoleAssign'
 import Inactive from './Inactivemodal';
 import EditUser from './EditUser';  
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 interface Setup {
   Name: string;
   Email: string;
@@ -18,11 +19,16 @@ const SetupUser: React.FC = () => {
   const [user, setUser] = React.useState<Setup[]>([]);
  const [roles,setRoles]=useState()
  const isAdmin = useSelector((state)=>state.isAdmin?.isAdmin?.is_admin); 
+ const navigate=useNavigate()
+ const onNavigate = (path: To) => {
+   navigate(path)
+   console.log(`Navigating to ${path}`);  
+ };
   useEffect(() => {
     try {
       const api = async () => {
-        const res = await GetUserList();
-        const role=await GetRoles()
+        const res = await GetUserList(onNavigate);
+        const role=await GetRoles(onNavigate)
         setRoles(role)
         
         console.log(res);

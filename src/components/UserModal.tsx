@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PostUser } from '../api/modules/Swiftsync.class';
 import Toaster from '../components/Toast/Toast'
+import { useNavigate } from 'react-router-dom';
+import BeatLoader from 'react-spinners/BeatLoader';
+
 const UserModal: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const navigate=useNavigate()
 
   const trigger = useRef<any>(null);
   const modal = useRef<any>(null);
@@ -12,6 +16,8 @@ const UserModal: React.FC = () => {
     email: '',
     password: '',
   });
+  const [isloaing, setIsloading] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({
@@ -42,11 +48,17 @@ const UserModal: React.FC = () => {
   });
   
 
-  
+  const onNavigate = (path: To) => {
+    navigate(path)
+    console.log(`Navigating to ${path}`);  
+  };
   const handleSubmit=async(e: React.FormEvent)=>{
     e.preventDefault();
     try {
-      const res = await PostUser(formData);
+      setIsloading(true)
+      const res = await PostUser(formData,onNavigate);
+      setIsloading(false)
+
       const user=res?.message?.response?.data;
      if(res.success ==false){
       
@@ -68,7 +80,7 @@ const UserModal: React.FC = () => {
     } catch (error) {
       setError({ success: 'user added succesfully', error: 'plz Check all feilds' });
      
-      console.error('Login error:', error);
+      console.error( error);
     }
     
     setModalOpen(false)
@@ -198,12 +210,15 @@ const UserModal: React.FC = () => {
                 </div>
 
                 <div className="mb-5">
-                  <input
+                  <button
                     type="submit"
                     onClick={handleSubmit}
-                    value="Save user"
+                 
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-                  />
+                  >
+{isloaing ? <BeatLoader color='white'/>:"Save User"}
+
+                  </button>
                 </div>
 
                

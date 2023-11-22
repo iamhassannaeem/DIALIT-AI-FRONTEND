@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import OrganisationMigrationTable from '../components/OrganisationMigrationTable';
 import OrganisationUser from '../components/OrganisationUser';
 import PlatformTable from '../components/PlatformTable';
@@ -8,11 +8,15 @@ import { organisationDetailGet } from '../api/modules/Swiftsync.class';
 const organisations = () => {
   const { id } = useParams();
   const [organization, setOrganization] = React.useState(null);
-
+  const navigate=useNavigate()
+  const onNavigate = (path: To) => {
+    navigate(path)
+    console.log(`Navigating to ${path}`);  
+  };
   useEffect(() => {
     const api = async () => {
       try {
-        const res = await organisationDetailGet(id);
+        const res = await organisationDetailGet(id,onNavigate);
         setOrganization(res);
       } catch (error) {
         console.log('error',error);

@@ -26,12 +26,12 @@ export const AuthService = {
  
 };
 export const isAdminfetchAdminStatus = () => {
-  return async (dispatch: any) => { // You may need to define a proper dispatch type
+  return async (dispatch: any) => { 
     try {
-      const response = await isAdmin(); // Your API call to check admin status
+      const response = await isAdmin(); 
       dispatch(setAdminStatus(response));
     } catch (error) {
-      // Handle error as needed
+     
       console.error('Error fetching admin status:', error);
     }
   };

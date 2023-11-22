@@ -4,6 +4,8 @@ import './datatables.css';
 import { GetRoles, changePermission } from '../api/modules/Swiftsync.class';
 import ChangePermission from './ChangePermissionModal';
 import Toaster from './Toast/Toast'
+import { useNavigate } from 'react-router-dom';
+import Loader from '../common/Loader';
 interface Role {
   Name: string;
   Addedby: string;
@@ -20,18 +22,29 @@ const UserTable: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
 const [error, setError] = useState({success:'', error:''});
   const tableRef = useRef<HTMLTableElement>(null);
+  const navigate=useNavigate()
+
+  const[loading,setLoading] = useState(false);
 
   const openModal = (user: Role) => {
     setSelectedUser(user);
     setModalOpen(true);
   };
-
+  const onNavigate = (path: To) => {
+    navigate(path)
+    console.log(`Navigating to ${path}`);  
+  };
+ 
   const handleSave = async (permissions: Partial<Role>, userId: number) => {
+    
     try {
+      setLoading(true)
       const res = await changePermission(
         { ...selectedUser, ...permissions },
-        userId
+        userId,onNavigate
       );
+      setLoading(false)
+
       
         setError({success:"Permissions Updated Successfully",error:""})
       
@@ -40,12 +53,14 @@ const [error, setError] = useState({success:'', error:''});
     }
     setModalOpen(false);
   };
+ 
 
   useEffect(() => {
     const api = async () => {
       try {
-        const res = await GetRoles();
-
+        setLoading(true)
+        const res = await GetRoles(onNavigate);
+setLoading(false)
         if (Array.isArray(res)) {
           const mappedData = res.map((item) => ({
             Name: item.name,
@@ -76,6 +91,7 @@ const [error, setError] = useState({success:'', error:''});
 
   return (
   <>
+  {loading && <Loader/>}
   <Toaster message={error}/>
     <div className="dark-bg-boxdark rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark">
       <h6
@@ -111,6 +127,7 @@ const [error, setError] = useState({success:'', error:''});
                 <td>{item.create_organization ? 'Yes' : 'No'}</td>
                 <td>
                   <ChangePermission
+                  loading={loading}
                     user={item}
                     isOpen={modalOpen && selectedUser === item}
                     onOpen={() => openModal(item)}

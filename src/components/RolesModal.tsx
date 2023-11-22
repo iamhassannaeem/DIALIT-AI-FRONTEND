@@ -3,6 +3,8 @@ import { CreateRole } from '../api/modules/Swiftsync.class';
 import Toaster from './Toast/Toast';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import BeatLoader from 'react-spinners/BeatLoader'
+
 interface Role {
   Name: string;
   Addedby: string;
@@ -59,6 +61,8 @@ const RolesModal: React.FC = () => {
   const [viewPlatform, setViewPlatform] = useState(false);
   const [viewOrg, setViewOrg] = useState(false);
   const [createOrg, setCreateOrg] = useState(false);
+  const[loading,setLoading] = useState(false);
+  const navigate=useNavigate()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -83,15 +87,15 @@ const RolesModal: React.FC = () => {
     document.addEventListener('click', clickHandler);
     return () => document.removeEventListener('click', clickHandler);
   });
-  const navigate = useNavigate();
-  const onNavigate = (path) => {
-    navigate(path);
-    console.log(`Navigating to ${path}`);
-  };
-
+ 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const onNavigate = (path: To) => {
+      navigate(path)
+      console.log(`Navigating to ${path}`);  
+    };
     try {
+      setLoading(true)
       const res = await CreateRole( {
         name: name,
         view_migration: viewmigration,
@@ -101,6 +105,8 @@ const RolesModal: React.FC = () => {
        
         
       },onNavigate);
+      setLoading(false)
+
       const user=res?.message?.response?.data;
       
       if (res.success == false) {
@@ -203,12 +209,13 @@ const RolesModal: React.FC = () => {
                      
                     </div>
                     <div className="mb-5">
-                        <input
+                        <button
                           type="submit"
                           onClick={handleSubmit}
-                          value="Save Role"
                           className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-                        />
+                        >
+                          {loading?<BeatLoader color="white"/>:"Save Role"}
+                        </button>
                       </div>
                   </div>
                 </div>

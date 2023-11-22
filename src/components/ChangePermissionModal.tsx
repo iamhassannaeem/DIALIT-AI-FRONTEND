@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { changePermission } from '../api/modules/Swiftsync.class';
+import BeatLoader from 'react-spinners/BeatLoader'
 
 interface ChangePermissionProps {
   user: Role;
@@ -15,6 +16,7 @@ const ChangePermission: React.FC<ChangePermissionProps> = ({
   onOpen,
   onSave,
   onClose,
+  loading,
 }) => {
   const [migration, setMigration] = useState(user.view_migration);
   const [platform, setPlatform] = useState(user.view_platform);
@@ -22,8 +24,10 @@ const ChangePermission: React.FC<ChangePermissionProps> = ({
   const [createOrg, setCreateOrg] = useState(user.create_organization);
   const modalRef = useRef<HTMLDivElement | null>(null); 
   const trigger = useRef<any>(null);
+  
 
   const handleSave = () => {
+    
     onSave({
       view_migration: migration,
       view_platform: platform,
@@ -178,7 +182,7 @@ const ChangePermission: React.FC<ChangePermissionProps> = ({
                         onClick={handleSave}
                         className="btn-primary mt-4 inline-flex items-center justify-center rounded-md bg-primary py-4 px-10 text-center font-medium text-white hover-bg-opacity-90 lg:px-8 xl:px-10"
                       >
-                        Save Changes
+                        {loading ? <BeatLoader color='white'/>: "Save Changes"}
                       </button>
                     </div>
                   </div>

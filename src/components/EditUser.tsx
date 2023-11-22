@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Platform from '../images/organisation/highlight.svg';
 import Toaster from '../components/Toast/Toast'
 import { EditUserName } from '../api/modules/Swiftsync.class';
+import { useNavigate } from 'react-router-dom';
 const EditUser: React.FC = (props) => {
   
   const [modalOpen, setModalOpen] = useState(false);
@@ -39,10 +40,15 @@ const EditUser: React.FC = (props) => {
   };
 
   const handleSave = async() => {
+    const navigate=useNavigate()
+    const onNavigate = (path: To) => {
+      navigate(path)
+      console.log(`Navigating to ${path}`);  
+    };
     const res= await EditUserName({
       name: name,
       
-    })
+    },onNavigate)
     if (res.success === false) {
       setError({ success: '', error: '' });
 

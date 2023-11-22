@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { roleAssign } from '../api/modules/Swiftsync.class';
 import Toaster from './Toast/Toast'
 const DropdownsOne: React.FC = ({roles,id}) => {
@@ -36,9 +36,13 @@ const DropdownsOne: React.FC = ({roles,id}) => {
     return () => document.removeEventListener('keydown', keyHandler);
   });
 const handleRoleAssign=async(roleid) => {
-
+const navigate=useNavigate()
+  const onNavigate = (path: To) => {
+    navigate(path)
+    console.log(`Navigating to ${path}`);  
+  };
   try {
-    await roleAssign({role_id: roleid,user_id: id})
+    await roleAssign({role_id: roleid,user_id: id},onNavigate)
     setDropdownOpen(false);
 
     setError({ success: 'Role Assigned Succesfully', error: '' });

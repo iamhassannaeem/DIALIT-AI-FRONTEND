@@ -1,4 +1,5 @@
 import RolesTable from '../../components/RolesTable'
+import RolesModal from '../../components/RolesModal';
 
 const Roles = () => {
  
@@ -8,7 +9,7 @@ const Roles = () => {
       <h2 className="text-title-md2 font-semibold text-black dark:text-white">
       Roles
       </h2>
-    
+      <RolesModal/>
       
     </div>
 

@@ -25,7 +25,7 @@ const Profile = () => {
     const navigate=useNavigate()
     const onNavigate = (path: To) => {
       navigate(path)
-      console.log(`Navigating to ${path}`);  
+        
     };
     try {
       const res = await PostUserData({ name },onNavigate);
@@ -54,7 +54,7 @@ const Profile = () => {
     const navigate=useNavigate()
     const onNavigate = (path: To) => {
       navigate(path)
-      console.log(`Navigating to ${path}`);  
+        
     };
     try {
       const res = await uploadProfile( formData, {

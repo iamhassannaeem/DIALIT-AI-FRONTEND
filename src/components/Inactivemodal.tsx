@@ -39,7 +39,7 @@ const Inactive: React.FC = ({id}) => {
   const handleDelete=async() => {
     const onNavigate = (path: To) => {
       navigate(path)
-      console.log(`Navigating to ${path}`);  
+        
     };
     try {
       setLoading(true)

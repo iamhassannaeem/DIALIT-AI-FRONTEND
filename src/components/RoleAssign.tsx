@@ -39,7 +39,7 @@ const handleRoleAssign=async(roleid) => {
 const navigate=useNavigate()
   const onNavigate = (path: To) => {
     navigate(path)
-    console.log(`Navigating to ${path}`);  
+      
   };
   try {
     await roleAssign({role_id: roleid,user_id: id},onNavigate)

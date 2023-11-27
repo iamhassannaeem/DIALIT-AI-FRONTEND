@@ -2,53 +2,50 @@ import React, { useEffect,useState } from 'react';
 import { DataTable } from 'simple-datatables';
 import './datatables.css';
 import eye from '../images/organisation/eye.svg';
-import ban from '../images/organisation/ban.svg';
-import highlight from '../images/organisation/highlight.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import { organisationget } from '../api/modules/Swiftsync.class';
 import Loader from '../common/Loader';
 
 interface Employee {
-  Name: string;
-  Email: string;
-  PhoneNumber: string;
-  OrgName: string;
-  PackagePlan: string;
-  Action: string;
+  name: string;
+  owner_email: string;
+  owner_name: string;
+  package: string;
 }
 
 const OrganisationTable: React.FC = () => {
-  useEffect(() => {
-    const OrganisationTable = new DataTable('#OrganisationTable', {
-      header: false,
-      perPageSelect: [5, 10, 15, ['All', -1]],
-    });
-
-    OrganisationTable;
-    console.log(OrganisationTable);
-  });
   const [organisation, setOrganisation] = useState<Employee[]>([]);
   const [isloaing, setIsloading] = useState(false);
   const navigate=useNavigate()
   const onNavigate = (path: To) => {
     navigate(path)
-    console.log(`Navigating to ${path}`);  
+      
   };
+
+  useEffect(() => {
+    const initTable = () => {
+      const OrganisationTable = document.getElementById('OrganisationTable');
+      if (OrganisationTable) {
+        const NotMapped = new DataTable(OrganisationTable, {
+          perPageSelect: [5, 10, 15, ['All', -1]],
+        });
+        NotMapped.init();
+      }
+    };
+
+    // Initialize DataTable if platform data is available
+    if (organisation && organisation.length > 0) {
+      initTable();
+    }
+  }, [organisation]);
+
   useEffect(() => {
     try {
       const api = async () => {
         setIsloading(true)
         const res = await organisationget(onNavigate);
         
-        const mappedData = res?.map((item) => ({
-          Name: item?.owner_name,
-          Email: item?.owner_email,
-          OrgName: item?.name,
-          PackagePlan: item?.package,
-          id: item?.id,
-          Action: 'Actions', // You can set a default value for Action
-        }));
-        setOrganisation(mappedData);
+       setOrganisation(res)
       setIsloading(false)
 
       };
@@ -69,7 +66,7 @@ const OrganisationTable: React.FC = () => {
       <div className="data-table-common data-table-two max-w-full overflow-x-auto">
         
         <table className="table w-full table-auto" id="OrganisationTable">
-          <tbody>
+          <thead>
             <tr>
               <th>OWNER's Name</th>
               <th>OWNER's EMAIL</th>
@@ -77,13 +74,15 @@ const OrganisationTable: React.FC = () => {
               <th>PACKAGE PLAN</th>
               <th>ACTION</th>
             </tr>
+            </thead>
+            <tbody>
             {organisation?.map((employee, index) => (
               
               <tr key={index}>
-                <td>{employee.Name}</td>
-                <td>{employee.Email}</td>
-                <td>{employee.OrgName}</td>
-                <td>{employee?.PackagePlan?employee?.PackagePlan:"No package"}</td>
+                <td>{employee.name}</td>
+                <td>{employee.owner_email}</td>
+                <td>{employee.owner_name}</td>
+                <td>{employee?.package?employee?.package:"No package"}</td>
                 <td>
                   <div className='flex gap-3'>
                 

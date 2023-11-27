@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 
 const DefaultLayout = () => {
   const isAuthenticated = useSelector((state)=>state.auth.isAuthenticated);
-console.log(isAuthenticated);
   const [sidebarOpen, setSidebarOpen] = useState(false);
  
 

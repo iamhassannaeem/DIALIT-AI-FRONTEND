@@ -43,7 +43,7 @@ const EditUser: React.FC = (props) => {
     const navigate=useNavigate()
     const onNavigate = (path: To) => {
       navigate(path)
-      console.log(`Navigating to ${path}`);  
+        
     };
     const res= await EditUserName({
       name: name,

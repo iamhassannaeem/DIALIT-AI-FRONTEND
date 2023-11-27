@@ -43,7 +43,7 @@ const ModalPackage: React.FC = () => {
     e.preventDefault();
     const onNavigate = (path) => {
       navigate(path);
-      console.log(`Navigating to ${path}`);
+      
     };
     try {
       setIsloading(true);
@@ -51,7 +51,7 @@ const ModalPackage: React.FC = () => {
       setIsloading(false);
 
       const user=(res?.message?.response?.data)
-      console.log(res)
+      
       if (res?.id) {
         setError((prev) => ({
           ...prev,

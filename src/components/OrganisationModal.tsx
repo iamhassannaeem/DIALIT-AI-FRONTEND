@@ -42,8 +42,9 @@ const OrganisationModal: React.FC = () => {
 const navigate=useNavigate()
  
 
-  const handleSave =async () => {
-    
+  const handleSave =async (e) => {
+    e.preventDefault();
+
     const onNavigate = (path: To) => {
       navigate(path)
       console.log(`Navigating to ${path}`);  
@@ -58,24 +59,26 @@ const navigate=useNavigate()
         user_org: formData.orgName,
       },onNavigate)
         .then((res) => {
-          console.log(res);
-          
-         
-         
-            setError((prev) => ({
-              ...prev,
-              success: "Organization created successfully",
-              error:"",
-            }));
-          
+          console.log(res?.success);
+          if (res?.success) {
+          setError({success:"Organization Added Successfully",error:""})
+          }else{
+      const user=(res?.message?.response?.data)
+
+            const errorMessages = [];
+      
+        for (const key in user) {
+          const errorMessage = `${key}: ${user[key]}`;
+       
+          errorMessages.push(errorMessage);
+        }
+          setError({success:"",error:errorMessages.join("\n")})
+
+          }
         })
         .catch((err) => {
-          setError((prev) => ({
-            ...prev,
-            success: "",
-            error:  'Check All  Feilds',
-          }));
-          console.error('no',err);
+          
+          console.error(err);
          
         });
     setIsloading(false)

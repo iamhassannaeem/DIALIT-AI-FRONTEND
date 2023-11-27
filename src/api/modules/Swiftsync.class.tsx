@@ -1,5 +1,6 @@
-import { Id } from 'react-toastify';
+
 import axios from '../axiosConfig/Axios';
+import { isAxiosError } from 'axios'
 import endpoints from '../endpoints/ApiEndpoints';
 import handleTokenRefresh from '../axiosConfig/Axios'
 // Define types for the category and payload
@@ -36,14 +37,24 @@ export const refreshTokenRequest = async (
 
 // organisation create
 export const organisationCreate = async (
-  payload: payload,onNavigate:any
+  payload: Payload,
+  onNavigate: any
 ): Promise<ApiResponse> => {
   try {
     const response = await axios.post(endpoints.organisationCreate, payload);
     return response.data as ApiResponse;
   } catch (error: any) {
-    
-    return handleTokenRefresh(error, onNavigate);
+    if (isAxiosError(error) && error.response?.status === 401) {
+      await handleTokenRefresh(onNavigate);
+      try {
+        const response = await axios.post(endpoints.PostUser, payload);
+        return response.data as ApiResponse;
+      } catch (refreshError: any) {
+        return { success: false, message: refreshError.message };
+      }
+    } else {
+      return { success: false, message: error };
+    }
   }
 };
 // Assign Role
@@ -66,15 +77,27 @@ export const uploadProfile = async (payload: payload,onNavigate:any): Promise<Ap
 }; 
 
 // package create
-export const createPackage = async (payload: payload,onNavigate:any): Promise<ApiResponse> => {
+export const createPackage = async (
+  payload: Payload,
+  onNavigate: any
+): Promise<ApiResponse> => {
   try {
     const response = await axios.post(endpoints.createPackage, payload);
     return response.data as ApiResponse;
   } catch (error: any) {
-   return handleTokenRefresh(error, onNavigate);
+    if (isAxiosError(error) && error.response?.status === 401) {
+      await handleTokenRefresh(onNavigate);
+      try {
+        const response = await axios.post(endpoints.PostUser, payload);
+        return response.data as ApiResponse;
+      } catch (refreshError: any) {
+        return { success: false, message: refreshError.message };
+      }
+    } else {
+      return { success: false, message: error };
+    }
   }
-}; 
-
+};
 // package get
 export const getPackages = async (onNavigate:any): Promise<ApiResponse> => {
   try {
@@ -103,15 +126,29 @@ export const organisationDetailGet = async (id: number,onNavigate:any): Promise<
   }
 };
 
-// package create
-export const PostUser = async (payload: payload,onNavigate:any): Promise<ApiResponse> => {
+
+export const PostUser = async (
+  payload: Payload,
+  onNavigate: any
+): Promise<ApiResponse> => {
   try {
     const response = await axios.post(endpoints.PostUser, payload);
     return response.data as ApiResponse;
   } catch (error: any) {
-   return handleTokenRefresh(error, onNavigate);
+    if (isAxiosError(error) && error.response?.status === 401) {
+      await handleTokenRefresh(onNavigate);
+      try {
+        const response = await axios.post(endpoints.PostUser, payload);
+        return response.data as ApiResponse;
+      } catch (refreshError: any) {
+        return { success: false, message: refreshError.message };
+      }
+    } else {
+      return { success: false, message: error };
+    }
   }
-}; 
+};
+
 //  get user List
 export const GetUserList = async (onNavigate:any): Promise<ApiResponse> => {
   try {
@@ -197,11 +234,25 @@ export const EditUserName = async (payload: payload,onNavigate:any): Promise<Api
   }
 };
 //  create role
-export const CreateRole = async (payload: payload,onNavigate:any): Promise<ApiResponse> => {
+
+export const CreateRole = async (
+  payload: Payload,
+  onNavigate: any
+): Promise<ApiResponse> => {
   try {
     const response = await axios.post(endpoints.GetRoles, payload);
     return response.data as ApiResponse;
   } catch (error: any) {
-   return handleTokenRefresh(error, onNavigate);
+    if (isAxiosError(error) && error.response?.status === 401) {
+      await handleTokenRefresh(onNavigate);
+      try {
+        const response = await axios.post(endpoints.PostUser, payload);
+        return response.data as ApiResponse;
+      } catch (refreshError: any) {
+        return { success: false, message: refreshError.message };
+      }
+    } else {
+      return { success: false, message: error };
+    }
   }
-}; 
+};

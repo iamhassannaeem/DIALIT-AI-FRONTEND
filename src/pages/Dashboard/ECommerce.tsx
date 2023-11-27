@@ -26,7 +26,7 @@ const ECommerce: React.FC = () => {
   const [isloaing, setIsloading] = useState(false);
   const onNavigate = (path: To) => {
     navigate(path);
-    console.log(`Navigating to ${path}`);
+    
   };
   useEffect(() => {
     try {
@@ -55,7 +55,7 @@ const ECommerce: React.FC = () => {
   const handleFilter = async () => {
     const onNavigate = (path: To) => {
       navigate(path);
-      console.log(`Navigating to ${path}`);
+      
     };
     try {
       setIsloading(true);

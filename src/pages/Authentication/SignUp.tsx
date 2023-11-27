@@ -27,7 +27,7 @@ const SignUp: React.FC = () => {
       const res = await register(formData);
      
       if (res?.success === false) {
-        console.log('hi', res.message);
+        
       } else {
         
         localStorage.setItem("access", res?.access);

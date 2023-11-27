@@ -11,7 +11,7 @@ const PricingPackage: React.FC = () => {
   const navigate=useNavigate()
   const onNavigate = (path: To) => {
     navigate(path)
-    console.log(`Navigating to ${path}`);  
+      
   };
   useEffect(() => {
     const fetchData = async () => {

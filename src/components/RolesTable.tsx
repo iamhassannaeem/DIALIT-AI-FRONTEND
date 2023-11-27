@@ -7,7 +7,7 @@ import Toaster from './Toast/Toast'
 import { useNavigate } from 'react-router-dom';
 import Loader from '../common/Loader';
 interface Role {
-  Name: string;
+  name: string;
   Addedby: string;
   view_migration: boolean;
   view_platform: boolean;
@@ -32,7 +32,7 @@ const [error, setError] = useState({success:'', error:''});
   };
   const onNavigate = (path: To) => {
     navigate(path)
-    console.log(`Navigating to ${path}`);  
+      
   };
  
   const handleSave = async (permissions: Partial<Role>, userId: number) => {
@@ -60,34 +60,31 @@ const [error, setError] = useState({success:'', error:''});
       try {
         setLoading(true)
         const res = await GetRoles(onNavigate);
+        setUser(res)
 setLoading(false)
-        if (Array.isArray(res)) {
-          const mappedData = res.map((item) => ({
-            Name: item.name,
-            Addedby: item.added_by,
-            view_migration: item?.view_migration,
-            view_platform: item?.view_platform,
-            view_organization: item?.view_organization,
-            create_organization: item?.create_organization,
-            id: item.id,
-          }));
-          setUser(mappedData);
-
-          if (tableRef.current) {
-            new DataTable(tableRef.current, {
-              header: false,
-              perPageSelect: [5, 10, 15, ['All', -1]],
-            });
-          }
-        } else {
-          console.error('The response is not an array');
-        }
+        
       } catch (error) {
         console.error('API error:', error);
       }
     };
     api();
   }, []);
+  useEffect(() => {
+    const initTable = () => {
+      const OrganisationTable = document.getElementById('SetupRole');
+      if (OrganisationTable) {
+        const NotMapped = new DataTable(OrganisationTable, {
+          perPageSelect: [5, 10, 15, ['All', -1]],
+        });
+        NotMapped.init();
+      }
+    };
+
+    // Initialize DataTable if platform data is available
+    if (user && user.length > 0) {
+      initTable();
+    }
+  }, [user]);
 
   return (
   <>
@@ -106,8 +103,8 @@ setLoading(false)
         ALL Roles
       </h6>
       <div className="data-table-common data-table-two max-w-full overflow-x-auto">
-        <table className="table w-full table-auto" id="SetupRole" ref={tableRef}>
-          <tbody>
+        <table className="table w-full table-auto" id="SetupRole" >
+          <thead>
             <tr>
               <th>Name</th>
               <th>Added by</th>
@@ -117,9 +114,11 @@ setLoading(false)
               <th>Create Organisation</th>
               <th>Action</th>
             </tr>
+            </thead>
+            <tbody>
             {user?.map((item, index) => (
               <tr key={index}>
-                <td>{item.Name}</td>
+                <td>{item.name}</td>
                 <td>{item.Addedby ? item.Addedby : 'Admin'}</td>
                 <td>{item.view_migration ? 'Yes' : 'No'}</td>
                 <td>{item.view_platform ? 'Yes' : 'No'}</td>

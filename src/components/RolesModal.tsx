@@ -92,7 +92,7 @@ const RolesModal: React.FC = () => {
     e.preventDefault();
     const onNavigate = (path: To) => {
       navigate(path)
-      console.log(`Navigating to ${path}`);  
+        
     };
     try {
       setLoading(true)
@@ -106,6 +106,7 @@ const RolesModal: React.FC = () => {
         
       },onNavigate);
       setLoading(false)
+      
 
       const user=res?.message?.response?.data;
       

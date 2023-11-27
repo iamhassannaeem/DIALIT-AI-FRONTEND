@@ -3,11 +3,12 @@ import { changePermission } from '../api/modules/Swiftsync.class';
 import BeatLoader from 'react-spinners/BeatLoader'
 
 interface ChangePermissionProps {
-  user: Role;
+  user: string;
   isOpen: boolean;
   onOpen: () => void;
-  onSave: (permissions: Partial<Role>) => void;
+  onSave: (permissions: Partial<string>) => void;
   onClose: () => void;
+  loading: boolean;
 }
 
 const ChangePermission: React.FC<ChangePermissionProps> = ({
@@ -18,10 +19,10 @@ const ChangePermission: React.FC<ChangePermissionProps> = ({
   onClose,
   loading,
 }) => {
-  const [migration, setMigration] = useState(user.view_migration);
-  const [platform, setPlatform] = useState(user.view_platform);
-  const [viewOrg, setViewOrg] = useState(user.view_organization);
-  const [createOrg, setCreateOrg] = useState(user.create_organization);
+  const [migration, setMigration] = useState(user?.view_migration);
+  const [platform, setPlatform] = useState(user?.view_platform);
+  const [viewOrg, setViewOrg] = useState(user?.view_organization);
+  const [createOrg, setCreateOrg] = useState(user?.create_organization);
   const modalRef = useRef<HTMLDivElement | null>(null); 
   const trigger = useRef<any>(null);
   
@@ -33,7 +34,7 @@ const ChangePermission: React.FC<ChangePermissionProps> = ({
       view_platform: platform,
       view_organization: viewOrg,
       create_organization: createOrg,
-    }, user.id); // Pass user ID to the onSave function
+    }, user?.id); // Pass user ID to the onSave function
   };
 
   useEffect(() => {

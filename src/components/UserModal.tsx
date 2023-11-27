@@ -50,7 +50,7 @@ const UserModal: React.FC = () => {
 
   const onNavigate = (path: To) => {
     navigate(path)
-    console.log(`Navigating to ${path}`);  
+      
   };
   const handleSubmit=async(e: React.FormEvent)=>{
     e.preventDefault();
@@ -78,8 +78,8 @@ const UserModal: React.FC = () => {
 
      }
     } catch (error) {
-      setError({ success: 'user added succesfully', error: 'plz Check all feilds' });
-     
+      setError({ success: 'user added succesfully', error: 'Plz check all feilds' });
+      setIsloading(false)
       console.error( error);
     }
     

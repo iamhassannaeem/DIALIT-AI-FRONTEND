@@ -10,6 +10,8 @@ const Profile = () => {
   const [error, setError] = useState({ success: '', error: '' });
   const [name, setName] = useState(profile.name);
   const [selectedFile, setSelectedFile] = useState(null);
+  const navigate=useNavigate()
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
@@ -22,10 +24,8 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const navigate=useNavigate()
     const onNavigate = (path: To) => {
-      navigate(path)
-        
+      navigate(path) 
     };
     try {
       const res = await PostUserData({ name },onNavigate);
@@ -45,13 +45,12 @@ const Profile = () => {
   const handleChangePhoto = async (e) => {
     e.preventDefault();
     if (!selectedFile) {
-      console.log('No file selected.');
+      
       return;
     }
   
     const formData = new FormData();
     formData.append('profile_image', selectedFile);
-    const navigate=useNavigate()
     const onNavigate = (path: To) => {
       navigate(path)
         
@@ -287,7 +286,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <div className="col-span-5 xl:col-span-2">
+          {/* <div className="col-span-5 xl:col-span-2">
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
                 <h3 className="font-medium text-black dark:text-white">
@@ -364,7 +363,7 @@ const Profile = () => {
                 </form>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
     </>
   );

@@ -47,7 +47,7 @@ const navigate=useNavigate()
 
     const onNavigate = (path: To) => {
       navigate(path)
-      console.log(`Navigating to ${path}`);  
+       
     };
     setIsloading(true)
      await organisationCreate({
@@ -59,7 +59,7 @@ const navigate=useNavigate()
         user_org: formData.orgName,
       },onNavigate)
         .then((res) => {
-          console.log(res?.success);
+          
           if (res?.success) {
           setError({success:"Organization Added Successfully",error:""})
           }else{

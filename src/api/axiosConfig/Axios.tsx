@@ -10,7 +10,7 @@ const handleTokenRefresh = async (error, onNavigate) => {
 
   if (error.response?.data?.code === "token_not_valid") {
     const refreshToken = localStorage.getItem('refresh');
-    console.log(`Refresh token: ${refreshToken}`);
+    
     if (!refreshToken) {
       onNavigate('/signin');
       return Promise.reject(error);
@@ -18,7 +18,7 @@ const handleTokenRefresh = async (error, onNavigate) => {
 
     try {
       const response = await refreshTokenRequest({ refresh: refreshToken });
-      console.log("refreshTokenRequest", response);
+      
       const newAccessToken = response?.access;
 
       // Update the access token in local storage

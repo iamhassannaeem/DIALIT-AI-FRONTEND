@@ -6,5 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server:{
     port:9001
-  }
+  },
+  build: {
+    outDir: 'SwiftSync-Admin',
+  },
 })

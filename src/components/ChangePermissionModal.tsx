@@ -34,7 +34,7 @@ const ChangePermission: React.FC<ChangePermissionProps> = ({
       view_platform: platform,
       view_organization: viewOrg,
       create_organization: createOrg,
-    }, user?.id); // Pass user ID to the onSave function
+    }, user?.id); 
   };
 
   useEffect(() => {
@@ -150,7 +150,7 @@ const ChangePermission: React.FC<ChangePermissionProps> = ({
                             ></span>
                           </div>
                         </div>
-                        View Organisation
+                        View organization
                       </label>
                       <label
                         htmlFor="checkboxLabelCreateOrg"
@@ -176,7 +176,7 @@ const ChangePermission: React.FC<ChangePermissionProps> = ({
                             ></span>
                           </div>
                         </div>
-                        Create Organisation
+                        Create organization
                       </label>
                       <button
                         type="submit"

@@ -56,7 +56,7 @@ const Statistics: React.FC = (props) => {
     />
   </svg>
 </CardDataStats>
-<CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
+{/* <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
   <svg
     className="fill-primary dark:fill-white"
     width="20"
@@ -78,7 +78,7 @@ const Statistics: React.FC = (props) => {
       fill=""
     />
   </svg>
-</CardDataStats>
+</CardDataStats> */}
 
 
 </div>

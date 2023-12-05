@@ -1,12 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { roleAssign } from '../api/modules/Swiftsync.class';
-import Toaster from './Toast/Toast'
-const DropdownsOne: React.FC = ({roles,id}) => {
- 
-  const [error, setError] = useState({ success: "", error: "" });
+import Toaster from './Toast/Toast';
+const DropdownsOne: React.FC = ({ roles, id }) => {
+  const [error, setError] = useState({ success: '', error: '' });
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  const navigate = useNavigate();
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
 
@@ -35,27 +34,26 @@ const DropdownsOne: React.FC = ({roles,id}) => {
     document.addEventListener('keydown', keyHandler);
     return () => document.removeEventListener('keydown', keyHandler);
   });
-const handleRoleAssign=async(roleid) => {
-const navigate=useNavigate()
-  const onNavigate = (path: To) => {
-    navigate(path)
-      
+  const handleRoleAssign = async (roleid) => {
+    const onNavigate = (path: To) => {
+      navigate(path);
+    };
+    try {
+      await roleAssign({ role_id: roleid, user_id: id }, onNavigate);
+      setDropdownOpen(false);
+
+      setError({ success: 'Role Assigned Succesfully', error: '' });
+      setInterval(() => {
+        window.location.reload();
+      }, 3000);
+    } catch (error) {
+      console.log(error);
+    }
   };
-  try {
-    await roleAssign({role_id: roleid,user_id: id},onNavigate)
-    setDropdownOpen(false);
-
-    setError({ success: 'Role Assigned Succesfully', error: '' });
-
-  } catch (error) {
-    console.log(error);
-  }
-
-}
   return (
-   <>
-   <Toaster message={error}/>
-   <div className="">
+    <>
+      <Toaster message={error} />
+      <div className="">
         <div className="relative inline-block">
           <Link
             ref={trigger}
@@ -95,30 +93,23 @@ const navigate=useNavigate()
             }`}
           >
             <ul className="flex flex-col">
-            
-             {roles?.map((item,index)=>(
-              
- <li key={index}>
- <a
- style={{cursor:"pointer"}}
- onClick={()=>handleRoleAssign(item?.id)}
-   className="flex py-2 px-5 font-medium hover:bg-whiter hover:text-primary dark:hover:bg-meta-4"
- >
-   {item.name}
- </a>
-</li>
-             ))}
-             
-              
+              {roles?.map((item, index) => (
+                <li key={index}>
+                  <a
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleRoleAssign(item?.id)}
+                    className="flex py-2 px-5 font-medium hover:bg-whiter hover:text-primary dark:hover:bg-meta-4"
+                  >
+                    {item.name}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
       </div>
-   </>
-
-      
-    
+    </>
   );
 };
 
-export default DropdownsOne
+export default DropdownsOne;

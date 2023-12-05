@@ -6,6 +6,8 @@ import ChangePermission from './ChangePermissionModal';
 import Toaster from './Toast/Toast'
 import { useNavigate } from 'react-router-dom';
 import Loader from '../common/Loader';
+import ConfirmModalRoles from './ConfirmModalRoles';
+
 interface Role {
   name: string;
   Addedby: string;
@@ -16,8 +18,7 @@ interface Role {
   id: number;
 }
 
-const UserTable: React.FC = () => {
-  const [user, setUser] = React.useState<Role[]>([]);
+const UserTable: React.FC = ({user,setUser}) => {
   const [selectedUser, setSelectedUser] = useState<Role | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 const [error, setError] = useState({success:'', error:''});
@@ -43,29 +44,31 @@ const [error, setError] = useState({success:'', error:''});
         { ...selectedUser, ...permissions },
         userId,onNavigate
       );
-      setLoading(false)
-
-      
+      if (res?.name){
         setError({success:"Permissions Updated Successfully",error:""})
-      
+        setModalOpen(false);
+        const updatedRoles = await GetRoles(onNavigate);
+        setUser(updatedRoles);
+        setLoading(false)
+      }
+        
     } catch (error) {
       console.error('API error:', error);
     }
-    setModalOpen(false);
+    
   };
  
 
   useEffect(() => {
     const api = async () => {
+      setLoading(true)
       try {
-        setLoading(true)
         const res = await GetRoles(onNavigate);
         setUser(res)
-setLoading(false)
-        
       } catch (error) {
         console.error('API error:', error);
       }
+      setLoading(false)
     };
     api();
   }, []);
@@ -80,7 +83,6 @@ setLoading(false)
       }
     };
 
-    // Initialize DataTable if platform data is available
     if (user && user.length > 0) {
       initTable();
     }
@@ -88,9 +90,8 @@ setLoading(false)
 
   return (
   <>
-  {loading && <Loader/>}
   <Toaster message={error}/>
-    <div className="dark-bg-boxdark rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark">
+  {loading ? <Loader/>: <div className="dark-bg-boxdark rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark">
       <h6
         style={{
           fontSize: '20px',
@@ -112,6 +113,7 @@ setLoading(false)
               <th>View Platform</th>
               <th>View Organisation</th>
               <th>Create Organisation</th>
+              <th>Permissions</th>
               <th>Action</th>
             </tr>
             </thead>
@@ -134,12 +136,17 @@ setLoading(false)
                     onClose={(  ) => setModalOpen(false)}
                   />
                 </td>
+                <td>
+                    <ConfirmModalRoles id={item?.id} />
+                  </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </div>
+    </div>}
+
+   
     </>
   );
 };

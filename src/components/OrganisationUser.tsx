@@ -36,7 +36,7 @@ const OrganisationUser: React.FC = ({users}) => {
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark-bg-boxdark mt-5">
     <div style={{borderBottom: "1px solid #E2E8F0"}} className='flex justify-between items-center'>
-    <h6 style={{ fontSize: "20px", fontWeight: "700", color: "black"}} className='p-9'>Organisation User</h6>
+    <h6 style={{ fontSize: "20px", fontWeight: "700", color: "black"}} className='p-9'>Organization User</h6>
     {/* <button
      
       className="rounded-md bg-primary py-3 px-3 font-medium text-white mr-3"

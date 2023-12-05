@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { createPackage } from '../api/modules/Swiftsync.class';
+import { createPackage, getPackages } from '../api/modules/Swiftsync.class';
 import Toaster from '../components/Toast/Toast';
 import BeatLoader from 'react-spinners/BeatLoader';
 import { useNavigate } from 'react-router-dom';
 
-const ModalPackage: React.FC = () => {
+const ModalPackage: React.FC = ({setPackages}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [error, setError] = useState({ success: '', error: '' });
   const [isloaing, setIsloading] = useState(false);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -18,7 +18,14 @@ const ModalPackage: React.FC = () => {
     annual_price: '',
     description: '',
   });
-
+  const [formErrors, setFormErrors] = useState({
+    name: '',
+    user_count: '',
+    data_quota: '',
+    monthly_price: '',
+    annual_price: '',
+    description: '',
+  });
   const trigger = useRef<any>(null);
   const modal = useRef<any>(null);
 
@@ -28,10 +35,43 @@ const ModalPackage: React.FC = () => {
       ...formData,
       [name]: value,
     });
+
+    let isValid = true;
+    let errorMessage = '';
+
+    if (name === 'name') {
+      isValid = /^[a-zA-Z\s]{0,64}$/.test(value);
+      errorMessage =
+        'Package name should be between 0 and 64 characters, including spaces';
+    } else if (
+      name === 'user_count' ||
+      name === 'data_quota' ||
+      name === 'monthly_price' ||
+      name === 'annual_price'
+    ) {
+      isValid = !isNaN(Number(value)) && Number(value) >= 0;
+      errorMessage = `${name.replace(
+        '_',
+        ' '
+      )} should be a valid non-negative number`;
+    } else if (name === 'description') {
+      const lines = value.split('\n');
+      const wordCount = value.split(/\s+/).filter(Boolean).length;
+
+      isValid = lines.length <= 3 && wordCount <= 100;
+      errorMessage = 'Description should not exceed 3 lines and 100 words.';
+    }
+    setFormErrors({
+      ...formErrors,
+      [name]: isValid ? '' : errorMessage,
+    });
+    console.log(formErrors);
   };
 
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const description = e.target.value
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const description = e.target.value;
 
     setFormData({
       ...formData,
@@ -43,15 +83,15 @@ const ModalPackage: React.FC = () => {
     e.preventDefault();
     const onNavigate = (path) => {
       navigate(path);
-      
     };
+
     try {
       setIsloading(true);
-      const res = await createPackage(formData,onNavigate);
+      const res = await createPackage(formData, onNavigate);
+      const pack = await getPackages(onNavigate);
+      setPackages(pack);
       setIsloading(false);
 
-      const user=(res?.message?.response?.data)
-      
       if (res?.id) {
         setError((prev) => ({
           ...prev,
@@ -59,21 +99,65 @@ const ModalPackage: React.FC = () => {
           error: '',
         }));
       } else {
-        const errorMessages = [];
-      
-        for (const key in user) {
-          const errorMessage = `${key}: ${user[key]}`;
-       
-          errorMessages.push(errorMessage);
+        const serverErrors = res?.message?.response?.data;
+
+        if (serverErrors) {
+          const userFriendlyErrors = mapServerErrors(serverErrors);
+          setError({ success: '', error: userFriendlyErrors.join('\n') });
+        } else {
+          setError({
+            success: '',
+            error: 'An unexpected error occurred. Please try again.',
+          });
         }
-      
-        setError({ success: "", error: errorMessages.join("\n") });
       }
-    }catch (error) {
-      console.log(error);
+    } catch (error) {
+      console.error('API call failed', error);
+      setError({
+        success: '',
+        error: 'An unexpected error occurred. Please try again.',
+      });
     }
 
     setModalOpen(false);
+  };
+
+  const mapServerErrors = (serverErrors) => {
+    const userFriendlyErrors = [];
+
+    for (const key in serverErrors) {
+      switch (key) {
+        case 'annual_price':
+          userFriendlyErrors.push('Annual price must be a number.');
+          break;
+        case 'data_quota':
+          userFriendlyErrors.push('Data quota must be a number.');
+          break;
+        case 'description':
+          userFriendlyErrors.push('Description is required.');
+          break;
+        case 'monthly_price':
+          userFriendlyErrors.push('Monthly price must be a number.');
+          break;
+        case 'user_count':
+          userFriendlyErrors.push('User count must be a number.');
+          break;
+        case 'name':
+          userFriendlyErrors.push('Name field is required.');
+          break;
+        // Add more cases for other fields as needed
+        default:
+        const errorMessage = `${key}: ${serverErrors[key]}`;
+        // Use a regular expression to split the error message based on periods
+        const splitMessages = errorMessage.split(/\.\s*/);
+        // Remove empty strings from the array
+        const filteredMessages = splitMessages.filter((msg) => msg.trim() !== '');
+        // Push each message to the userFriendlyErrors array
+        userFriendlyErrors.push(...filteredMessages);
+      }
+    }
+
+    return userFriendlyErrors;
   };
 
   useEffect(() => {
@@ -111,9 +195,16 @@ const ModalPackage: React.FC = () => {
           modalOpen ? 'block' : 'hidden'
         }`}
       >
-        <div className="w-full max-w-142.5 rounded-lg" ref={modal} style={{ overflow: 'hidden' }}>
-            <div className="flex flex-col gap-9"    style={{ overflowY: 'scroll', maxHeight: '95vh' }}>
-            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark-bg-boxdark">
+        <div
+          className="w-full max-w-142.5 rounded-lg"
+          ref={modal}
+          style={{ overflow: 'hidden' }}
+        >
+          <div
+            className="flex flex-col gap-9"
+            style={{ overflowY: 'scroll', maxHeight: '95vh' }}
+          >
+            <div className="dark-bg-boxdark rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark">
               <form action="#">
                 <div className="p-6.5">
                   <div className="mb-1.5">
@@ -126,8 +217,13 @@ const ModalPackage: React.FC = () => {
                       value={formData?.name}
                       onChange={handleChange}
                       placeholder="Enter Package Name"
-                      className="w-full rounded border-[1.5px] text-sm font-semibold border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary"
+                      className="focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-sm font-semibold font-medium outline-none transition"
                     />
+                    {formErrors.name && (
+                      <span className="text-sm" style={{color:"red"}}>
+                        {formErrors.name}
+                      </span>
+                    )}
                   </div>
                   <div className="mb-4.5">
                     <label className="mb-2.5 block text-sm font-semibold ">
@@ -139,8 +235,13 @@ const ModalPackage: React.FC = () => {
                       value={formData?.user_count}
                       onChange={handleChange}
                       placeholder="Enter user count"
-                      className="w-full rounded border-[1.5px] text-sm font-semibold border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary"
+                      className="focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-sm font-semibold font-medium outline-none transition"
                     />
+                    {formErrors.user_count && (
+                      <span className="text-sm" style={{color:"red"}}>
+                        {formErrors.user_count}
+                      </span>
+                    )}
                   </div>
                   <div className="mb-4.5">
                     <label className="mb-2.5 block text-sm font-semibold ">
@@ -152,8 +253,13 @@ const ModalPackage: React.FC = () => {
                       value={formData?.data_quota}
                       onChange={handleChange}
                       placeholder="Enter Data Quota"
-                      className="w-full rounded border-[1.5px] text-sm font-semibold border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary"
+                      className="focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-sm font-semibold font-medium outline-none transition"
                     />
+                    {formErrors.data_quota && (
+                      <span className="text-sm" style={{color:"red"}}>
+                        {formErrors.data_quota}
+                      </span>
+                    )}
                   </div>
 
                   <div className="mb-4.5">
@@ -166,8 +272,13 @@ const ModalPackage: React.FC = () => {
                       value={formData?.monthly_price}
                       onChange={handleChange}
                       placeholder="Enter Package Monthly Price"
-                      className="w-full rounded border-[1.5px] text-sm font-semibold border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary"
+                      className="focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-sm font-semibold font-medium outline-none transition"
                     />
+                    {formErrors.monthly_price && (
+                      <span className="text-sm" style={{color:"red"}}>
+                        {formErrors.monthly_price}
+                      </span>
+                    )}
                   </div>
                   <div className="mb-4.5">
                     <label className="mb-2.5 block text-sm font-semibold ">
@@ -179,8 +290,13 @@ const ModalPackage: React.FC = () => {
                       value={formData?.annual_price}
                       onChange={handleChange}
                       placeholder="Enter Package Annual Price"
-                      className="w-full rounded border-[1.5px] text-sm font-semibold border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary"
+                      className="focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-sm font-semibold font-medium outline-none transition"
                     />
+                    {formErrors.annual_price && (
+                      <span className="text-sm" style={{color:"red"}}>
+                        {formErrors.annual_price}
+                      </span>
+                    )}
                   </div>
 
                   <div className="mb-4.5">
@@ -193,15 +309,37 @@ const ModalPackage: React.FC = () => {
                       value={formData?.description}
                       onChange={handleDescriptionChange}
                       placeholder="Enter Package Features (one per line)"
-                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary"
+                      className="focus-border-primary active-border-primary disabled-cursor-default disabled-bg-whiter dark-border-form-strokedark dark-bg-form-input dark-focus-border-primary w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition"
                     ></textarea>
+                    {formErrors.description && (
+                      <span className="text-sm" style={{color:"red"}}>
+                        {formErrors.description}
+                      </span>
+                    )}
                   </div>
                   <button
                     type="button"
                     onClick={handleSubmit}
-                    className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray"
+                    className={`flex w-full justify-center rounded bg-primary p-3 font-medium text-gray ${
+                      !!formErrors.name ||
+                      !!formErrors.user_count ||
+                      !!formErrors.data_quota ||
+                      !!formErrors.monthly_price ||
+                      !!formErrors.annual_price
+                        ? 'opacity-50 cursor-not-allowed'
+                        : ''
+                    }`}
+                    
+                   disabled={
+                    !!formErrors.name ||
+                    !!formErrors.user_count ||
+                    !!formErrors.data_quota ||
+                    !!formErrors.monthly_price ||
+                    !!formErrors.annual_price ||
+                    !!formErrors.description
+                  }
                   >
-                    {isloaing?<BeatLoader color='white'/>:"Save"}
+                    {isloaing ? <BeatLoader color="white" /> : 'Save'}
                   </button>
                 </div>
               </form>

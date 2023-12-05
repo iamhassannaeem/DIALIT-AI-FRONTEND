@@ -41,7 +41,7 @@ const PlatformTable: React.FC = ({platforms}) => {
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark-bg-boxdark mt-5">
     <div style={{borderBottom: "1px solid #E2E8F0"}} className='flex justify-between items-center'>
-    <h6 style={{ fontSize: "20px", fontWeight: "700", color: "black"}} className='p-9'>Organisation Platform</h6>
+    <h6 style={{ fontSize: "20px", fontWeight: "700", color: "black"}} className='p-9'>Organization Platform</h6>
     
     </div>
     <div className="data-table-common data-table-two max-w-full overflow-x-auto">

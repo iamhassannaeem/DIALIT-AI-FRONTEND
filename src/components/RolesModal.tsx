@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CreateRole } from '../api/modules/Swiftsync.class';
+import { CreateRole, GetRoles } from '../api/modules/Swiftsync.class';
 import Toaster from './Toast/Toast';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import BeatLoader from 'react-spinners/BeatLoader'
+import BeatLoader from 'react-spinners/BeatLoader';
 
 interface Role {
   Name: string;
   Addedby: string;
   id: number;
-  
 }
 
 interface ChangePermissionProps {
@@ -25,7 +24,10 @@ const PermissionCheckbox: React.FC<{
   checked: boolean;
   onChange: (value: boolean) => void;
 }> = ({ id, label, checked, onChange }) => (
-  <label htmlFor={id} className="mt-4 flex cursor-pointer select-none items-center">
+  <label
+    htmlFor={id}
+    className="mt-4 flex cursor-pointer select-none items-center"
+  >
     <div className="relative">
       <input
         type="checkbox"
@@ -41,13 +43,15 @@ const PermissionCheckbox: React.FC<{
           checked && 'border-primary bg-gray dark:bg-transparent'
         }`}
       >
-        <span className={`h-2.5 w-2.5 rounded-sm ${checked && 'bg-primary'}`}></span>
+        <span
+          className={`h-2.5 w-2.5 rounded-sm ${checked && 'bg-primary'}`}
+        ></span>
       </div>
     </div>
     {label}
   </label>
 );
-const RolesModal: React.FC = () => {
+const RolesModal: React.FC = ({ setUser }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const organisationid = useSelector(
     (state) => state?.isAdmin?.isAdmin?.organization?.id
@@ -61,11 +65,20 @@ const RolesModal: React.FC = () => {
   const [viewPlatform, setViewPlatform] = useState(false);
   const [viewOrg, setViewOrg] = useState(false);
   const [createOrg, setCreateOrg] = useState(false);
-  const[loading,setLoading] = useState(false);
-  const navigate=useNavigate()
+  const [loading, setLoading] = useState(false);
+  const [nameError, setNameError] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
+    const newName = e.target.value;
+    setName(newName);
+
+    const isValid = /^[a-zA-Z\s]{0,150}$/.test(newName);
+    setNameError(
+      isValid
+        ? ''
+        : 'Name should be between 0 and 150 alphabets,including spaces'
+    );
   };
 
   // close on click outside
@@ -87,53 +100,66 @@ const RolesModal: React.FC = () => {
     document.addEventListener('click', clickHandler);
     return () => document.removeEventListener('click', clickHandler);
   });
- 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const onNavigate = (path: To) => {
-      navigate(path)
-        
+      navigate(path);
     };
+
     try {
-      setLoading(true)
-      const res = await CreateRole( {
-        name: name,
-        view_migration: viewmigration,
-        view_platform: viewPlatform,
-        view_organization: viewOrg,
-        create_organization: createOrg,
-       
-        
-      },onNavigate);
-      setLoading(false)
-      
+      setLoading(true);
+      const res = await CreateRole(
+        {
+          name: name,
+          view_migration: viewmigration,
+          view_platform: viewPlatform,
+          view_organization: viewOrg,
+          create_organization: createOrg,
+        },
+        onNavigate
+      );
+      const updatedRoles = await GetRoles(onNavigate);
+      setUser(updatedRoles);
+      setLoading(false);
 
-      const user=res?.message?.response?.data;
-      
-      if (res.success == false) {
-        const errorMessages = [];
-      
-        for (const key in user) {
-          const errorMessage = `${key}: ${user[key]}`;
-       
-          errorMessages.push(errorMessage);
+      if (res.success === false) {
+        const serverErrors = res.message?.response?.data;
+
+        if (serverErrors) {
+          const userFriendlyErrors = mapServerErrors(serverErrors);
+          setError({ success: '', error: userFriendlyErrors.join('\n') });
+        } else {
+          setError({ success: '', error: 'An unexpected error occurred.' });
         }
-      
-        setError({ success: "", error: errorMessages.join("\n") });
-      
-
       } else {
-        setError({ success: 'Role Added Succesfully', error: '' });
-        setInterval(() => {
-          window.location.reload();
-        }, 3000);
+        setError({ success: 'Role Added Successfully', error: '' });
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setModalOpen(false);
+    }
+  };
+
+  const mapServerErrors = (serverErrors) => {
+    const userFriendlyErrors = [];
+
+    for (const key in serverErrors) {
+      switch (key) {
+        case 'name':
+          userFriendlyErrors.push('Name field is required.');
+          break;
+        // Add more cases for other fields as needed
+        default:
+          userFriendlyErrors.push(`${key}: ${serverErrors[key]}`);
+      }
     }
 
-    setModalOpen(false);
+    return userFriendlyErrors;
   };
+
   return (
     <div>
       <Toaster message={error} />
@@ -150,74 +176,80 @@ const RolesModal: React.FC = () => {
           modalOpen ? 'block' : 'hidden'
         }`}
       >
-         <div className="w-full max-w-142.5 rounded-lg" ref={modal} style={{ overflow: 'hidden' }}>
-            <div className="flex flex-col gap-9"    style={{ overflowY: 'scroll', maxHeight: '95vh' }}>
+        <div
+          className="w-full max-w-142.5 rounded-lg"
+          ref={modal}
+          style={{ overflow: 'hidden' }}
+        >
+          <div
+            className="flex flex-col gap-9"
+            style={{ overflowY: 'scroll', maxHeight: '95vh' }}
+          >
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="flex flex-wrap items-center">
                 <div className="w-full border-stroke dark:border-strokedark  xl:border-l-2">
                   <div className="w-full p-4 sm:p-5.5 xl:p-10.5">
-                   
-                      <div className="mb-4">
-                        <label className="mb-2.5 block font-medium text-black dark:text-white">
-                          Name
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="name"
-                            name="name"
-                            value={name}
-                            onChange={handleChange}
-                            placeholder="Enter your name"
-                            className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                          />
-                        </div>
+                    <div className="mb-4">
+                      <label className="mb-2.5 block font-medium text-black dark:text-white">
+                        Name
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="name"
+                          name="name"
+                          value={name}
+                          onChange={handleChange}
+                          placeholder="Enter your name"
+                          className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                        />
                       </div>
-                  
+                      {nameError && (
+                        <p className=" mt-1 text-sm" style={{ color: 'red' }}>
+                          {nameError}
+                        </p>
+                      )}
+                    </div>
+
                     <div className="w-full p-4 sm:p-5.5 xl:p-10.5">
-                      
                       <PermissionCheckbox
                         id="Migrationview"
                         label="View Migration"
                         checked={viewmigration}
                         onChange={setViewMigration}
                       />
-                     
 
-                     
                       <PermissionCheckbox
                         id="viewplatform"
                         label="View Platform"
                         checked={viewPlatform}
                         onChange={setViewPlatform}
                       />
-                    
 
-                     
                       <PermissionCheckbox
                         id="ViewOrg"
-                        label="View Organisation"
+                        label="View Organization"
                         checked={viewOrg}
                         onChange={setViewOrg}
                       />
                       <PermissionCheckbox
                         id="CreateOrg"
-                        label="Create Organisation"
+                        label="Create Organization"
                         checked={createOrg}
                         onChange={setCreateOrg}
                       />
-                      
-
-                     
                     </div>
                     <div className="mb-5">
-                        <button
-                          type="submit"
-                          onClick={handleSubmit}
-                          className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-                        >
-                          {loading?<BeatLoader color="white"/>:"Save Role"}
-                        </button>
-                      </div>
+                      <button
+                        type="submit"
+                        onClick={handleSubmit}
+                        className={`w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 ${
+                          nameError ? 'cursor-not-allowed opacity-50' : ''
+                        }`}
+                        disabled={nameError}
+                      >
+                        {loading ? <BeatLoader color="white" /> : 'Save Role'}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

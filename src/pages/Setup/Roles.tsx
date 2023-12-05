@@ -1,7 +1,8 @@
-import RolesTable from '../../components/RolesTable'
+import React from 'react';import RolesTable from '../../components/RolesTable'
 import RolesModal from '../../components/RolesModal';
 
 const Roles = () => {
+  const [user, setUser] = React.useState<Role[]>([]);
  
   return (
     <>
@@ -9,11 +10,11 @@ const Roles = () => {
       <h2 className="text-title-md2 font-semibold text-black dark:text-white">
       Roles
       </h2>
-      <RolesModal/>
+      <RolesModal setUser={setUser}/>
       
     </div>
 
-    <RolesTable />
+    <RolesTable user={user} setUser={setUser} />
     </>
   );
 };

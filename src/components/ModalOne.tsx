@@ -26,12 +26,7 @@ const ModalOne: React.FC = () => {
     document.addEventListener('click', clickHandler);
     return () => document.removeEventListener('click', clickHandler);
   });
-  
-
-  
-  // const handleNextClick = () => {
-  //   setShowAdditionalDiv(true); 
-  // };
+ 
   const handleSave=()=>{
     setModalOpen(false)
     setShowAdditionalDiv(false)
@@ -43,7 +38,7 @@ const ModalOne: React.FC = () => {
         onClick={() => setModalOpen(!modalOpen)}
         className="rounded-md bg-primary py-3 px-9 font-medium text-white"
       >
-        Add New Organisations
+        Add New organization
       </button>
       <div
         className={`fixed top-0 left-0 z-999999 flex h-full min-h-screen w-full items-center justify-center bg-black/90 px-4 py-5 ${
@@ -65,7 +60,7 @@ const ModalOne: React.FC = () => {
               
               <div className="mb-4.5">
                   <label className="mb-2.5 block text-sm font-semibold ">
-                  Owner's Name 
+                  Owner's Name www
                   </label>
                   <input
                     type="email"
@@ -112,7 +107,7 @@ const ModalOne: React.FC = () => {
                 
                 <div className="mb-4.5">
                     <label className="mb-2.5 block text-sm font-semibold ">
-                    Organisation Name 
+                    organization Name 
                     </label>
                     <input
                       type="email"

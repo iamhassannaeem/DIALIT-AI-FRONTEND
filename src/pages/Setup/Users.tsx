@@ -1,8 +1,8 @@
-
-
+import React from 'react';
 import UsersTable from '../../components/UsersTable';
 import UserModal from '../../components/UserModal';
 const Migration = () => {
+  const [user, setUser] = React.useState<Setup[]>([]);
  
   return (
     <>
@@ -10,11 +10,11 @@ const Migration = () => {
       <h2 className="text-title-md2 font-semibold text-black dark:text-white">
       Users
       </h2>
-      <UserModal/>
+      <UserModal setUser={setUser}/>
       
     </div>
 
-    <UsersTable />
+    <UsersTable setUser={setUser} user={user}/>
     </>
   );
 };

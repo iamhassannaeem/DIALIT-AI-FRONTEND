@@ -9,7 +9,7 @@ export const AuthService = {
   login: async (email: string, password: string) => {
     try {
       const response = await axios.post(`${BASE_URL}user/token/`, { email, password });
-      return response.data;
+      return response;
     } catch (error) {
       throw error;
     }

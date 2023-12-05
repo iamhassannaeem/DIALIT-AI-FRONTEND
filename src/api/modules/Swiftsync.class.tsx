@@ -19,7 +19,7 @@ export const login = async (payload: payload): Promise<ApiResponse> => {
     const response = await axios.post(endpoints.login, payload);
     return response.data as ApiResponse;
   } catch (error: any) {
-    return { success: false, message: error.message };
+    return { success: false, message: error };
   }
 };
 // refresh token
@@ -58,12 +58,25 @@ export const organisationCreate = async (
   }
 };
 // Assign Role
-export const roleAssign = async (payload: payload,onNavigate:any): Promise<ApiResponse> => {
+export const roleAssign = async (
+  payload: Payload,
+  onNavigate: any
+): Promise<ApiResponse> => {
   try {
-    const response = await axios.post(endpoints.roleAssign,payload);
+    const response = await axios.post(endpoints.roleAssign, payload);
     return response.data as ApiResponse;
   } catch (error: any) {
-    return handleTokenRefresh(error, onNavigate);
+    if (isAxiosError(error) && error.response?.status === 401) {
+      await handleTokenRefresh(onNavigate);
+      try {
+        const response = await axios.post(endpoints.PostUser, payload);
+        return response.data as ApiResponse;
+      } catch (refreshError: any) {
+        return { success: false, message: refreshError.message };
+      }
+    } else {
+      return { success: false, message: error };
+    }
   }
 };
 // upload user image 
@@ -168,21 +181,34 @@ export const GetRoles = async (onNavigate:any): Promise<ApiResponse> => {
   }
 };
 // Change user Roles
-export const changePermission = async (payload: payload,id: number,onNavigate:any): Promise<ApiResponse> => {
+export const changePermission = async (
+  payload: payload,id: number,onNavigate:any
+): Promise<ApiResponse> => {
   try {
     const response = await axios.patch(`${endpoints.changePermission}${id}/`, payload);
     return response.data as ApiResponse;
-  } catch (error:any) {
-    return handleTokenRefresh(error, onNavigate);
+  } catch (error: any) {
+    if (isAxiosError(error) && error.response?.status === 401) {
+      await handleTokenRefresh(onNavigate);
+      try {
+        const response = await axios.post(endpoints.PostUser, payload);
+        return response.data as ApiResponse;
+      } catch (refreshError: any) {
+        return { success: false, message: refreshError.message };
+      }
+    } else {
+      return { success: false, message: error };
+    }
   }
 };
+
 //  get user Roles
 export const isAdmin = async (onNavigate:any): Promise<ApiResponse> => {
   try {
     const response = await axios.get(endpoints.isAdmin);
     return response.data as ApiResponse;
   } catch (error: any) {
-    return handleTokenRefresh(error, onNavigate);
+    return {success: false, error: error.message};
   }
 };
 // update user data
@@ -254,5 +280,15 @@ export const CreateRole = async (
     } else {
       return { success: false, message: error };
     }
+  }
+};
+
+//del role
+export const DelRole = async (id:number,onNavigate:any): Promise<ApiResponse> => {
+  try {
+    const response = await axios.delete(`${endpoints.GetRoles}${id}`);
+    return response.data as ApiResponse;
+  } catch (error: any) {
+    return handleTokenRefresh(error, onNavigate);
   }
 };

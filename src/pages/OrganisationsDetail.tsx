@@ -33,7 +33,7 @@ const organisations = () => {
           {organization?.name}
         </h2>
         <p>
-          Organisation Owner: <span>{organization?.owner}</span>
+        Organization Owner: <span>{organization?.owner}</span>
         </p>
       </div>
       <PlatformTable platforms={organization?.platforms} />

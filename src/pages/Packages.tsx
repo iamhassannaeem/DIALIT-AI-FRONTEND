@@ -1,7 +1,9 @@
+import React,{useState} from 'react';
 import ModalPackage from '../components/ModalPackage';
 import PricingPackage from '../components/PricingPackage'
 
 const organisations = () => {
+  const [packages, setPackages] = useState([]);
   return (
     <>
      
@@ -10,10 +12,10 @@ const organisations = () => {
         Packages
       </h2>
 
-      <ModalPackage />
+      <ModalPackage  setPackages={setPackages} />
     </div>
 
-    <PricingPackage />
+    <PricingPackage packages={packages} setPackages={setPackages}/>
     
       
     </>

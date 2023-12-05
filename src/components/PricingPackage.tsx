@@ -1,22 +1,18 @@
 import React, { useEffect } from 'react';
-import highlight from '../images/organisation/highlight.svg';
-import del from '../images/packages/delete.svg';
 import { getPackages } from '../api/modules/Swiftsync.class';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../common/Loader';
 
-const PricingPackage: React.FC = () => {
-  const [packages, setPackages] = React.useState([]);
+const PricingPackage: React.FC = ({ packages, setPackages }) => {
   const [loading, setLoading] = React.useState(true);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const onNavigate = (path: To) => {
-    navigate(path)
-      
+    navigate(path);
   };
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true)
+        setLoading(true);
         const res = await getPackages(onNavigate);
         setPackages(res);
         setLoading(false);
@@ -29,12 +25,10 @@ const PricingPackage: React.FC = () => {
   }, []);
 
   if (loading) {
-    // You can render a loading indicator here if needed
-    return <div>{loading && <Loader/>}</div>;
+    return <div>{loading && <Loader />}</div>;
   }
   if (Array.isArray(packages)) {
     return (
-
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
         {/* <!-- Pricing Item --> */}
 
@@ -73,14 +67,14 @@ const PricingPackage: React.FC = () => {
               Features
             </h4>
 
-            <ul className="flex flex-col gap-3.5">
-  {item?.description.split('\n').map((line, index) => (
-    <li key={index}>{line}</li>
-  ))}
-</ul>
+            <ul className="flex flex-col gap-3.5" style={{ overflowWrap: 'break-word', maxWidth: '350px'  }}>
+              {item?.description.split('\n').map((line, index) => (
+                <li key={index} >{line}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
-    ))}
-    </div>
     );
   } else {
     return <div>No packages available.</div>;

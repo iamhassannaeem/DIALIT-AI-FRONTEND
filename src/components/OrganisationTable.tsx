@@ -6,15 +6,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { organisationget } from '../api/modules/Swiftsync.class';
 import Loader from '../common/Loader';
 
-interface Employee {
-  name: string;
-  owner_email: string;
-  owner_name: string;
-  package: string;
-}
 
-const OrganisationTable: React.FC = () => {
-  const [organisation, setOrganisation] = useState<Employee[]>([]);
+
+const OrganisationTable: React.FC = ({organisation, setOrganisation}) => {
+  
   const [isloaing, setIsloading] = useState(false);
   const navigate=useNavigate()
   const onNavigate = (path: To) => {
@@ -60,8 +55,7 @@ const OrganisationTable: React.FC = () => {
 
   return (
     <>
-    {isloaing && <Loader/>}
-     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark-bg-boxdark">
+    {isloaing ? <Loader/>: <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark-bg-boxdark">
       <h6 style={{ fontSize: "20px", fontWeight: "700", color: "black", borderBottom: "1px solid #E2E8F0" }} className='p-9'>ALL Organizations</h6>
       <div className="data-table-common data-table-two max-w-full overflow-x-auto">
         
@@ -70,7 +64,7 @@ const OrganisationTable: React.FC = () => {
             <tr>
               <th>OWNER's Name</th>
               <th>OWNER's EMAIL</th>
-              <th>ORGANISATION NAME</th>
+              <th>ORGANIZATION NAME</th>
               <th>PACKAGE PLAN</th>
               <th>ACTION</th>
             </tr>
@@ -98,7 +92,8 @@ const OrganisationTable: React.FC = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </div>}
+    
     </>
    
   );

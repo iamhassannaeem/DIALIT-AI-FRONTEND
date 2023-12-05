@@ -74,8 +74,8 @@ const ECommerce: React.FC = () => {
   };
   return (
     <>
-    {isloaing && <Loader/>}
-      <div className="mb-9 mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
+    {isloaing ? <Loader/>:<>
+    <div className="mb-9 mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
         <div className="flex flex-col gap-5.5">
           <div className="relative">
             <DatePicker
@@ -147,7 +147,7 @@ const ECommerce: React.FC = () => {
               className="customsize relative w-full appearance-none rounded border border-stroke bg-transparent py-2 px-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
               onChange={(e) => setSelectedOrganization(e.target.value)}
             >
-              <option value="">Organisation Name</option>
+              <option value="">Organization Name</option>
 
               {Array.isArray(organisations) ? (
                 organisations.map((item, index) => (
@@ -157,7 +157,7 @@ const ECommerce: React.FC = () => {
                 ))
               ) : (
                 // Handle the case when organisations is not an array
-                <option value="">No organisations available</option>
+                <option value="">No Organizations available</option>
               )}
             </select>
             <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
@@ -184,6 +184,8 @@ const ECommerce: React.FC = () => {
 
       <Statistics title="Application Statistics" migrations={migrations} />
       <DataStats migrations={migrations} />
+    </>}
+      
       {/* <Statistics title="Financial Statistics" /> */}
       {/* <ChartSix /> */}
 

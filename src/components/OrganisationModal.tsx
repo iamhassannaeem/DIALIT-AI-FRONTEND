@@ -34,7 +34,7 @@ const OrganisationModal: React.FC = ({setOrganisation}) => {
   
     if (name === 'ownerName') {
       isValid = /^[a-zA-Z\s]{0,64}$/.test(value);
-      errorMessage = 'Name should be between 0 and 64 characters, including spaces';
+      errorMessage = 'Name should contain only alphabets between 0 to 64 characters, including space.';
       setNameError(isValid ? '' : errorMessage);
     } else if (name === 'ownerEmail') {
       isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -47,7 +47,7 @@ const OrganisationModal: React.FC = ({setOrganisation}) => {
     }
     else if(name === 'orgName') {
       isValid = /^[a-zA-Z\s]{0,64}$/.test(value);
-      errorMessage = 'Name should be between 0 and 64 characters, including spaces';
+      errorMessage = 'Name should contain only alphabets between 0 to 64 characters, including space.';
       setOrgNameError(isValid ? '' : errorMessage);}
   };
   // close on click outside

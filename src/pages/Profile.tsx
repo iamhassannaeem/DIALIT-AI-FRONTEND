@@ -1,10 +1,11 @@
 import React ,{useState} from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Toaster from '../components/Toast/Toast'
 import { PostUserData, uploadProfile } from '../api/modules/Swiftsync.class';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { BeatLoader } from 'react-spinners';
+import { isAdminfetchAdminStatus } from '../services/authService';
 const Profile = () => {
   const profile = useSelector((state) => state.isAdmin.isAdmin);
   const [nameError, setNameError] = useState('');
@@ -13,7 +14,7 @@ const Profile = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const[loading,setLoading] = useState(false);
   const navigate=useNavigate()
-
+const dispatch=useDispatch()
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
@@ -24,7 +25,7 @@ const Profile = () => {
     setName(newName);
   
     const isValid = /^[a-zA-Z\s]{4,64}$/.test(newName);
-    setNameError(isValid ? '' : 'Name should be between 4 and 64 characters, including spaces');
+    setNameError(isValid ? '' : 'Name should contain only alphabets between 4 to 64 characters, including space.');
   };
   
 
@@ -43,9 +44,7 @@ const Profile = () => {
 
       } else {
         setError({ success: 'Name Changed Successfully', error: '' });
-        setInterval(() => {
-          window.location.reload();
-        }, 3000);
+        dispatch(isAdminfetchAdminStatus());
 
       }
     } catch (error) {

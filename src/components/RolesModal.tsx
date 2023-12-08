@@ -77,7 +77,7 @@ const RolesModal: React.FC = ({ setUser }) => {
     setNameError(
       isValid
         ? ''
-        : 'Name should be between 0 and 150 alphabets,including spaces'
+        : 'Name should contain only alphabets between 0 to 150 characters, including space.'
     );
   };
 

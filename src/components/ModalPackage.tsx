@@ -42,7 +42,7 @@ const ModalPackage: React.FC = ({setPackages}) => {
     if (name === 'name') {
       isValid = /^[a-zA-Z\s]{0,64}$/.test(value);
       errorMessage =
-        'Package name should be between 0 and 64 characters, including spaces';
+        'Package Name should contain only alphabets between 0 to 64 characters, including space.';
     } else if (
       name === 'user_count' ||
       name === 'data_quota' ||

@@ -6,32 +6,29 @@ import del from '../images/packages/delete.svg'
 import highlight from '../images/organisation/highlight.svg';
 
 interface User {
-  Name: string;
-  Email: string;
+  name: string;
+  email: string;
   group: string;
 }
 
 const OrganisationUser: React.FC = ({users}) => {
-  const [user, setUser] = React.useState<User[]>([]);
 
   useEffect(() => {
-    // Inside the useEffect, map your data and update the user state
-    const mappedData = users?.map((item) => ({
-      Name: item?.name,
-      Email: item?.email,
-      group: item?.group,
-    }));
-    setUser(mappedData);
-  }, [users]); 
+    const initTable = () => {
+      const dataTableTwo = document.getElementById('OrganisationalUser');
+      if (dataTableTwo) {
+        const NotMapped = new DataTable(dataTableTwo, {
+          perPageSelect: [5, 10, 15, ['All', -1]],
+        });
+        NotMapped.init();
+      }
+    };
 
-  useEffect(() => {
-    const OrganisationUser = new DataTable('#OrganisationUser', {
-      header: false,
-      perPageSelect: [5, 10, 15, ['All', -1]],
-    });
-    OrganisationUser;
-  });
-
+    // Initialize DataTable if platform data is available
+    if (users && users.length > 0) {
+      initTable();
+    }
+  }, [users]);
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark-bg-boxdark mt-5">
@@ -45,8 +42,8 @@ const OrganisationUser: React.FC = ({users}) => {
     </button> */}
     </div>
     <div className="data-table-common data-table-two max-w-full overflow-x-auto">
-      <table className="table w-full table-auto" id="OrganisationUser">
-        <tbody>
+      <table className="table w-full table-auto" id="OrganisationalUser">
+       <thead>
           <tr>
             <th>
               <div className="flex items-center gap-1.5">
@@ -150,25 +147,21 @@ const OrganisationUser: React.FC = ({users}) => {
                 </span>
               </div>
             </div></th>
-            <th>ACTION</th>
+           
           </tr>
-          {user?.map((employee, index) => (
+          </thead>
+          <tbody>
+          {users?.map((item, index) => (
             <tr key={index}>
               <td>
-                {employee.Name}
+                {item?.name}
               </td>
               
-              <td>{employee.Email}</td>
+              <td>{item?.email}</td>
               
-              <td>{employee.group}</td>
+              <td>{item?.group}</td>
   
-              <td>
-                <div className='flex gap-3'>
-               {/* <img src={eye} alt="" /> */}
-                  <img src={del} alt="" />
-                  <img src={highlight} alt="" />
-                </div>
-              </td>
+              
             </tr>
           ))}
         </tbody>

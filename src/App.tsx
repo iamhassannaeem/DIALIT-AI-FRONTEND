@@ -7,38 +7,40 @@ import {
   Routes,
   useNavigate,
 } from 'react-router-dom';
-import ECommerce from './pages/Dashboard/ECommerce';
-import Profile from './pages/Profile';
-import Users from './pages/Setup/Users';
-import Roles from './pages/Setup/Roles';
-import Organisations from './pages/organisation/Organisations';
+import Dashboard from './pages/Dashboard/Dashboard';
 import SignIn from './pages/Authentication/SignIn';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
-import Packages from './pages/Packages';
-import OrganisationsDetail from './pages/OrganisationsDetail';
 import { useDispatch, useSelector } from 'react-redux';
 import { isAdminfetchAdminStatus } from './services/authService';
-import Noperm from './components/Noperm';
+import Agent from './components/playground/Agent';
+import Phone from './components/playground/Phone';
+import Library from './components/playground/library/Library';
+import CallLogs from './components/reports/CallLogs';
+import Billing from './components/billing/Billing';
+import Member from './components/Member';
+import Settings from './pages/settings/Settings';
+
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
-  const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
+  // const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
+  const isAuthenticated = true;
+
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
   }, []);
-  const isAdmin = useSelector((state) => state.isAdmin?.isAdmin?.is_admin);
-  const perm = useSelector((state) => state.isAdmin?.isAdmin?.group);
+  // const isAdmin = useSelector((state) => state.isAdmin?.isAdmin?.is_admin);
+  // const perm = useSelector((state) => state.isAdmin?.isAdmin?.group);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(isAdminfetchAdminStatus());
-  }, [dispatch]);
- 
+  // useEffect(() => {
+  //   dispatch(isAdminfetchAdminStatus());
+  // }, [dispatch]);
 
   return loading ? (
     <Loader />
@@ -46,115 +48,86 @@ function App() {
     <>
       <Routes>
         <Route element={<DefaultLayout />}>
-        <Route
-            path="/signin"
-            element={
-              isAuthenticated ? (
-                <Navigate to="/" replace />
-              ) : (
-                <SignIn />
-              )
-            }
+          <Route
+            path="*"
+            element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <SignIn />}
           />
           {isAuthenticated ? (
             <>
               <Route
-                path="/"
+                path="/dashboard"
                 element={
-                  isAdmin ? (
-                    <>
-                      <PageTitle title="Dashboard" />
-                      <ECommerce />
-                    </>
-                  ) : (
-                    <>
-                      <Noperm />
-                    </>
-                  )
+                  <>
+                    <PageTitle title="Dashboard" />
+                    <Dashboard />
+                  </>
                 }
               />
-
-              <Route
-                path="/organisations"
+               <Route
+                path="/playground/agent"
                 element={
-                  isAdmin || perm?.view_organization ? (
-                    <>
-                      <Organisations />
-                      <PageTitle title="Organisations" />
-                    </>
-                  ) : (
-                    <>
-                      <Noperm />
-                    </>
-                  )
+                  <>
+                    <PageTitle title="Agents" />
+                    <Agent />
+                  </>
                 }
               />
-              <Route
-                path="/packages"
+               <Route
+                path="/playground/phone"
                 element={
-                  isAdmin ? (
-                    <>
-                      <PageTitle title="Packages" />
-                      <Packages />
-                    </>
-                  ) : (
-                    <Noperm />
-                  )
+                  <>
+                    <PageTitle title="Phone No" />
+                    <Phone />
+                  </>
                 }
               />
-              <Route
-                path="/organisationsDetail/:id"
+               <Route
+                path="/playground/library"
                 element={
-                  isAdmin ? (
-                    <>
-                      <PageTitle title="organizationDetails" />
-                      <OrganisationsDetail />
-                    </>
-                  ) : (
-                    <Noperm />
-                  )
+                  <>
+                    <PageTitle title="Library" />
+                    <Library />
+                  </>
+                }
+              />
+               <Route
+                path="/reports/call"
+                element={
+                  <>
+                    <PageTitle title="Call Logs" />
+                    <CallLogs />
+                  </>
                 }
               />
               <Route
-                path="/setup/users"
+                path="/billing"
                 element={
-                  isAdmin ? (
-                    <>
-                      <PageTitle title="Users" />
-                      <Users />
-                    </>
-                  ) : (
-                    <Noperm />
-                  )
+                  <>
+                    <PageTitle title="Billing" />
+                    <Billing />
+                  </>
                 }
               />
               <Route
-                path="/setup/roles"
+                path="/member"
                 element={
-                  isAdmin ? (
-                    <>
-                      <PageTitle title="Roles" />
-                      <Roles />
-                    </>
-                  ) : (
-                    <Noperm />
-                  )
+                  <>
+                    <PageTitle title="Member" />
+                    <Member />
+                  </>
                 }
               />
-
               <Route
-                path="/profile"
+                path="/settings"
                 element={
-                  isAdmin ? (
-                    <>
-                      <PageTitle title="Profile" />
-                      <Profile />
-                    </>
-                  ) : (
-                    <Noperm />
-                  )
+                  <>
+                    <PageTitle title="Settings" />
+                    <Settings />
+                  </>
                 }
               />
+            
+            
             </>
           ) : (
             <Route path="*" element={<SignIn to="/signin" replace />} />

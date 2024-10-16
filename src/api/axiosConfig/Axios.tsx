@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { refreshTokenRequest } from '../modules/Swiftsync.class'
+import { refreshTokenRequest } from '../modules/Swiftsync.class';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_REACT_APP_API_URL,
@@ -8,9 +8,9 @@ const axiosInstance = axios.create({
 const handleTokenRefresh = async (error, onNavigate) => {
   const originalRequest = error.config;
 
-  if (error.response?.data?.code === "token_not_valid") {
+  if (error.response?.data?.code === 'token_not_valid') {
     const refreshToken = localStorage.getItem('refresh');
-    
+
     if (!refreshToken) {
       onNavigate('/signin');
       return Promise.reject(error);
@@ -18,7 +18,7 @@ const handleTokenRefresh = async (error, onNavigate) => {
 
     try {
       const response = await refreshTokenRequest({ refresh: refreshToken });
-      
+
       const newAccessToken = response?.access;
 
       // Update the access token in local storage
@@ -38,7 +38,9 @@ const handleTokenRefresh = async (error, onNavigate) => {
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const authToken = localStorage.getItem('access');
+    // const authToken = localStorage.getItem('access');
+    const authToken =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMxNjc2MzU5LCJpYXQiOjE3MjkwODQzNTksImp0aSI6ImI0NzE4NDMwMzRmZjRmOTI4Y2ZiOTUyYTc3NDc2YjQ4IiwidXNlcl9pZCI6MjZ9.tfQtHXRkWHeVjfjC4ehnJhq7e8hcDY_2rPBm__B6T-s';
     if (authToken) {
       config.headers.Authorization = `Bearer ${authToken}`;
     }

@@ -1,0 +1,44 @@
+.ReactFlagsSelect-module_selectBtn__19wW7{
+    background: #2C3B4A !important;
+    color: #FFFFFF !important;
+    padding: 0.84rem !important;
+}
+.ReactFlagsSelect-module_selectOptions__3LNBJ{
+    background: #2C3B4A !important;
+    border:#2C3B4A !important;
+}
+.ReactFlagsSelect-module_selectValue__152eS{
+    padding: 0px !important;
+    margin: 0px !important;
+}
+.ReactFlagsSelect-module_flagsSelect__2pfa2{
+    padding: 0px !important;
+}
+.ReactFlagsSelect-module_filterBox__3m8EU{
+    padding: 0px !important;
+    background: #2C3B4A !important;
+}
+.ReactFlagsSelect-module_filterBox__3m8EU input{
+    background: #2C3B4A !important;
+
+}
+.scrollbar::-webkit-scrollbar {
+    display: none;
+    
+  }
+
+  /* Add this in your global CSS or inside a <style> tag */
+input:-webkit-autofill {
+    background-color: #242E3E !important;
+    color: #D6D6D5 !important;
+  }
+  
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    border: 1px solid #333B48;
+    -webkit-text-fill-color: #D6D6D5 !important;
+    box-shadow: 0 0 0px 1000px #242E3E inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+  

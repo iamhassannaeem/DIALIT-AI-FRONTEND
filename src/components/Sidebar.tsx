@@ -1,11 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import Logo from '../images/logo/logo-icon.svg';
+import Logo from '../images/logo/logo.png';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import organisation from '../images/organisation/sitemap.svg';
-import packages from '../images/packages/packages.svg'
-import setup from '../images/setup/setup.svg' 
-import { useSelector } from 'react-redux';
+import packages from '../images/packages/packages.svg';
+import setup from '../images/setup/setup.svg';
+import { useDispatch, useSelector } from 'react-redux';
+import logo from '../images/logo/logo.png';
+import dashboardicon from '../images/dashboard.png';
+import member from '../images/member.png';
+import billing from '../images/billing.png';
+import playground from '../images/playground/playground.png';
+import agent from '../images/playground/agent.png';
+import library from '../images/playground/library.png';
+import phone from '../images/playground/phone.png';
+import reports from '../images/reports/reports.png';
+import call from '../images/reports/call.png';
+import { setTitle } from '../redux/slices/titleSlice';
+import { useAppDispatch } from '../hooks/hooks'; // Import your custom hook
+import dashboardDark from '../images/dadhboard-dark.svg';
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
@@ -14,18 +27,21 @@ interface SidebarProps {
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
   const { pathname } = location;
-
+  const [darkMode, setDarkMode] = useState(true);
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
-  const isAdmin = useSelector((state)=>state.isAdmin?.isAdmin?.is_admin); 
-  const perm = useSelector((state)=>state.isAdmin?.isAdmin?.group); 
-  
+  // const isAdmin = useSelector((state) => state.isAdmin?.isAdmin?.is_admin);
+  // const perm = useSelector((state) => state.isAdmin?.isAdmin?.group);
 
   const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
   const [sidebarExpanded, setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true'
   );
 
+  useEffect(() => {
+    setDarkMode(localStorage.getItem('color-theme') === 'dark');
+  }, [darkMode]);
+  console.log(darkMode);
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }: MouseEvent) => {
@@ -60,17 +76,22 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       document.querySelector('body')?.classList.remove('sidebar-expanded');
     }
   }, [sidebarExpanded]);
+  const dispatch = useAppDispatch();
+  const handleLinkClick = (title: string) => {
+    dispatch(setTitle(title));
+  };
 
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+      className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden rounded-tr-[40px] bg-[#EEEEEE] duration-300 ease-linear dark:bg-[#1D2532] lg:static lg:translate-x-0 ${
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
-      <div className="flex items-center justify-between gap-2 px-10 py-5.5 lg:py-6.5">
-        <NavLink to="/">
-          <img src={Logo} alt="Logo" />
+      <div className="flex items-center justify-between gap-5  p-[24px] text-center">
+        <NavLink to="/  ">
+          <img src={logo} alt="" />
         </NavLink>
 
         <button
@@ -78,10 +99,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           onClick={() => setSidebarOpen(!sidebarOpen)}
           aria-controls="sidebar"
           aria-expanded={sidebarOpen}
-          className="block lg:hidden"
+          className="block text-black lg:hidden"
         >
           <svg
-            className="fill-current"
+            className="fill-black dark:fill-white"
             width="20"
             height="18"
             viewBox="0 0 20 18"
@@ -102,85 +123,51 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
           {/* <!-- Menu Group --> */}
           <div>
-            <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
-              MENU
-            </h3>
-
             <ul className="mb-6 flex flex-col gap-1.5">
               {/* <!-- Menu Item Dashboard --> */}
-              {isAdmin && 
-               <li>
+
+              <li onClick={() => handleLinkClick('Dashboard')}>
                 <NavLink
-                  to="/"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    pathname.includes('/') &&
-                    'bg-graydark dark:bg-meta-4'
+                  to="/dashboard"
+                  className={`group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100 ease-in-out dark:text-white   ${
+                    pathname.includes('/dashboard') &&
+                    'border-l-2 border-[#1D2532] text-black dark:border-white'
                   }`}
                 >
-                 <svg
-                          className="fill-current"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M6.10322 0.956299H2.53135C1.5751 0.956299 0.787598 1.7438 0.787598 2.70005V6.27192C0.787598 7.22817 1.5751 8.01567 2.53135 8.01567H6.10322C7.05947 8.01567 7.84697 7.22817 7.84697 6.27192V2.72817C7.8751 1.7438 7.0876 0.956299 6.10322 0.956299ZM6.60947 6.30005C6.60947 6.5813 6.38447 6.8063 6.10322 6.8063H2.53135C2.2501 6.8063 2.0251 6.5813 2.0251 6.30005V2.72817C2.0251 2.44692 2.2501 2.22192 2.53135 2.22192H6.10322C6.38447 2.22192 6.60947 2.44692 6.60947 2.72817V6.30005Z"
-                            fill=""
-                          />
-                          <path
-                            d="M15.4689 0.956299H11.8971C10.9408 0.956299 10.1533 1.7438 10.1533 2.70005V6.27192C10.1533 7.22817 10.9408 8.01567 11.8971 8.01567H15.4689C16.4252 8.01567 17.2127 7.22817 17.2127 6.27192V2.72817C17.2127 1.7438 16.4252 0.956299 15.4689 0.956299ZM15.9752 6.30005C15.9752 6.5813 15.7502 6.8063 15.4689 6.8063H11.8971C11.6158 6.8063 11.3908 6.5813 11.3908 6.30005V2.72817C11.3908 2.44692 11.6158 2.22192 11.8971 2.22192H15.4689C15.7502 2.22192 15.9752 2.44692 15.9752 2.72817V6.30005Z"
-                            fill=""
-                          />
-                          <path
-                            d="M6.10322 9.92822H2.53135C1.5751 9.92822 0.787598 10.7157 0.787598 11.672V15.2438C0.787598 16.2001 1.5751 16.9876 2.53135 16.9876H6.10322C7.05947 16.9876 7.84697 16.2001 7.84697 15.2438V11.7001C7.8751 10.7157 7.0876 9.92822 6.10322 9.92822ZM6.60947 15.272C6.60947 15.5532 6.38447 15.7782 6.10322 15.7782H2.53135C2.2501 15.7782 2.0251 15.5532 2.0251 15.272V11.7001C2.0251 11.4188 2.2501 11.1938 2.53135 11.1938H6.10322C6.38447 11.1938 6.60947 11.4188 6.60947 11.7001V15.272Z"
-                            fill=""
-                          />
-                          <path
-                            d="M15.4689 9.92822H11.8971C10.9408 9.92822 10.1533 10.7157 10.1533 11.672V15.2438C10.1533 16.2001 10.9408 16.9876 11.8971 16.9876H15.4689C16.4252 16.9876 17.2127 16.2001 17.2127 15.2438V11.7001C17.2127 10.7157 16.4252 9.92822 15.4689 9.92822ZM15.9752 15.272C15.9752 15.5532 15.7502 15.7782 15.4689 15.7782H11.8971C11.6158 15.7782 11.3908 15.5532 11.3908 15.272V11.7001C11.3908 11.4188 11.6158 11.1938 11.8971 11.1938H15.4689C15.7502 11.1938 15.9752 11.4188 15.9752 11.7001V15.272Z"
-                            fill=""
-                          />
-                        </svg>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="fill-black dark:fill-white"
+                      d="M13 8V4C13 3.71667 13.0958 3.47917 13.2875 3.2875C13.4792 3.09583 13.7167 3 14 3H20C20.2833 3 20.5208 3.09583 20.7125 3.2875C20.9042 3.47917 21 3.71667 21 4V8C21 8.28333 20.9042 8.52083 20.7125 8.7125C20.5208 8.90417 20.2833 9 20 9H14C13.7167 9 13.4792 8.90417 13.2875 8.7125C13.0958 8.52083 13 8.28333 13 8ZM3 12V4C3 3.71667 3.09583 3.47917 3.2875 3.2875C3.47917 3.09583 3.71667 3 4 3H10C10.2833 3 10.5208 3.09583 10.7125 3.2875C10.9042 3.47917 11 3.71667 11 4V12C11 12.2833 10.9042 12.5208 10.7125 12.7125C10.5208 12.9042 10.2833 13 10 13H4C3.71667 13 3.47917 12.9042 3.2875 12.7125C3.09583 12.5208 3 12.2833 3 12ZM13 20V12C13 11.7167 13.0958 11.4792 13.2875 11.2875C13.4792 11.0958 13.7167 11 14 11H20C20.2833 11 20.5208 11.0958 20.7125 11.2875C20.9042 11.4792 21 11.7167 21 12V20C21 20.2833 20.9042 20.5208 20.7125 20.7125C20.5208 20.9042 20.2833 21 20 21H14C13.7167 21 13.4792 20.9042 13.2875 20.7125C13.0958 20.5208 13 20.2833 13 20ZM3 20V16C3 15.7167 3.09583 15.4792 3.2875 15.2875C3.47917 15.0958 3.71667 15 4 15H10C10.2833 15 10.5208 15.0958 10.7125 15.2875C10.9042 15.4792 11 15.7167 11 16V20C11 20.2833 10.9042 20.5208 10.7125 20.7125C10.5208 20.9042 10.2833 21 10 21H4C3.71667 21 3.47917 20.9042 3.2875 20.7125C3.09583 20.5208 3 20.2833 3 20ZM5 11H9V5H5V11ZM15 19H19V13H15V19ZM15 7H19V5H15V7ZM5 19H9V17H5V19Z"
+                      fill="#333B48"
+                    />
+                  </svg>
+                  {/* <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 22 22"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="fill-black dark:fill-white"
+                  >
+                    <path
+                      d="M11.9167 7.33333V3.66667C11.9167 3.40694 12.0045 3.18924 12.1802 3.01354C12.3559 2.83785 12.5736 2.75 12.8333 2.75H18.3333C18.5931 2.75 18.8108 2.83785 18.9865 3.01354C19.1622 3.18924 19.25 3.40694 19.25 3.66667V7.33333C19.25 7.59306 19.1622 7.81076 18.9865 7.98646C18.8108 8.16215 18.5931 8.25 18.3333 8.25H12.8333C12.5736 8.25 12.3559 8.16215 12.1802 7.98646C12.0045 7.81076 11.9167 7.59306 11.9167 7.33333ZM2.75 11V3.66667C2.75 3.40694 2.83785 3.18924 3.01354 3.01354C3.18924 2.83785 3.40694 2.75 3.66667 2.75H9.16667C9.42639 2.75 9.6441 2.83785 9.81979 3.01354C9.99549 3.18924 10.0833 3.40694 10.0833 3.66667V11C10.0833 11.2597 9.99549 11.4774 9.81979 11.6531C9.6441 11.8288 9.42639 11.9167 9.16667 11.9167H3.66667C3.40694 11.9167 3.18924 11.8288 3.01354 11.6531C2.83785 11.4774 2.75 11.2597 2.75 11ZM11.9167 18.3333V11C11.9167 10.7403 12.0045 10.5226 12.1802 10.3469C12.3559 10.1712 12.5736 10.0833 12.8333 10.0833H18.3333C18.5931 10.0833 18.8108 10.1712 18.9865 10.3469C19.1622 10.5226 19.25 10.7403 19.25 11V18.3333C19.25 18.5931 19.1622 18.8108 18.9865 18.9865C18.8108 19.1622 18.5931 19.25 18.3333 19.25H12.8333C12.5736 19.25 12.3559 19.1622 12.1802 18.9865C12.0045 18.8108 11.9167 18.5931 11.9167 18.3333ZM2.75 18.3333V14.6667C2.75 14.4069 2.83785 14.1892 3.01354 14.0135C3.18924 13.8378 3.40694 13.75 3.66667 13.75H9.16667C9.42639 13.75 9.6441 13.8378 9.81979 14.0135C9.99549 14.1892 10.0833 14.4069 10.0833 14.6667V18.3333C10.0833 18.5931 9.99549 18.8108 9.81979 18.9865C9.6441 19.1622 9.42639 19.25 9.16667 19.25H3.66667C3.40694 19.25 3.18924 19.1622 3.01354 18.9865C2.83785 18.8108 2.75 18.5931 2.75 18.3333ZM4.58333 10.0833H8.25V4.58333H4.58333V10.0833ZM13.75 17.4167H17.4167V11.9167H13.75V17.4167ZM13.75 6.41667H17.4167V4.58333H13.75V6.41667ZM4.58333 17.4167H8.25V15.5833H4.58333V17.4167Z"
+                      fill="#1D2532"
+                    />
+                  </svg> */}
                   Dashboard
                 </NavLink>
-              </li>}
-             
+              </li>
+
               {/* <!-- Menu Item Dashboard --> */}
-
-
-              {/* <!-- organisations Table --> */}
-              {(isAdmin || perm?.view_organization) && <li >
-                <NavLink
-                  to="organisations"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('organisations') && 'bg-graydark dark:bg-meta-4'
-                    }`}
-                >
-                  <img src={organisation} alt="" />
-                  Organizations
-                </NavLink>
-              </li>}
-              
-              {/* <!-- organisations Table --> */}
-              {/* <!-- Packages Table --> */}
-              {isAdmin && <li>
-                <NavLink
-                  to="/Packages"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('Packages') && 'bg-graydark dark:bg-meta-4'
-                    }`}
-                >
-                  <img src={packages} alt="" />
-                  Packages
-                </NavLink>
-              </li>} 
-              {/* <!-- Packages Table --> */}
-
-
-
-              {/* <!-- Menu Item Setup --> */}
-              {isAdmin &&  <SidebarLinkGroup
+              {/* <!-- Playground --> */}
+              <SidebarLinkGroup
                 activeCondition={
-                  pathname === '/Setup' || pathname.includes('Setup')
+                  pathname === '/playground' || pathname.includes('playground')
                 }
               >
                 {(handleClick, open) => {
@@ -188,10 +175,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <React.Fragment>
                       <NavLink
                         to="#"
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === '/Setup' ||
-                            pathname.includes('Setup')) &&
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-[#1D2532]  duration-100 ease-in-out dark:text-[#1D2532] dark:text-white  ${
+                          (pathname === '/playgroung/agent' ||
+                            pathname.includes('playgroung/agent')) &&
                           'bg-graydark dark:bg-meta-4'
-                          }`}
+                        }`}
                         onClick={(e) => {
                           e.preventDefault();
                           sidebarExpanded
@@ -199,11 +187,24 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <img src={setup} alt="" />
-                        Setup
                         <svg
-                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
-                            }`}
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            className="fill-black dark:fill-white"
+                            d="M4.02509 14.85C3.75842 14.65 3.62925 14.3875 3.63759 14.0625C3.64592 13.7375 3.78342 13.475 4.05009 13.275C4.23342 13.1417 4.43342 13.075 4.65009 13.075C4.86675 13.075 5.06675 13.1417 5.25009 13.275L12.0001 18.5L18.7501 13.275C18.9334 13.1417 19.1334 13.075 19.3501 13.075C19.5668 13.075 19.7668 13.1417 19.9501 13.275C20.2168 13.475 20.3543 13.7375 20.3626 14.0625C20.3709 14.3875 20.2418 14.65 19.9751 14.85L13.2251 20.1C12.8584 20.3834 12.4501 20.525 12.0001 20.525C11.5501 20.525 11.1418 20.3834 10.7751 20.1L4.02509 14.85ZM10.7751 15.05L5.02509 10.575C4.50842 10.175 4.25009 9.65002 4.25009 9.00002C4.25009 8.35002 4.50842 7.82502 5.02509 7.42502L10.7751 2.95002C11.1418 2.66669 11.5501 2.52502 12.0001 2.52502C12.4501 2.52502 12.8584 2.66669 13.2251 2.95002L18.9751 7.42502C19.4918 7.82502 19.7501 8.35002 19.7501 9.00002C19.7501 9.65002 19.4918 10.175 18.9751 10.575L13.2251 15.05C12.8584 15.3334 12.4501 15.475 12.0001 15.475C11.5501 15.475 11.1418 15.3334 10.7751 15.05ZM12.0001 13.45L17.7501 9.00002L12.0001 4.55002L6.25009 9.00002L12.0001 13.45Z"
+                            fill="#333B48"
+                          />
+                        </svg>
+                        Playground
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                            open && 'rotate-180'
+                          }`}
                           width="20"
                           height="20"
                           viewBox="0 0 20 20"
@@ -220,50 +221,239 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       </NavLink>
                       {/* <!-- Dropdown Menu Start --> */}
                       <div
-                        className={`translate transform overflow-hidden ${!open && 'hidden'
-                          }`}
+                        className={`translate transform overflow-hidden ${
+                          !open && 'hidden'
+                        }`}
                       >
                         <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
-                          <li>
+                          <li onClick={() => handleLinkClick('Agent')}>
                             <NavLink
-                              to="/Setup/Users"
+                              to="/playground/agent"
                               className={({ isActive }) =>
-                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                                (isActive && '!text-white')
+                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ' +
+                                (isActive &&
+                                  '!dark:text-[#1D2532] border-l-2 border-[#1D2532] text-[#1D2532] dark:border-white dark:text-white')
                               }
                             >
-                              Users
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  className="fill-black dark:fill-white"
+                                  d="M12 21C11.7167 21 11.4792 20.9042 11.2875 20.7125C11.0958 20.5208 11 20.2833 11 20C11 19.7167 11.0958 19.4792 11.2875 19.2875C11.4792 19.0958 11.7167 19 12 19H19V11.9C19 9.95 18.3208 8.29583 16.9625 6.9375C15.6042 5.57917 13.95 4.9 12 4.9C10.05 4.9 8.39583 5.57917 7.0375 6.9375C5.67917 8.29583 5 9.95 5 11.9V17C5 17.2833 4.90417 17.5208 4.7125 17.7125C4.52083 17.9042 4.28333 18 4 18C3.45 18 2.97917 17.8042 2.5875 17.4125C2.19583 17.0208 2 16.55 2 16V14C2 13.65 2.0875 13.3208 2.2625 13.0125C2.4375 12.7042 2.68333 12.4583 3 12.275L3.075 10.95C3.20833 9.81667 3.5375 8.76667 4.0625 7.8C4.5875 6.83333 5.24583 5.99167 6.0375 5.275C6.82917 4.55833 7.7375 4 8.7625 3.6C9.7875 3.2 10.8667 3 12 3C13.1333 3 14.2083 3.2 15.225 3.6C16.2417 4 17.15 4.55417 17.95 5.2625C18.75 5.97083 19.4083 6.80833 19.925 7.775C20.4417 8.74167 20.775 9.79167 20.925 10.925L21 12.225C21.3167 12.375 21.5625 12.6 21.7375 12.9C21.9125 13.2 22 13.5167 22 13.85V16.15C22 16.4833 21.9125 16.8 21.7375 17.1C21.5625 17.4 21.3167 17.625 21 17.775V19C21 19.55 20.8042 20.0208 20.4125 20.4125C20.0208 20.8042 19.55 21 19 21H12ZM9 14C8.71667 14 8.47917 13.9042 8.2875 13.7125C8.09583 13.5208 8 13.2833 8 13C8 12.7167 8.09583 12.4792 8.2875 12.2875C8.47917 12.0958 8.71667 12 9 12C9.28333 12 9.52083 12.0958 9.7125 12.2875C9.90417 12.4792 10 12.7167 10 13C10 13.2833 9.90417 13.5208 9.7125 13.7125C9.52083 13.9042 9.28333 14 9 14ZM15 14C14.7167 14 14.4792 13.9042 14.2875 13.7125C14.0958 13.5208 14 13.2833 14 13C14 12.7167 14.0958 12.4792 14.2875 12.2875C14.4792 12.0958 14.7167 12 15 12C15.2833 12 15.5208 12.0958 15.7125 12.2875C15.9042 12.4792 16 12.7167 16 13C16 13.2833 15.9042 13.5208 15.7125 13.7125C15.5208 13.9042 15.2833 14 15 14ZM6.025 12.45C5.90833 10.6833 6.44167 9.16667 7.625 7.9C8.80833 6.63333 10.2833 6 12.05 6C13.5333 6 14.8375 6.47083 15.9625 7.4125C17.0875 8.35417 17.7667 9.55833 18 11.025C16.4833 11.0083 15.0875 10.6 13.8125 9.8C12.5375 9 11.5583 7.91667 10.875 6.55C10.6083 7.88333 10.0458 9.07083 9.1875 10.1125C8.32917 11.1542 7.275 11.9333 6.025 12.45Z"
+                                  fill="#333B48"
+                                />
+                              </svg>
+                              Agent
                             </NavLink>
                           </li>
-                          <li>
+                          <li onClick={() => handleLinkClick('Phone Numbers')}>
                             <NavLink
-                              to="/Setup/roles"
+                              to="/playground/phone"
                               className={({ isActive }) =>
-                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                                (isActive && '!text-white')
+                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ' +
+                                (isActive &&
+                                  '!dark:text-[#1D2532] border-l-2 border-[#1D2532] text-[#1D2532] dark:border-white dark:text-white')
                               }
                             >
-                              Roles
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  className="fill-black dark:fill-white"
+                                  d="M19.95 21C17.8667 21 15.8083 20.5458 13.775 19.6375C11.7417 18.7292 9.89167 17.4417 8.225 15.775C6.55833 14.1083 5.27083 12.2583 4.3625 10.225C3.45417 8.19167 3 6.13333 3 4.05C3 3.75 3.1 3.5 3.3 3.3C3.5 3.1 3.75 3 4.05 3H8.1C8.33333 3 8.54167 3.07917 8.725 3.2375C8.90833 3.39583 9.01667 3.58333 9.05 3.8L9.7 7.3C9.73333 7.56667 9.725 7.79167 9.675 7.975C9.625 8.15833 9.53333 8.31667 9.4 8.45L6.975 10.9C7.30833 11.5167 7.70417 12.1125 8.1625 12.6875C8.62083 13.2625 9.125 13.8167 9.675 14.35C10.1917 14.8667 10.7333 15.3458 11.3 15.7875C11.8667 16.2292 12.4667 16.6333 13.1 17L15.45 14.65C15.6 14.5 15.7958 14.3875 16.0375 14.3125C16.2792 14.2375 16.5167 14.2167 16.75 14.25L20.2 14.95C20.4333 15.0167 20.625 15.1375 20.775 15.3125C20.925 15.4875 21 15.6833 21 15.9V19.95C21 20.25 20.9 20.5 20.7 20.7C20.5 20.9 20.25 21 19.95 21ZM6.025 9L7.675 7.35L7.25 5H5.025C5.10833 5.68333 5.225 6.35833 5.375 7.025C5.525 7.69167 5.74167 8.35 6.025 9ZM14.975 17.95C15.625 18.2333 16.2875 18.4583 16.9625 18.625C17.6375 18.7917 18.3167 18.9 19 18.95V16.75L16.65 16.275L14.975 17.95Z"
+                                  fill="#333B48"
+                                />
+                              </svg>
+                              Phone #
                             </NavLink>
                           </li>
-                          
+                          <li onClick={() => handleLinkClick('Library')}>
+                            <NavLink
+                              to="/playground/library"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ' +
+                                (isActive &&
+                                  '!dark:text-[#1D2532] border-l-2 border-[#1D2532] text-[#1D2532] dark:border-white dark:text-white')
+                              }
+                            >
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  className="fill-black dark:fill-white"
+                                  d="M9 18H15C15.2833 18 15.5208 17.9042 15.7125 17.7125C15.9042 17.5208 16 17.2833 16 17C16 16.7167 15.9042 16.4792 15.7125 16.2875C15.5208 16.0958 15.2833 16 15 16H9C8.71667 16 8.47917 16.0958 8.2875 16.2875C8.09583 16.4792 8 16.7167 8 17C8 17.2833 8.09583 17.5208 8.2875 17.7125C8.47917 17.9042 8.71667 18 9 18ZM9 14H15C15.2833 14 15.5208 13.9042 15.7125 13.7125C15.9042 13.5208 16 13.2833 16 13C16 12.7167 15.9042 12.4792 15.7125 12.2875C15.5208 12.0958 15.2833 12 15 12H9C8.71667 12 8.47917 12.0958 8.2875 12.2875C8.09583 12.4792 8 12.7167 8 13C8 13.2833 8.09583 13.5208 8.2875 13.7125C8.47917 13.9042 8.71667 14 9 14ZM6 22C5.45 22 4.97917 21.8042 4.5875 21.4125C4.19583 21.0208 4 20.55 4 20V4C4 3.45 4.19583 2.97917 4.5875 2.5875C4.97917 2.19583 5.45 2 6 2H13.175C13.4417 2 13.6958 2.05 13.9375 2.15C14.1792 2.25 14.3917 2.39167 14.575 2.575L19.425 7.425C19.6083 7.60833 19.75 7.82083 19.85 8.0625C19.95 8.30417 20 8.55833 20 8.825V20C20 20.55 19.8042 21.0208 19.4125 21.4125C19.0208 21.8042 18.55 22 18 22H6ZM13 8V4H6V20H18V9H14C13.7167 9 13.4792 8.90417 13.2875 8.7125C13.0958 8.52083 13 8.28333 13 8Z"
+                                  fill="#333B48"
+                                />
+                              </svg>
+                              Library
+                            </NavLink>
+                          </li>
                         </ul>
                       </div>
                       {/* <!-- Dropdown Menu End --> */}
                     </React.Fragment>
                   );
                 }}
-              </SidebarLinkGroup>} 
-             
-              {/* <!-- Menu Item Setup --> */}
-
-
-             
+              </SidebarLinkGroup>
+              {/* <!-- Playground --> */}
+              {/* <!-- Reports --> */}
+              <SidebarLinkGroup
+                activeCondition={
+                  pathname === '/reports' || pathname.includes('reports')
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-[#1D2532]  duration-100 ease-in-out dark:text-[#1D2532] dark:text-white  ${
+                          (pathname === '/reports/call' ||
+                            pathname.includes('reports/call')) &&
+                          ''
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            className="fill-black dark:fill-white"
+                            d="M9 12C8.71667 12 8.47917 11.9042 8.2875 11.7125C8.09583 11.5208 8 11.2833 8 11C8 10.7167 8.09583 10.4792 8.2875 10.2875C8.47917 10.0958 8.71667 10 9 10H15C15.2833 10 15.5208 10.0958 15.7125 10.2875C15.9042 10.4792 16 10.7167 16 11C16 11.2833 15.9042 11.5208 15.7125 11.7125C15.5208 11.9042 15.2833 12 15 12H9ZM9 8C8.71667 8 8.47917 7.90417 8.2875 7.7125C8.09583 7.52083 8 7.28333 8 7C8 6.71667 8.09583 6.47917 8.2875 6.2875C8.47917 6.09583 8.71667 6 9 6H15C15.2833 6 15.5208 6.09583 15.7125 6.2875C15.9042 6.47917 16 6.71667 16 7C16 7.28333 15.9042 7.52083 15.7125 7.7125C15.5208 7.90417 15.2833 8 15 8H9ZM6 14H13.5C13.9833 14 14.4333 14.1042 14.85 14.3125C15.2667 14.5208 15.6167 14.8167 15.9 15.2L18 17.95V4H6V14ZM6 20H17.05L14.325 16.425C14.225 16.2917 14.1042 16.1875 13.9625 16.1125C13.8208 16.0375 13.6667 16 13.5 16H6V20ZM18 22H6C5.45 22 4.97917 21.8042 4.5875 21.4125C4.19583 21.0208 4 20.55 4 20V4C4 3.45 4.19583 2.97917 4.5875 2.5875C4.97917 2.19583 5.45 2 6 2H18C18.55 2 19.0208 2.19583 19.4125 2.5875C19.8042 2.97917 20 3.45 20 4V20C20 20.55 19.8042 21.0208 19.4125 21.4125C19.0208 21.8042 18.55 22 18 22Z"
+                            fill="#333B48"
+                          />
+                        </svg>
+                        Reports
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                            open && 'rotate-180'
+                          }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${
+                          !open && 'hidden'
+                        }`}
+                      >
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <li onClick={() => handleLinkClick('Call Logs')}>
+                            <NavLink
+                              to="/reports/call"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ' +
+                                (isActive &&
+                                  '!dark:text-[#1D2532] border-l-2 border-[#1D2532] text-[#1D2532] dark:border-white dark:text-white')
+                              }
+                            >
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  className="fill-black dark:fill-white"
+                                  d="M18.95 22C16.8667 22 14.8083 21.5458 12.775 20.6375C10.7417 19.7292 8.89167 18.4417 7.225 16.775C5.55833 15.1083 4.27083 13.2583 3.3625 11.225C2.45417 9.19167 2 7.13333 2 5.05C2 4.75 2.1 4.5 2.3 4.3C2.5 4.1 2.75 4 3.05 4H7.1C7.33333 4 7.54167 4.07917 7.725 4.2375C7.90833 4.39583 8.01667 4.58333 8.05 4.8L8.7 8.3C8.73333 8.56667 8.725 8.79167 8.675 8.975C8.625 9.15833 8.53333 9.31667 8.4 9.45L5.975 11.9C6.30833 12.5167 6.70417 13.1125 7.1625 13.6875C7.62083 14.2625 8.125 14.8167 8.675 15.35C9.19167 15.8667 9.73333 16.3458 10.3 16.7875C10.8667 17.2292 11.4667 17.6333 12.1 18L14.45 15.65C14.6 15.5 14.7958 15.3875 15.0375 15.3125C15.2792 15.2375 15.5167 15.2167 15.75 15.25L19.2 15.95C19.4333 16.0167 19.625 16.1375 19.775 16.3125C19.925 16.4875 20 16.6833 20 16.9V20.95C20 21.25 19.9 21.5 19.7 21.7C19.5 21.9 19.25 22 18.95 22ZM5.025 10L6.675 8.35L6.25 6H4.025C4.10833 6.68333 4.225 7.35833 4.375 8.025C4.525 8.69167 4.74167 9.35 5.025 10ZM13.975 18.95C14.625 19.2333 15.2875 19.4583 15.9625 19.625C16.6375 19.7917 17.3167 19.9 18 19.95V17.75L15.65 17.275L13.975 18.95ZM13 4C12.7167 4 12.4792 3.90417 12.2875 3.7125C12.0958 3.52083 12 3.28333 12 3C12 2.71667 12.0958 2.47917 12.2875 2.2875C12.4792 2.09583 12.7167 2 13 2H21C21.2833 2 21.5208 2.09583 21.7125 2.2875C21.9042 2.47917 22 2.71667 22 3C22 3.28333 21.9042 3.52083 21.7125 3.7125C21.5208 3.90417 21.2833 4 21 4H13ZM13 8C12.7167 8 12.4792 7.90417 12.2875 7.7125C12.0958 7.52083 12 7.28333 12 7C12 6.71667 12.0958 6.47917 12.2875 6.2875C12.4792 6.09583 12.7167 6 13 6H21C21.2833 6 21.5208 6.09583 21.7125 6.2875C21.9042 6.47917 22 6.71667 22 7C22 7.28333 21.9042 7.52083 21.7125 7.7125C21.5208 7.90417 21.2833 8 21 8H13ZM13 12C12.7167 12 12.4792 11.9042 12.2875 11.7125C12.0958 11.5208 12 11.2833 12 11C12 10.7167 12.0958 10.4792 12.2875 10.2875C12.4792 10.0958 12.7167 10 13 10H21C21.2833 10 21.5208 10.0958 21.7125 10.2875C21.9042 10.4792 22 10.7167 22 11C22 11.2833 21.9042 11.5208 21.7125 11.7125C21.5208 11.9042 21.2833 12 21 12H13Z"
+                                  fill="#333B48"
+                                />
+                              </svg>
+                              Call Logs
+                            </NavLink>
+                          </li>
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+              {/* <!-- Reports --> */}
+              <li onClick={() => handleLinkClick('Billing')}>
+                <NavLink
+                  to="/billing"
+                  className={`group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ${
+                    pathname.includes('/billing') &&
+                    'border-l-2 border-[#1D2532] text-black dark:border-white'
+                  }`}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="fill-black dark:fill-white"
+                      d="M6 22C5.45 22 4.97917 21.8042 4.5875 21.4125C4.19583 21.0208 4 20.55 4 20V10C4 9.45 4.19583 8.97917 4.5875 8.5875C4.97917 8.19583 5.45 8 6 8H7V6C7 4.61667 7.4875 3.4375 8.4625 2.4625C9.4375 1.4875 10.6167 1 12 1C13.3833 1 14.5625 1.4875 15.5375 2.4625C16.5125 3.4375 17 4.61667 17 6V8H18C18.55 8 19.0208 8.19583 19.4125 8.5875C19.8042 8.97917 20 9.45 20 10V20C20 20.55 19.8042 21.0208 19.4125 21.4125C19.0208 21.8042 18.55 22 18 22H6ZM6 20H18V10H6V20ZM12 17C12.55 17 13.0208 16.8042 13.4125 16.4125C13.8042 16.0208 14 15.55 14 15C14 14.45 13.8042 13.9792 13.4125 13.5875C13.0208 13.1958 12.55 13 12 13C11.45 13 10.9792 13.1958 10.5875 13.5875C10.1958 13.9792 10 14.45 10 15C10 15.55 10.1958 16.0208 10.5875 16.4125C10.9792 16.8042 11.45 17 12 17ZM9 8H15V6C15 5.16667 14.7083 4.45833 14.125 3.875C13.5417 3.29167 12.8333 3 12 3C11.1667 3 10.4583 3.29167 9.875 3.875C9.29167 4.45833 9 5.16667 9 6V8Z"
+                      fill="#333B48"
+                    />
+                  </svg>
+                  Billing
+                </NavLink>
+              </li>
+              <li onClick={() => handleLinkClick('Members')}>
+                <NavLink
+                  to="/member"
+                  className={`group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ${
+                    pathname.includes('/member') &&
+                    'border-l-2 border-[#1D2532] text-black dark:border-white'
+                  }`}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="fill-black dark:fill-white"
+                      d="M5 21C4.45 21 3.97917 20.8042 3.5875 20.4125C3.19583 20.0208 3 19.55 3 19V5C3 4.45 3.19583 3.97917 3.5875 3.5875C3.97917 3.19583 4.45 3 5 3H19C19.55 3 20.0208 3.19583 20.4125 3.5875C20.8042 3.97917 21 4.45 21 5V7.5H19V5H5V19H19V16.5H21V19C21 19.55 20.8042 20.0208 20.4125 20.4125C20.0208 20.8042 19.55 21 19 21H5ZM13 17C12.45 17 11.9792 16.8042 11.5875 16.4125C11.1958 16.0208 11 15.55 11 15V9C11 8.45 11.1958 7.97917 11.5875 7.5875C11.9792 7.19583 12.45 7 13 7H20C20.55 7 21.0208 7.19583 21.4125 7.5875C21.8042 7.97917 22 8.45 22 9V15C22 15.55 21.8042 16.0208 21.4125 16.4125C21.0208 16.8042 20.55 17 20 17H13ZM20 15V9H13V15H20ZM16 13.5C16.4167 13.5 16.7708 13.3542 17.0625 13.0625C17.3542 12.7708 17.5 12.4167 17.5 12C17.5 11.5833 17.3542 11.2292 17.0625 10.9375C16.7708 10.6458 16.4167 10.5 16 10.5C15.5833 10.5 15.2292 10.6458 14.9375 10.9375C14.6458 11.2292 14.5 11.5833 14.5 12C14.5 12.4167 14.6458 12.7708 14.9375 13.0625C15.2292 13.3542 15.5833 13.5 16 13.5Z"
+                      fill="#333B48"
+                    />
+                  </svg>
+                  Members
+                </NavLink>
+              </li>
             </ul>
           </div>
-
-         
-
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>

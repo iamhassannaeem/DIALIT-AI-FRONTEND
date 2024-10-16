@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 
 const CallLogInformation = [
   {
@@ -8,6 +9,17 @@ const CallLogInformation = [
   },
 ];
 const CallLog = () => {
+  const [cardNumber, setCardNumber] = useState("");
+  const [isValid, setIsValid] = useState(false);
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    const regex = /^\d{13,16}$/;
+
+    setCardNumber(value);
+    setIsValid(regex.test(value));
+  };
+
   return (
     <div className="h-[326px] p-4 md:p-6  gap-2  rounded-xl	bg-[#1D2532]">
       <div>
@@ -77,9 +89,14 @@ const CallLog = () => {
                       />
                     </svg>
                   </span>
-                  <span className="text-sm text-[#D6D6D5] flex md:flex-row">
-                    {CallLogInformation?.Cardnumber}
-                  </span>
+                  <input
+                    className="font-normal bg-[#242E3E]  text-[#D6D6D5] border-0 outline-none text-sm"
+                    name="number"
+                    type="numeric"
+                    value={cardNumber}
+                    onChange={handleChange}
+                    placeholder="Enter Card Number"
+                  />
                 </div>
 
                 <span className="text-[#1FCD67] text-sm font-semibold	">
@@ -100,9 +117,15 @@ const CallLog = () => {
                 />
               </svg>
             </div>
+            {cardNumber.length > 0 &&
+              (isValid ? (
+                <p></p>
+              ) : (
+                <p className="text-sm text-rose-600">Not Valid</p>
+              ))}
           </div>
         ))}
-        <div className="break-all bg-[#242E3E] p-2 md:p-3 border-[1px] border-[#333B48] rounded-md font-semibold	text-xs text-[#D6D6D5]">
+        <div className="break-all bg-[#242E3E] p-1 md:p-2 md:p-3 border-[1px] border-[#333B48] rounded-md font-semibold	text-xs text-[#D6D6D5]">
           <b className="text-white">Note:</b> Manage your subscription,
           invoices, and card details, via <u>Payment Management Portal</u>.This
           Portal will be accessible only after you save your credit card

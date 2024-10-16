@@ -1,3 +1,4 @@
+import { useState } from "react";
 import React from "react";
 
 const MonthlyUsageData = [
@@ -10,6 +11,18 @@ const MonthlyUsageData = [
 ];
 
 const MonthlyUsageLimit = () => {
+  const [number, setNumber] = useState("");
+  const [error, setError] = useState(false);
+
+  const handleChange = (e) => {
+    const regex = /^[0-9]*$/;
+    if (regex.test(e.target.value)) {
+      setNumber(e.target.value);
+      setError(false);
+    } else {
+      setError(true);
+    }
+  };
   return (
     <div>
       {MonthlyUsageData?.map((MonthlyUsageData) => (
@@ -51,9 +64,25 @@ const MonthlyUsageLimit = () => {
                   />
                 </svg>
               </span>
-              <span className="font-normal text-[#D6D6D5]/30 text-sm">
+              <input
+                className="font-normal bg-[#242E3E]  text-[#D6D6D5]/30 border-0 outline-none text-sm"
+                name="number"
+                type="numeric"
+                value={number}
+                onChange={handleChange}
+                placeholder="Enter Amount Here"
+              />
+
+              {/* <span className="font-normal text-[#D6D6D5]/30 text-sm">
                 {MonthlyUsageData?.Amount}
-              </span>
+              </span> */}
+            </div>
+            <div>
+              {error && (
+                <p className="text-rose-600 text-sm">
+                  Invalid input. Please enter numbers only.
+                </p>
+              )}
             </div>
           </div>
           <div className="flex gap-2 justify-between">

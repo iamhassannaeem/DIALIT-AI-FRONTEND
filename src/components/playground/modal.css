@@ -41,4 +41,12 @@ input:-webkit-autofill {
     box-shadow: 0 0 0px 1000px #242E3E inset !important;
     transition: background-color 5000s ease-in-out 0s;
   }
-  
+ .css-1u9des2-indicatorSeparator{
+    display: none !important;
+ }
+ .css-hlgwow{
+    padding-left: 30px !important;
+ }
+ .css-zaip1u-menu{
+background: #1D2532 !important;
+ }

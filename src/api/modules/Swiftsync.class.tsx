@@ -52,6 +52,60 @@ export const addPhoneNumber = async (payload: payload): Promise<ApiResponse> => 
   }
 };
 
+// Inactive a phone number
+export const inactivePhoneNumber = async (id:number,payload:payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.patch(`${endpoints.inactivePhoneNumber}${id}/update_status/`,payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+export const getFiles = async (fileType: string="" ): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(`${endpoints.getFiles}?file_type=${fileType}`);
+    return response.data as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+// get Download
+export const downloadFile = async (name: string): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(`${endpoints.downloadFile}${name}/`, {
+      responseType: 'blob', // Set the response type to 'blob'
+    });
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// upload file 
+export const uploadFile = async (payload: FormData): Promise<ApiResponse> => {
+  try {
+    // Make the request with the FormData
+    const response = await axios.post(endpoints.uploadFile, payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Set the correct content type for file uploads
+      },
+    });
+
+    return response.data as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error.message || 'File upload failed' };
+  }
+};
+// delete the files
+export const deleteFile = async (id:number): Promise<ApiResponse> => {
+  try {
+    const response = await axios.delete(`${endpoints.deleteFile}${id}/`);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
 // organisation create
 // export const organisationCreate = async (
 //   payload: Payload,

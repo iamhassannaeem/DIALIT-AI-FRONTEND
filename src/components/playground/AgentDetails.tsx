@@ -3,7 +3,12 @@ import talk from '../../images/talk.png';
 import dropdown from '../../images/dropdown.png';
 import DoughnutChart from './DoughnutChart';
 import AgentTabs from './AgentTabs';
+import PublishAgentModal from './PublishAgentModal';
 const AgentDetails: React.FC = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
+  const [error, setError] = useState({ success: '', error: '' });
   return (
     <>
       <div className="flex w-full flex-col flex-wrap  justify-between gap-6 rounded-t-xl bg-[#EEEEEE]  p-6 dark:bg-[#1D2532]">
@@ -234,32 +239,13 @@ const AgentDetails: React.FC = () => {
         <hr className="border-1 border-stroke-[#333B48] w-[99%]" />
         <AgentTabs />
         <div className="flex items-center justify-end">
-          <button
-            type="submit"
-            className="mt-[14px] flex items-center justify-center gap-[6px] rounded-[4px] bg-[#2691B6] p-3 text-xs font-semibold text-white"
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 22 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g clip-path="url(#clip0_556_1489)">
-                <path
-                  d="M4.5835 3.66669H17.4168V5.50002H4.5835V3.66669ZM4.5835 12.8334H8.25016V18.3334H13.7502V12.8334H17.4168L11.0002 6.41669L4.5835 12.8334ZM11.9168 11V16.5H10.0835V11H9.011L11.0002 9.01085L12.9893 11H11.9168Z"
-                  fill="white"
-                />
-              </g>
-              <defs>
-                <clipPath id="clip0_556_1489">
-                  <rect width="22" height="22" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
-
-            <span>Publish</span>
-          </button>
+          <PublishAgentModal
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            openModal={openModal}
+            closeModal={closeModal}
+            setError={setError}
+          />
         </div>
       </div>
     </>

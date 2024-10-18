@@ -40,7 +40,7 @@ axiosInstance.interceptors.request.use(
   (config) => {
     // const authToken = localStorage.getItem('access');
     const authToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMxNjc2MzU5LCJpYXQiOjE3MjkwODQzNTksImp0aSI6ImI0NzE4NDMwMzRmZjRmOTI4Y2ZiOTUyYTc3NDc2YjQ4IiwidXNlcl9pZCI6MjZ9.tfQtHXRkWHeVjfjC4ehnJhq7e8hcDY_2rPBm__B6T-s';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMxNzQ1NDQyLCJpYXQiOjE3MjkxNTM0NDIsImp0aSI6IjIxOGJhNzYyYmQzYjQyNTJiN2QzYzBmYzVjODNjNmE0IiwidXNlcl9pZCI6MjZ9.cgrzSPj7GTPFYUF9fawYMNwMtG8t1MXgEmeB6QXauxM';
     if (authToken) {
       config.headers.Authorization = `Bearer ${authToken}`;
     }

@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import model from '../../images/agenttabsimages/model.svg';
-import feedback from '../../images/agenttabsimages/feedback.svg';
-import audio from '../../images/agenttabsimages/audio.svg';
 import FeedbackCard from './AgentTabs/FeedbackCard';
 import ModelCard from './AgentTabs/ModelCard';
 import AudioCard from './AgentTabs/AudioCard';

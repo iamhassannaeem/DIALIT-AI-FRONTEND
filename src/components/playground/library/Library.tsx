@@ -7,12 +7,13 @@ import { BeatLoader } from 'react-spinners';
 const Library: React.FC = () => {
   const [files, setFiles] = useState();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<ErrorState>({ success: '', error: '' });
 
   const [load, setLoad] = useState(false);
-  const handleFileChange = async (event) => {
+  const handleFileChange = async (event:any) => {
     const file = event.target.files[0];
     if (file) {
-      console.log('Selected file:', file);
+      
       const formData = new FormData();
       formData.append('file', file);
 
@@ -21,13 +22,17 @@ const Library: React.FC = () => {
         setLoad(true);
         const resp = await uploadFile(formData);
         setLoad(false);
+        setError({error: "",success:"File uploaded successfully"})
         const res = await getFiles();
         setFiles(res);
       } catch (error) {
         console.error('Error uploading file:', error);
+        setError({error: "Error uploading file",success:""})
+
       }
     } else {
       console.log('No file selected');
+      
     }
   };
 

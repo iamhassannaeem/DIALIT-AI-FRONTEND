@@ -5,14 +5,15 @@ import Toaster from '../Toast/Toast';
 import { getPhoneNumber } from '../../api/modules/Swiftsync.class';
 import Loader from '../../common/Loader';
 import InActiveModal from './InActiveModal';
+import ChangeStatus from '../ChangeStatus';
 
 interface PhoneNumber {
   phone_number: string;
-  account_sid: string;
-  account_auth_token: string;
+  usage_count: string;
+  created_date: string;
   auth_token_label: string;
-  status:string;
-  id:number;
+  status: string;
+  id: number;
 }
 
 interface ErrorState {
@@ -82,13 +83,13 @@ const Phone: React.FC = () => {
                     Phone Number
                   </th>
                   <th className="px-4 pb-3 text-xs font-semibold">
-                    Account SID
+                    Assigned Agent
                   </th>
                   <th className="px-4 pb-3 text-xs font-semibold">
-                    Auth Token
+                    Creation Date
                   </th>
                   <th className="px-4 pb-3 text-xs font-semibold">Label</th>
-                  <th className="px-4 pb-3 text-xs font-semibold">status</th>
+                  <th className="px-4 pb-3 text-xs font-semibold">Status</th>
                   <th className="px-4 pb-3 text-xs font-semibold">Action</th>
                 </tr>
               </thead>
@@ -102,19 +103,34 @@ const Phone: React.FC = () => {
                       {item?.phone_number}
                     </td>
                     <td className="py-3 px-4 text-sm font-normal">
-                      {item?.account_sid}
+                      {item?.usage_count}
                     </td>
                     <td className="py-3 px-4 text-sm font-normal">
-                      {item?.account_auth_token}
+                    {item?.created_date
+                              ? new Date(item?.created_date)
+                                  .toISOString()
+                                  .split('T')[0]
+                              : ''}
+
                     </td>
                     <td className="py-3 px-4 text-sm font-normal uppercase">
                       {item?.auth_token_label}
                     </td>
-                    <td className="py-3 px-4 text-sm font-normal capitalize">
+                    <td
+                      className={`py-3 px-4 text-sm font-normal capitalize ${
+                        item?.status == 'active' ? 'text-[#009933]' : 'text-red'
+                      }`}
+                    >
                       {item?.status}
                     </td>
                     <td>
-                      <InActiveModal
+                      <ChangeStatus
+                        setError={setError}
+                        id={item?.id}
+                        status={item?.status}
+                        setData={setData}
+                      />
+                      {/* <InActiveModal
                         isOpen={isInactiveModalOpen}
                         setIsOpen={setIsInactiveModalOpen}
                         openModal={openInactiveModal}
@@ -123,7 +139,7 @@ const Phone: React.FC = () => {
                         id={item?.id}
                         status={item?.status}
                         setData={setData}
-                      />
+                      /> */}
                     </td>
                   </tr>
                 ))}

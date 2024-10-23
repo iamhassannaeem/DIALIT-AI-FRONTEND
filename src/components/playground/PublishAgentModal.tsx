@@ -103,8 +103,8 @@ const PublishAgentModal = ({
       </button>
 
       {isOpen && (
-        <div className=" fixed top-0 left-0 z-999999 flex h-full min-h-screen w-full items-center justify-center bg-black/90 ">
-          <div className="flex w-full max-w-142.5 flex-col gap-6 rounded-lg bg-[#EEEEEE]  p-8 dark:bg-[#1D2532] ">
+        <div className=" fixed top-0 left-0 z-999999 flex h-full min-h-screen w-full items-center justify-center bg-black/95 ">
+          <div className="flex w-full max-w-142.5 flex-col gap-6 rounded-lg bg-[#EEEEEE]  p-8 dark:bg-[#222e42] ">
             <div className=" flex items-center justify-between text-center">
               <h2 className="text-lg font-semibold text-[#1D2532] dark:text-white sm:text-2xl">
                 Publish Agent

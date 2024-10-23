@@ -4,7 +4,7 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <div className="flex items-center justify-end">
-        <div className="flex gap-[6px] rounded-md border-[1px] p-[8px] dark:border-[#333B48] dark:bg-[#242E3E]">
+        <div className="flex cursor-pointer gap-[6px] rounded-md border-[1px] p-[8px] dark:border-[#333B48] dark:bg-[#242E3E]">
           <svg
             width="22"
             height="22"

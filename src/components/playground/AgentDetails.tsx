@@ -1,23 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import talk from '../../images/talk.png';
 import dropdown from '../../images/dropdown.png';
 import DoughnutChart from './DoughnutChart';
 import AgentTabs from './AgentTabs';
 import PublishAgentModal from './PublishAgentModal';
-const AgentDetails: React.FC = () => {
+import { agentDetails } from '../../api/modules/Swiftsync.class';
+const AgentDetails: React.FC = ({ selectedAgent }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
   const [error, setError] = useState({ success: '', error: '' });
+  const [details,setDetails]=useState()
+  const [loading,setLoading]=useState(false)
+  useEffect(() => {
+    try {
+      const api = async () => {
+        setLoading(true)
+        const res = await agentDetails(selectedAgent?.id);
+        console.log(res);
+        setLoading(false)
+        if (res?.status==200){
+          setDetails(res?.data)
+
+        }
+      };
+      api();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
   return (
     <>
       <div className="flex w-full flex-col flex-wrap  justify-between gap-6 rounded-t-xl bg-[#EEEEEE]  p-6 dark:bg-[#1D2532]">
         <div className="flex w-full flex-wrap items-center justify-between gap-6">
           <div className="flex flex-wrap items-center justify-between gap-6">
             <div className="flex flex-col flex-wrap items-start">
-              <h5 className="text-base font-semibold text-[#1D2532] dark:text-white">
-                Domify
-              </h5>
+              <h5 className="text-base font-semibold text-[#1D2532] dark:text-white"></h5>
               <div className="flex flex-wrap items-center justify-between gap-6">
                 <span className="text-xs font-normal text-[#7E7E7E] dark:text-[#D6D6D5]">
                   83796abb-580e-4734-9053-f76dd6b312a3

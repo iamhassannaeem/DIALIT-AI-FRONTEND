@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AgentModal from './AgentModal';
 import agentimg from '../../images/agent.png';
 import AgentDetails from './AgentDetails';
+import { getAgents } from '../../api/modules/Swiftsync.class';
 const agents = [
   {
     id: 'domify',
@@ -38,75 +39,113 @@ const Agent: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
-  const data = true;
+  const [agentData, setAgentData] = useState<any>({});
+  const data = false;
 
-  const [selectedAgent, setSelectedAgent] = useState<string | null>('domify');
+  const [selectedAgent, setSelectedAgent] = useState({ id: '', name: '' });
 
-  const handleSelectAgent = (id: string) => {
-    setSelectedAgent(id);
+  const handleSelectAgent = (id: string, name: string) => {
+    setSelectedAgent({ id, name }); // Save both id and name in the state
   };
+
+  console.log(selectedAgent);
+  const agents = [
+    ...(agentData?.feedback_agents || []),
+    ...(agentData?.sales_agents || []),
+  ];
+
+  useEffect(() => {
+    try {
+      const api = async () => {
+        const res = await getAgents();
+
+        if (res?.data?.feedback_agents.length > 0) {
+          setAgentData(res?.data);
+        }
+      };
+
+      api();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   return (
     <>
-      {data ? (
-       <div className="flex flex-col items-start justify-start gap-4">
-       <div className="flex flex-col w-full gap-6 rounded-t-xl bg-[#EEEEEE] dark:bg-[#1D2532] p-6">
-         <div>
-           <h5 className="text-base font-semibold text-[#1D2532] dark:text-white">All Agents</h5>
-           <span className="text-xs font-normal dark:text-[#D6D6D5] text-[#7E7E7E]">
-             Here are all your created agents.
-           </span>
-         </div>
-         
-         {/* Dropdown for small screens */}
-         <div className="block md:hidden w-full">
-           <select
-             className="w-full p-2 border rounded-md bg-white dark:bg-[#242E3E] text-[#1D2532] dark:text-white"
-             value={selectedAgent}
-             onChange={(e) => handleSelectAgent(e.target.value)}
-           >
-             {agents.map((agent) => (
-               <option key={agent.id} value={agent.id}>
-                 {agent.name}
-               </option>
-             ))}
-           </select>
-         </div>
-     
-         {/* Grid layout for larger screens */}
-         <div className="hidden md:flex flex-wrap items-center justify-between gap-3">
-           {agents.map((agent) => (
-             <div
-               key={agent.id}
-               className={`cursor-pointer rounded-md p-2 ${
-                 selectedAgent === agent.id
-                   ? ' border-[#333B48] dark:bg-[#242E3E] bg-[#c0bfbf]'
-                   : ''
-               }`}
-               onClick={() => handleSelectAgent(agent.id)}
-             >
-               <h6 className="text-sm font-semibold text-[#1D2532] dark:text-white">
-                 {agent.name}
-               </h6>
-               <span className="text-xs font-normal text-[#1D2532] dark:text-white">
-                 {agent.description}
-               </span>
-             </div>
-           ))}
-         </div>
-       </div>
-     
-       <AgentDetails />
-     </div>
-     
+      {agentData?.feedback_agents?.length > 0 > 0 ? (
+        <div className="flex flex-col items-start justify-start gap-4">
+          <div className="flex w-full flex-col gap-6 rounded-t-xl bg-[#EEEEEE] p-6 dark:bg-[#1D2532]">
+            <div className="flex items-center justify-between">
+              <div>
+                <h5 className="text-base font-semibold text-[#1D2532] dark:text-white">
+                  All Agents
+                </h5>
+                <span className="text-xs font-normal text-[#7E7E7E] dark:text-[#D6D6D5]">
+                  Here are all your created agents.
+                </span>
+              </div>
+              <AgentModal
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                openModal={openModal}
+                closeModal={closeModal}
+              />
+            </div>
+
+            <div className="block w-full md:hidden">
+              <select
+                className="w-full rounded-md border bg-white p-2 text-[#1D2532] dark:bg-[#242E3E] dark:text-white"
+                value={selectedAgent.id} // Bind value to selectedAgent.id
+                onChange={(e) => {
+                  const selectedOption = agents.find(
+                    (agent) => agent.id === e.target.value
+                  );
+                  if (selectedOption) {
+                    handleSelectAgent(selectedOption.id, selectedOption.name);
+                  }
+                }}
+              >
+                {agents?.map((agent) => (
+                  <option key={agent.id} value={agent?.id}>
+                    {agent?.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Grid layout for larger screens */}
+            <div className="scrollbar  hidden w-full items-center justify-between gap-3 overflow-x-auto md:flex">
+              {agents?.map((agent) => (
+                <div
+                  key={agent?.id}
+                  className={`flex min-w-[150px] cursor-pointer flex-col rounded-md p-2 gap-2${
+                    selectedAgent?.id === agent?.id
+                      ? ' border-[#333B48] bg-[#c0bfbf] dark:bg-[#242E3E]'
+                      : ''
+                  }`}
+                  onClick={() => handleSelectAgent(agent?.id,agent?.name)}
+                >
+                  <h6 className="text-sm font-semibold text-[#1D2532] dark:text-white">
+                    {agent?.name}
+                  </h6>
+                  <span className="text-xs font-normal text-[#1D2532] dark:text-white">
+                    {agent?.type}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <AgentDetails selectedAgent={selectedAgent} />
+        </div>
       ) : (
-        <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-[#EEEEEE]  dark:bg-[#1D2532] p-6">
+        <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-[#EEEEEE]  p-6 dark:bg-[#1D2532]">
           <img src={agentimg} alt="" />
           <div className="flex flex-col items-center justify-center gap-2">
             <h4 className="text-center text-2xl font-semibold text-[#1D2532] dark:text-white">
               Agent
             </h4>
-            <p className="text-center text-sm font-normal dark:text-[#D6D6D5] text-[#7E7E7E]">
+            <p className="text-center text-sm font-normal text-[#7E7E7E] dark:text-[#D6D6D5]">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut.
               <br />

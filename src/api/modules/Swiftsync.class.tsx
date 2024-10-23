@@ -105,6 +105,36 @@ export const deleteFile = async (id:number): Promise<ApiResponse> => {
     return { success: false, message: error };
   }
 };
+// create agent
+export const createAgent = async (payload:payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.post(`${endpoints.createAgent}`,payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// get agents
+export const getAgents = async (): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(endpoints.createAgent);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// get agent details
+export const agentDetails = async (id:number): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(`${endpoints.agentDetails}${id}`);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
 
 // organisation create
 // export const organisationCreate = async (

@@ -7,6 +7,8 @@ export interface ApiEndpoints {
     downloadFile:string;
     deleteFile:string;
     inactivePhoneNumber:string;
+    createAgent:string;
+    agentDetails:string;
   }
   
   const endpoints: ApiEndpoints = {
@@ -18,6 +20,8 @@ export interface ApiEndpoints {
     uploadFile:'/ai_call_agent/library/',
     deleteFile:'ai_call_agent/library/',
     inactivePhoneNumber:"ai_call_agent/twillio_auth/",
+    createAgent:'ai_call_agent/agent/',
+    agentDetails:"ai_call_agent/agents/InputData/"
 
   };
   

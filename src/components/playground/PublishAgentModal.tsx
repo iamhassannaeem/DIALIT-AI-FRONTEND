@@ -3,6 +3,8 @@ import cross from '../../images/cross.png';
 import './modal.css';
 import Select from 'react-select';
 import clsx from 'clsx';
+import { publishAgent } from '../../api/modules/Swiftsync.class';
+import { BeatLoader } from 'react-spinners';
 
 interface PhoneNumber {
   id: string;
@@ -10,72 +12,88 @@ interface PhoneNumber {
   account_sid: string;
   account_auth_token: string;
   name: string;
+  status:number;
 }
-
-const phoneData: PhoneNumber[] = [
-  {
-    id: '1',
-    phone_number: '+1234567890',
-    account_sid: 'AC123',
-    account_auth_token: 'auth_token_1',
-    name: "John's Phone",
-  },
-  {
-    id: '2',
-    phone_number: '+0987654321',
-    account_sid: 'AC456',
-    account_auth_token: 'auth_token_2',
-    name: 'Office Phone',
-  },
-  {
-    id: '3',
-    phone_number: '+1122334455',
-    account_sid: 'AC789',
-    account_auth_token: 'auth_token_3',
-    name: 'Support Phone',
-  },
-];
-// Function to check if dark mode is active
-const isDarkMode = localStorage.getItem('color-theme');
 
 // Custom styles for react-select with dark mode support
 
-
 const PublishAgentModal = ({
+  details,
   isOpen,
   openModal,
   closeModal,
   setError,
+  selectedAgent,
+  firstMessage,
+  selectedProvider,
+  selectedModel,
+  questions,
+  ttsProvider,
+  sttProvider,
+  gender,
+  voice,
 }: {
+  details: any;
   isOpen: any;
   setIsOpen: any;
   closeModal: any;
   openModal: any;
   setError: (error: string | null) => void;
+  firstMessage: any;
+  selectedProvider: any;
+  selectedModel: any;
+  questions: any;
+  ttsProvider: any;
+  sttProvider: any;
+  gender: any;
+  voice: any;
+  selectedAgent:any;
+  
 }) => {
   const [selectedOption, setSelectedOption] = useState<{
     value: string;
     label: string;
     id: string;
   } | null>(null);
-
   // Map phone data to react-select options
-  const options = phoneData.map((item) => ({
-    value: item.phone_number,
-    label: item.phone_number,
-    id: item.id,
+  const options = details?.twilio_numbers?.map((item: PhoneNumber) => ({
+    value: item.phone_number, // Value used in the form submission or logic
+    label: item?.phone_number, // Label displayed in the dropdown
+    id: item?.id,
   }));
-
+  const [loading, setLoading] = useState(false);
   const handleChange = (
     option: { value: string; label: string; id: string } | null
   ) => {
     setSelectedOption(option);
   };
 
+  const handleOpen = async () => {
+    setLoading(true);
+    const res = await publishAgent(selectedAgent?.id, {
+      first_message: firstMessage,
+      active: true,
+      gender: gender,
+      ai_model: selectedModel,
+      ai_tec: selectedProvider,
+      voice_name: voice,
+      agent_type: selectedAgent?.type,
+      twillio_number: selectedOption?.id,
+      tts_technology_provider: ttsProvider,
+      stt_technology_provider: sttProvider,
+      feed_questions: questions,
+    });
+    console.log(res);
+    if (res?.status == 200) {
+      setLoading(false);
+
+      closeModal();
+    }
+  };
   return (
     <div>
       <button
-        onClick={openModal}
+        onClick={() => openModal()}
         type="submit"
         className="mt-[14px] flex items-center justify-center gap-[6px] rounded-[4px] bg-[#2691B6] p-3 text-xs font-semibold text-white"
       >
@@ -136,7 +154,6 @@ const PublishAgentModal = ({
                   options={options}
                   value={selectedOption}
                   onChange={handleChange}
-                  
                   classNames={{
                     control: () => 'dark:bg-[#1D2532] dark:text-[white]',
                     option: () =>
@@ -165,30 +182,36 @@ const PublishAgentModal = ({
             <div className="flex justify-between gap-[8px]">
               <button
                 type="button"
-                // onClick={handleClick}
+                onClick={handleOpen}
                 className="flex w-full items-center justify-center gap-2 rounded-[6px] bg-[#2691B6] p-[12px] text-sm font-semibold text-white"
               >
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 22 22"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g clip-path="url(#clip0_556_1489)">
-                    <path
-                      d="M4.5835 3.66669H17.4168V5.50002H4.5835V3.66669ZM4.5835 12.8334H8.25016V18.3334H13.7502V12.8334H17.4168L11.0002 6.41669L4.5835 12.8334ZM11.9168 11V16.5H10.0835V11H9.011L11.0002 9.01085L12.9893 11H11.9168Z"
-                      fill="white"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_556_1489">
-                      <rect width="22" height="22" fill="white" />
-                    </clipPath>
-                  </defs>
-                </svg>
-
-                <span>Publish</span>
+                {loading ? (
+                  <BeatLoader color="white" />
+                ) : (
+                  <>
+                    {' '}
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 22 22"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g clip-path="url(#clip0_556_1489)">
+                        <path
+                          d="M4.5835 3.66669H17.4168V5.50002H4.5835V3.66669ZM4.5835 12.8334H8.25016V18.3334H13.7502V12.8334H17.4168L11.0002 6.41669L4.5835 12.8334ZM11.9168 11V16.5H10.0835V11H9.011L11.0002 9.01085L12.9893 11H11.9168Z"
+                          fill="white"
+                        />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_556_1489">
+                          <rect width="22" height="22" fill="white" />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                    <span>Publish</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

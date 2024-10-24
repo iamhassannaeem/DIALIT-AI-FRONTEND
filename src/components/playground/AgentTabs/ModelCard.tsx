@@ -1,7 +1,15 @@
-import React from 'react';
-import model from '../../../images/agenttabsimages/model.svg';
+import React, { useState } from 'react';
 
-const ModelCard = () => {
+const ModelCard = ({
+  model,
+  selectedAgent,
+  setFirstMessage,
+  setSelectedProvider,
+  setSelectedModel,
+  firstMessage,
+  selectedProvider,
+  selectedModel,
+}) => {
   return (
     <div className=" flex items-center justify-center rounded-xl bg-[#c0bfbf] p-2 dark:bg-[#242E3E] sm:p-4">
       <div className=" flex w-full  flex-col gap-6 rounded-lg shadow-lg">
@@ -37,12 +45,13 @@ const ModelCard = () => {
           </label>
           <input
             id="firstMessage"
-            className=" w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
-            value="Hello, this is Dominy. How may I assist you today?"
+            className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+            value={firstMessage} // Bind to state
+            onChange={(e) => setFirstMessage(e.target.value)} // Update state on change
           />
         </div>
 
-        <div className="flex flex-wrap items-center justify-between">
+        <div className="flex flex-wrap items-center justify-start gap-3">
           <div className="w-full md:w-[32%]">
             <label
               className="mb-1 block text-sm font-normal text-[#7E7E7E] dark:text-[#D6D6D5]"
@@ -52,12 +61,13 @@ const ModelCard = () => {
             </label>
             <select
               id="provider"
+              onChange={(e) => setSelectedProvider(e.target.value)}
+              value={selectedProvider}
               className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
             >
-              <option value="OpenAI" className="hover:bg-black-2">
-                OpenAI
-              </option>
-              <option value="OtherProvider">Other Provider</option>
+              {model?.ai_tecs?.map((item) => (
+                <option value={item?.id}>{item?.ai_tec_provider}</option>
+              ))}
             </select>
           </div>
 
@@ -70,30 +80,33 @@ const ModelCard = () => {
             </label>
             <select
               id="model"
+              onChange={(e) => setSelectedModel(e.target.value)}
+              value={selectedModel}
               className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
             >
-              <option value="GPT-4">GPT-4</option>
-              <option value="GPT-3.5">GPT-3.5</option>
-              <option value="CustomModel">Custom Model</option>
+              {model?.ai_models?.map((item) => (
+                <option value={item?.id}>{item?.ai_model_provider}</option>
+              ))}
             </select>
           </div>
-
-          <div className="w-full md:w-[32%]">
-            <label
-              className="mb-1 block text-sm font-normal text-[#7E7E7E] dark:text-[#D6D6D5]"
-              htmlFor="knowledgeBase"
-            >
-              Knowledge Base
-            </label>
-            <select
-              id="knowledgeBase"
-              className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
-            >
-              <option value="">Select</option>
-              <option value="KnowledgeBase1">Knowledge Base 1</option>
-              <option value="KnowledgeBase2">Knowledge Base 2</option>
-            </select>
-          </div>
+          {!(selectedAgent?.type === 'feedback') && (
+            <div className="w-full md:w-[32%]">
+              <label
+                className="mb-1 block text-sm font-normal text-[#7E7E7E] dark:text-[#D6D6D5]"
+                htmlFor="knowledgeBase"
+              >
+                Knowledge Base
+              </label>
+              <select
+                id="knowledgeBase"
+                className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+              >
+                <option value="">Select</option>
+                <option value="KnowledgeBase1">Knowledge Base 1</option>
+                <option value="KnowledgeBase2">Knowledge Base 2</option>
+              </select>
+            </div>
+          )}
         </div>
       </div>
     </div>

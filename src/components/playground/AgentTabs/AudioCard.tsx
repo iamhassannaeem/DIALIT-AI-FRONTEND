@@ -1,7 +1,16 @@
 import React from 'react';
-import audio from '../../../images/agenttabsimages/audio.svg';
 
-const AudioCard = () => {
+const AudioCard = ({
+  model,
+  ttsProvider,
+  setTtsProvider,
+  sttProvider,
+  setSttProvider,
+  gender,
+  setGender,
+  voice,
+  setVoice,
+}) => {
   return (
     <div className="flex items-center justify-center rounded-xl bg-[#c0bfbf] p-4 dark:bg-[#242E3E] sm:p-6">
       <div className="flex w-full flex-col gap-4 rounded-lg shadow-lg">
@@ -44,28 +53,43 @@ const AudioCard = () => {
               <label className="text-sm font-normal text-[#9AAAB9]">
                 Provider
               </label>
-              <select className="w-full cursor-pointer rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E]  dark:text-white">
-                <option value="OpenAI">OpenAI</option>
-                <option value="Amazon">Amazon</option>
-                <option value="Google">Google</option>
+              <select
+                id="provider"
+                onChange={(e) => setTtsProvider(e.target.value)}
+                value={ttsProvider}
+                className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+              >
+                {model?.ai_tecs?.map((item) => (
+                  <option value={item?.id}>{item?.ai_tec_provider}</option>
+                ))}
               </select>
             </div>
             <div className="flex w-full flex-col justify-start md:w-[32%]">
               <label className="text-sm font-normal text-[#9AAAB9]">
                 Gender
               </label>
-              <select className="w-full cursor-pointer rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E]  dark:text-white">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
+              <select
+                className="w-full cursor-pointer rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+                value={gender} // Bind to state
+                onChange={(e) => setGender(e.target.value)} // Update state on change
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
               </select>
             </div>
             <div className="flex w-full flex-col justify-start md:w-[32%]">
               <label className="text-sm font-normal text-[#9AAAB9]">
                 Audio
               </label>
-              <select className="w-full cursor-pointer rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E]  dark:text-white">
-                <option value="Voice1">Wise Guide Man</option>
-                <option value="Voice2">Gentlewoman</option>
+              <select
+                id="provider"
+                onChange={(e) => setVoice(e.target.value)}
+                value={voice}
+                className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+              >
+                {model?.voices?.map((item) => (
+                  <option value={item?.id}>{item?.ai_audio_provider}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -83,10 +107,15 @@ const AudioCard = () => {
             <label className="text-sm font-normal text-[#9AAAB9]">
               Provider
             </label>
-            <select className=" w-[70%] cursor-pointer rounded-md border-2 border-[#333B48] bg-[#EEEEEE]  p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E]  dark:text-white">
-              <option value="OpenAI">OpenAI</option>
-              <option value="Amazon">Amazon</option>
-              <option value="Google">Google</option>
+            <select
+              id="provider"
+              onChange={(e) => setSttProvider(e.target.value)}
+              value={sttProvider}
+              className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+            >
+              {model?.ai_tecs?.map((item) => (
+                <option value={item?.id}>{item?.ai_tec_provider}</option>
+              ))}
             </select>
           </div>
         </div>

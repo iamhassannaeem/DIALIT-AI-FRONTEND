@@ -10,18 +10,39 @@ const AgentDetails: React.FC = ({ selectedAgent }) => {
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
   const [error, setError] = useState({ success: '', error: '' });
-  const [details,setDetails]=useState()
-  const [loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false);
+  const [details, setDetails] = useState([]);
+  const [firstMessage, setFirstMessage] = useState(
+    'Hello, this is Dominy. How may I assist you today?'
+  );
+  const [questions, setQuestions] = useState([]);
+  const [selectedProvider, setSelectedProvider] = useState('');
+  const [ttsProvider, setTtsProvider] = useState('');
+  const [sttProvider, setSttProvider] = useState('');
+  const [gender, setGender] = useState('');
+  const [voice, setVoice] = useState();
+  const [selectedModel, setSelectedModel] = useState('');
+
+  console.log(
+    selectedProvider,
+    selectedModel,
+    ttsProvider,
+    sttProvider,
+    gender,
+    voice,
+    questions,
+    firstMessage
+  );
+
   useEffect(() => {
     try {
       const api = async () => {
-        setLoading(true)
-        const res = await agentDetails(selectedAgent?.id);
-        console.log(res);
-        setLoading(false)
-        if (res?.status==200){
-          setDetails(res?.data)
-
+        setLoading(true);
+        const res = await agentDetails();
+        setDetails(res?.data);
+        setLoading(false);
+        if (res?.status == 200) {
+          setDetails(res?.data);
         }
       };
       api();
@@ -29,6 +50,7 @@ const AgentDetails: React.FC = ({ selectedAgent }) => {
       console.log(error);
     }
   }, []);
+
   return (
     <>
       <div className="flex w-full flex-col flex-wrap  justify-between gap-6 rounded-t-xl bg-[#EEEEEE]  p-6 dark:bg-[#1D2532]">
@@ -255,14 +277,43 @@ const AgentDetails: React.FC = ({ selectedAgent }) => {
           </div>
         </div>
         <hr className="border-1 border-stroke-[#333B48] w-[99%]" />
-        <AgentTabs />
+        <AgentTabs
+          details={details}
+          selectedAgent={selectedAgent}
+          setFirstMessage={setFirstMessage}
+          setSelectedProvider={setSelectedProvider}
+          setSelectedModel={setSelectedModel}
+          firstMessage={firstMessage}
+          selectedProvider={selectedProvider}
+          selectedModel={selectedModel}
+          questions={questions}
+          setQuestions={setQuestions}
+          ttsProvider={ttsProvider}
+          setTtsProvider={setTtsProvider}
+          sttProvider={sttProvider}
+          setSttProvider={setSttProvider}
+          gender={gender}
+          setGender={setGender}
+          voice={voice}
+          setVoice={setVoice}
+        />
         <div className="flex items-center justify-end">
           <PublishAgentModal
+            details={details}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             openModal={openModal}
             closeModal={closeModal}
             setError={setError}
+            selectedAgent={selectedAgent}
+            firstMessage={firstMessage}
+            selectedProvider={selectedProvider}
+            selectedModel={selectedModel}
+            questions={questions}
+            ttsProvider={ttsProvider}
+            sttProvider={sttProvider}
+            gender={gender}
+            voice={voice}
           />
         </div>
       </div>

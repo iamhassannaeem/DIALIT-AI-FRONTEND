@@ -2,7 +2,26 @@ import React, { useState } from 'react';
 import FeedbackCard from './AgentTabs/FeedbackCard';
 import ModelCard from './AgentTabs/ModelCard';
 import AudioCard from './AgentTabs/AudioCard';
-const AgentTabs: React.FC = () => {
+const AgentTabs: React.FC = ({
+  details,
+  selectedAgent,
+  setFirstMessage,
+  setSelectedProvider,
+  setSelectedModel,
+  firstMessage,
+  selectedProvider,
+  selectedModel,
+  questions,
+  setQuestions,
+  ttsProvider,
+  setTtsProvider,
+  sttProvider,
+  setSttProvider,
+  gender,
+  setGender,
+  voice,
+  setVoice,
+}) => {
   const [openTab, setOpenTab] = useState(1);
 
   const activeClasses =
@@ -89,17 +108,36 @@ const AgentTabs: React.FC = () => {
         <div
           className={`leading-relaxed ${openTab === 1 ? 'block' : 'hidden'}`}
         >
-          <ModelCard />
+          <ModelCard
+            model={details}
+            selectedAgent={selectedAgent}
+            setFirstMessage={setFirstMessage}
+            setSelectedProvider={setSelectedProvider}
+            setSelectedModel={setSelectedModel}
+            firstMessage={firstMessage}
+            selectedProvider={selectedProvider}
+            selectedModel={selectedModel}
+          />
         </div>
         <div
           className={`leading-relaxed ${openTab === 2 ? 'block' : 'hidden'}`}
         >
-          <FeedbackCard />
+          <FeedbackCard questions={questions} setQuestions={setQuestions} />
         </div>
         <div
           className={`leading-relaxed ${openTab === 3 ? 'block' : 'hidden'}`}
         >
-          <AudioCard />
+          <AudioCard
+            model={details}
+            ttsProvider={ttsProvider}
+            setTtsProvider={setTtsProvider}
+            sttProvider={sttProvider}
+            setSttProvider={setSttProvider}
+            gender={gender}
+            setGender={setGender}
+            voice={voice}
+            setVoice={setVoice}
+          />
         </div>
       </div>
     </div>

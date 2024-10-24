@@ -1,24 +1,15 @@
 import React, { useState } from 'react';
-const FeedbackCard = () => {
-  const [questions, setQuestions] = useState([
-    { id: 1, question: 'How can I give my feedback?' },
-    {
-      id: 2,
-      question: 'How much does the monthly subscription cost in total?',
-    },
-    { id: 3, question: 'How much does the yearly subscription cost in total?' },
-    { id: 4, question: 'Does this software have a 7-day free trial period?' },
-  ]);
+const FeedbackCard = ({questions, setQuestions}) => {
+ 
   const [isAdding, setIsAdding] = useState(false); // For showing the add form
   const [newQuestion, setNewQuestion] = useState(''); // For handling new question input
-
   // Handles form submission
   const handleAddQuestion = (e) => {
     e.preventDefault();
     if (newQuestion.trim() === '') return; // Prevent adding empty questions
     setQuestions([
       ...questions,
-      { id: questions.length + 1, question: newQuestion },
+      { order: questions.length + 1, question_text: newQuestion },
     ]);
     setNewQuestion('');
     setIsAdding(false); // Hide the form after adding the question

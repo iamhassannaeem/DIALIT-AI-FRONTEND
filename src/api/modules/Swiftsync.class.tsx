@@ -126,9 +126,18 @@ export const getAgents = async (): Promise<ApiResponse> => {
 };
 
 // get agent details
-export const agentDetails = async (id:number): Promise<ApiResponse> => {
+export const agentDetails = async (): Promise<ApiResponse> => {
   try {
-    const response = await axios.get(`${endpoints.agentDetails}${id}`);
+    const response = await axios.get(endpoints.agentDetails);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+// get agent details
+export const publishAgent = async (id:number,payload:payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.put(`${endpoints.publishAgent}${id}/`,payload);
     return response as ApiResponse;
   } catch (error: any) {
     return { success: false, message: error };

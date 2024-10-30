@@ -20,6 +20,8 @@ import CallLogs from './components/reports/CallLogs';
 import Billing from './components/billing/Billing';
 import Member from './components/Member';
 import Settings from './pages/settings/Settings';
+import ForgetPassword from './pages/Authentication/ForgetPassword';
+import SignUp from './pages/Authentication/SignUp';
 
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
@@ -27,7 +29,7 @@ const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   // const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
-  const isAuthenticated = true;
+  const isAuthenticated = false;
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
@@ -63,7 +65,7 @@ function App() {
                   </>
                 }
               />
-               <Route
+              <Route
                 path="/playground/agent"
                 element={
                   <>
@@ -72,7 +74,7 @@ function App() {
                   </>
                 }
               />
-               <Route
+              <Route
                 path="/playground/phone"
                 element={
                   <>
@@ -81,7 +83,7 @@ function App() {
                   </>
                 }
               />
-               <Route
+              <Route
                 path="/playground/library"
                 element={
                   <>
@@ -90,7 +92,7 @@ function App() {
                   </>
                 }
               />
-               <Route
+              <Route
                 path="/reports/call"
                 element={
                   <>
@@ -109,6 +111,35 @@ function App() {
                 }
               />
               <Route
+                path="/Authentication/SignUp"
+                element={
+                  <>
+                    <PageTitle title="Signup" />
+                    <SignUp />
+                  </>
+                }
+              />
+              <Route
+                path="/Authentication/ForgetPassword"
+                element={
+                  <>
+                    <PageTitle title="ForgetPassword" />
+                    <ForgetPassword />
+                  </>
+                }
+              />
+
+              <Route
+                path="/Authentication/ForgetPassword"
+                element={
+                  <>
+                    <PageTitle title="ForgetPassword" />
+                    <ForgetPassword />
+                  </>
+                }
+              />
+
+              <Route
                 path="/member"
                 element={
                   <>
@@ -123,11 +154,12 @@ function App() {
                   <>
                     <PageTitle title="Settings" />
                     <Settings />
+
                   </>
                 }
               />
-            
-            
+
+
             </>
           ) : (
             <Route path="*" element={<SignIn to="/signin" replace />} />

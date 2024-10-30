@@ -40,7 +40,7 @@ const Member: React.FC = () => {
 
   const handleChange = (e) => {
     const value = e.target.value;
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; //Regex for email
 
     setEmail(value);
     setIsValidEmail(regex.test(value));

@@ -14,7 +14,7 @@ const Signup = () => {
     const [passwordError, setPasswordError] = useState("");
     const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
-    const validateEmail = (value) => {
+    const validateEmail = (value: any) => {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test(value)) {
             setEmailError("Please enter a valid email address");
@@ -23,7 +23,7 @@ const Signup = () => {
         }
     };
 
-    const validatePassword = (value) => {
+    const validatePassword = (value: any) => {
         if (value.length < 6) {
             setPasswordError("Password must be at least 6 characters");
         } else {
@@ -31,18 +31,18 @@ const Signup = () => {
         }
     };
 
-    const handleEmailChange = (e) => {
+    const handleEmailChange = (e: any) => {
         setEmail(e.target.value);
         validateEmail(e.target.value);
     };
 
-    const handlePasswordChange = (e) => {
+    const handlePasswordChange = (e: any) => {
         setPassword(e.target.value);
         validatePassword(e.target.value);
         validateConfirmPassword(confirmPassword, e.target.value);
     };
 
-    const handleConfirmPasswordChange = (e) => {
+    const handleConfirmPasswordChange = (e: any) => {
         setConfirmPassword(e.target.value);
         validateConfirmPassword(e.target.value, password);
     };
@@ -56,8 +56,6 @@ const Signup = () => {
     };
 
     const isFormValid = email && password && confirmPassword && !emailError && !passwordError && !confirmPasswordError;
-
-    const navigate = useNavigate();
 
     return (
         <div className="flex items-center  justify-center gap-7">

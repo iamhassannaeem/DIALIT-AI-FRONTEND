@@ -39,7 +39,7 @@ const ImportPhoneNumberModal = ({
     const storedTheme = localStorage.getItem('color-theme'); // Fallback to light if no theme is set
     setTheme(storedTheme);
   }, [theme]);
-  
+
   const handleClick = async () => {
     // Create a new FormData object
     const formData = new FormData();

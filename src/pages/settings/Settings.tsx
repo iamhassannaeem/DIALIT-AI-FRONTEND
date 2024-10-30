@@ -76,7 +76,7 @@ const Settings = () => {
                   autoComplete="email"
                   value={email}
                   onChange={handleEmail}
-                  className="border-1 focus-ring-1 ring-offset-slate-50 placeholder:text-gray-400 block w-full gap-10 rounded-md border-[#333B48] dark:bg-[#242E3E] bg-[#c0bfbf] p-3 dark:text-[#D6D6D5] text-[#7E7E7E] shadow-sm  sm:text-sm"
+                  className="border-1 focus-ring-1 ring-offset-slate-50 placeholder:text-gray-400 block w-full gap-10 rounded-md border-[#333B48] dark:bg-[#242E3E] bg-[#faf7f7] p-3 dark:text-[#D6D6D5] text-[#7E7E7E] shadow-sm  sm:text-sm"
                 />
               </div>
               <div className="mt-1 text-sm text-red">{message}</div>
@@ -99,7 +99,7 @@ const Settings = () => {
                   placeholder="********"
                   required
                   onChange={handlePassword}
-                  className="border-1 focus-ring-1 ring-offset-slate-50 placeholder:text-gray-400 block w-full gap-10 rounded-md border-[#333B48] dark:bg-[#242E3E] bg-[#c0bfbf] p-3 dark:text-[#D6D6D5] text-[#7E7E7E] shadow-sm   sm:text-sm sm:leading-6"
+                  className="border-1 focus-ring-1 ring-offset-slate-50 placeholder:text-gray-400 block w-full gap-10 rounded-md border-[#333B48] dark:bg-[#242E3E] bg-[#faf7f7] p-3 dark:text-[#D6D6D5] text-[#7E7E7E] shadow-sm   sm:text-sm sm:leading-6"
                 />
               </div>
               <div className="text-red mt-1 text-sm">{error}</div>

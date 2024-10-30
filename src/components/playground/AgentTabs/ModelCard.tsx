@@ -9,10 +9,13 @@ const ModelCard = ({
   firstMessage,
   selectedProvider,
   selectedModel,
+  knowledge,
+  setKnowledge
 }) => {
+  console.log(firstMessage)
   return (
-    <div className=" flex items-center justify-center rounded-xl bg-[#c0bfbf] p-2 dark:bg-[#242E3E] sm:p-4">
-      <div className=" flex w-full  flex-col gap-6 rounded-lg shadow-lg">
+    <div className=" flex items-center justify-center rounded-xl bg-[#faf7f7] p-2 dark:bg-[#242E3E] sm:p-4">
+      <div className=" flex w-full  flex-col gap-6 rounded-lg ">
         <div className="flex flex-col items-start gap-[6px]">
           <div className=" flex items-center gap-3">
             <svg
@@ -45,8 +48,8 @@ const ModelCard = ({
           </label>
           <input
             id="firstMessage"
-            className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
-            value={firstMessage} // Bind to state
+            className="w-full rounded-md border-2 border-[#333B48] = p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+            value={firstMessage} 
             onChange={(e) => setFirstMessage(e.target.value)} // Update state on change
           />
         </div>
@@ -63,7 +66,7 @@ const ModelCard = ({
               id="provider"
               onChange={(e) => setSelectedProvider(e.target.value)}
               value={selectedProvider}
-              className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+              className="w-full rounded-md border-2 border-[#333B48]  p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
             >
               {model?.ai_tecs?.map((item) => (
                 <option value={item?.id}>{item?.ai_tec_provider}</option>
@@ -82,7 +85,7 @@ const ModelCard = ({
               id="model"
               onChange={(e) => setSelectedModel(e.target.value)}
               value={selectedModel}
-              className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+              className="w-full rounded-md border-2 border-[#333B48]  p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
             >
               {model?.ai_models?.map((item) => (
                 <option value={item?.id}>{item?.ai_model_provider}</option>
@@ -98,13 +101,15 @@ const ModelCard = ({
                 Knowledge Base
               </label>
               <select
-                id="knowledgeBase"
-                className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
-              >
-                <option value="">Select</option>
-                <option value="KnowledgeBase1">Knowledge Base 1</option>
-                <option value="KnowledgeBase2">Knowledge Base 2</option>
-              </select>
+              id="knowldge"
+              onChange={(e) => setKnowledge(e.target.value)}
+              value={knowledge}
+              className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+            >
+              {model?.files?.map((item) => (
+                <option value={item?.id}>{item?.file_name}</option>
+              ))}
+            </select>
             </div>
           )}
         </div>

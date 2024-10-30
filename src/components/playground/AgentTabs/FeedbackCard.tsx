@@ -1,21 +1,71 @@
 import React, { useState } from 'react';
-const FeedbackCard = ({questions, setQuestions}) => {
- 
+import { deleteQuestion, editQuestion, publishAgentDetails } from '../../../api/modules/Swiftsync.class';
+const FeedbackCard = ({ questions, setQuestions,setError,setGetAgentDetails,selectedAgent }) => {
   const [isAdding, setIsAdding] = useState(false); // For showing the add form
   const [newQuestion, setNewQuestion] = useState(''); // For handling new question input
-  // Handles form submission
-  const handleAddQuestion = (e) => {
+  const [editQuestionId, setEditQuestionId] = useState(null); // State to track editing
+  const [order,setOrder]=useState(null); // State to track
+  const handleEdit = (id, text,order) => {
+    setIsAdding(true);
+    setNewQuestion(text);
+    setEditQuestionId(id); 
+    setOrder(order);
+  }
+
+  
+  const handleSaveQuestion = async (e) => {
     e.preventDefault();
-    if (newQuestion.trim() === '') return; // Prevent adding empty questions
-    setQuestions([
-      ...questions,
-      { order: questions.length + 1, question_text: newQuestion },
-    ]);
+    if (newQuestion.trim() === '') return;
+
+    if (editQuestionId !== null) {
+      // Edit mode: Update the question via API
+      try {
+        const res = await editQuestion(editQuestionId, { question_text: newQuestion ,order:order});
+        if (res.status === 200) {
+          setQuestions((prev) =>
+            prev?.map((q) => (q.id === editQuestionId ? { ...q, question_text: newQuestion } : q))
+          );
+          setError({ error: '', success: 'Question updated successfully' });
+          setGetAgentDetails((await publishAgentDetails(selectedAgent?.id, selectedAgent?.type)).data);
+        }
+      } catch (err) {
+        setError({ error: 'Failed to update question', success: '' });
+      }
+    } else {
+      // Add mode: Add new question to the list
+      setQuestions([
+        ...questions,
+        { order: questions?.length + 1, question_text: newQuestion },
+      ]);
+      setError({ error: '', success: 'Question added successfully' });
+    }
+
     setNewQuestion('');
-    setIsAdding(false); // Hide the form after adding the question
+    setIsAdding(false);
+    setEditQuestionId(null);
   };
+
+
+  const handleDel = async (id: number) => {
+    try {
+      const res = await deleteQuestion(id);
+      if (res.status === 204) {
+        const detailsRes = await publishAgentDetails(selectedAgent?.id, selectedAgent?.type);
+        setGetAgentDetails(detailsRes?.data);
+        console.log(detailsRes);
+        setError({ error: '', success: 'Question deleted successfully' });
+      } else {
+        setError({ error: 'Question deletion failed', success: '' });
+      }
+    } catch (err) {
+      console.log(err);
+      setError({ error: 'An error occurred', success: '' });
+    }
+  };
+  
+  
   return (
-    <div className=" mx-auto rounded-lg bg-[#c0bfbf] dark:bg-[#242E3E] p-2 shadow-md  sm:p-4">
+    <div className=" mx-auto rounded-lg bg-[#faf7f7] p-2 shadow-md dark:bg-[#242E3E]  sm:p-4">
       <div className="mb-4 flex flex-col items-start sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col justify-start gap-[6px]">
           <div className=" flex items-center gap-3 sm:mb-0">
@@ -43,13 +93,17 @@ const FeedbackCard = ({questions, setQuestions}) => {
               Feedback
             </h2>
           </div>
-          <span className="text-sm font-normal text-[#7E7E7E] dark:text-[#D6D6D5]">
+          {/* <span className="text-sm font-normal text-[#7E7E7E] dark:text-[#D6D6D5]">
             Lorem ipsum dolor sit amet
-          </span>
+          </span> */}
         </div>
         <button
           className="flex items-center justify-center gap-2 rounded-full p-2 text-[#1D2532] dark:text-white sm:p-3"
-          onClick={() => setIsAdding(true)}
+          onClick={() => {
+            setIsAdding(true);
+            setEditQuestionId(null); // Reset edit mode
+            setNewQuestion(''); // Clear input
+          }}
         >
           Add New Question{' '}
           <svg
@@ -68,7 +122,7 @@ const FeedbackCard = ({questions, setQuestions}) => {
         </button>
       </div>
       {isAdding ? (
-        <form onSubmit={handleAddQuestion} className="mb-4">
+        <form onSubmit={handleSaveQuestion} className="mb-4">
           <h3 className="mb-2 text-xs font-normal text-[#7E7E7E] dark:text-[#D6D6D5]">
             Question
           </h3>
@@ -79,10 +133,10 @@ const FeedbackCard = ({questions, setQuestions}) => {
             value={newQuestion}
             onChange={(e) => setNewQuestion(e.target.value)}
           />
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-end gap-4">
             <button
               type="submit"
-              className="mt-[14px] rounded-[4px] bg-[#2691B6] p-2 text-xs font-semibold text-white flex gap-[6px] items-center justify-center"
+              className="mt-[14px] flex items-center justify-center gap-[6px] rounded-[4px] bg-[#2691B6] p-2 text-xs font-semibold text-white"
             >
               <svg
                 width="18"
@@ -98,21 +152,28 @@ const FeedbackCard = ({questions, setQuestions}) => {
               </svg>
               <span>Save Question</span>
             </button>
+            <button
+              onClick={() => setIsAdding(false)}
+              type="submit"
+              className="mt-[14px] rounded-[4px] bg-[#2691B6] p-2 text-xs font-semibold text-white "
+            >
+              Cancle
+            </button>
           </div>
         </form>
       ) : (
         <div>
-          {questions.map((item) => (
+          {questions?.map((item,index) => (
             <div
-              key={item}
+              key={index}
               className="mt-3 flex w-full items-center justify-between rounded-md bg-[#EEEEEE]  p-3 dark:bg-[#1D2532] sm:p-4"
             >
               <div className="w-[70%] sm:w-full">
                 <h3 className="text-xs font-normal text-[#7E7E7E] dark:text-[#D6D6D5] ">
-                  Question {item?.id}
+                  Question {item?.order}
                 </h3>
                 <p className="text-sm  font-normal text-[#1D2532] dark:text-white">
-                  {item?.question}
+                  {item?.question_text}
                 </p>
               </div>
               <div className="flex items-center justify-center gap-[10px]">
@@ -122,6 +183,8 @@ const FeedbackCard = ({questions, setQuestions}) => {
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="cursor-pointer"
+                   onClick={() => handleEdit(item?.id, item?.question_text,item?.order)}
                 >
                   <path
                     className="cursor-pointer fill-black dark:fill-white"
@@ -136,6 +199,8 @@ const FeedbackCard = ({questions, setQuestions}) => {
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  onClick={() => handleDel(item?.id)}
+                  className="cursor-pointer"
                 >
                   <path
                     className="cursor-pointer fill-black dark:fill-white"

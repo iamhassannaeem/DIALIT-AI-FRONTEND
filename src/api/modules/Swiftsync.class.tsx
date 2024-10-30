@@ -134,10 +134,39 @@ export const agentDetails = async (): Promise<ApiResponse> => {
     return { success: false, message: error };
   }
 };
-// get agent details
+// publish details
 export const publishAgent = async (id:number,payload:payload): Promise<ApiResponse> => {
   try {
     const response = await axios.put(`${endpoints.publishAgent}${id}/`,payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+// get published agent details
+export const publishAgentDetails = async (id:number,type:string): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(`${endpoints.publishAgent}${type}/${id}/`);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// delete the Question
+export const deleteQuestion = async (id:number): Promise<ApiResponse> => {
+  try {
+    const response = await axios.delete(`${endpoints.deleteQuestion}${id}/`);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// delete the Question
+export const editQuestion = async (id:number,payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.put(`${endpoints.deleteQuestion}${id}/`,payload);
     return response as ApiResponse;
   } catch (error: any) {
     return { success: false, message: error };

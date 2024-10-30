@@ -10,6 +10,7 @@ export interface ApiEndpoints {
     createAgent:string;
     agentDetails:string;
     publishAgent:string;
+    deleteQuestion:string;
   }
   
   const endpoints: ApiEndpoints = {
@@ -23,7 +24,8 @@ export interface ApiEndpoints {
     inactivePhoneNumber:"ai_call_agent/twillio_auth/",
     createAgent:'ai_call_agent/agent/',
     agentDetails:"ai_call_agent/agents/InputData/",
-    publishAgent:"ai_call_agent/agent/"
+    publishAgent:"ai_call_agent/agent/",
+    deleteQuestion:"ai_call_agent/feedback-questions/"
 
   };
   

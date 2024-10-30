@@ -91,17 +91,37 @@ const Signup = () => {
                         value={password}
                         onChange={handlePasswordChange}
                         placeholder="Password"
-                        className="w-full h-10 rounded-md border border-stroke bg-[#EEEEEE] dark:bg-[#1D2532] pl-2 transition-all duration-200 box-border"
+                        className="w-full h-10 rounded-md outline outline-none border border-stroke bg-[#EEEEEE] dark:bg-[#1D2532] pl-2 transition-all duration-200 box-border"
                     />
                     <div
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xl cursor-pointer"
                         onClick={() => setShowPasswd(!showPasswd)}
                     >
-                        {showPasswd ? (
-                            <VscEye className="text-black dark:text-white" />
-                        ) : (
-                            <VscEyeClosed className="text-black dark:text-white" />
-                        )}
+                        <div className="text-black dark:text-white">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g clipPath="url(#clip0_1476_228)">
+                                    <path
+                                        d="M12 5.25C4.5 5.25 1.5 12 1.5 12C1.5 12 4.5 18.75 12 18.75C19.5 18.75 22.5 12 22.5 12C22.5 12 19.5 5.25 12 5.25Z"
+                                        stroke="currentColor"
+                                        strokeWidth="1.4"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                    <path
+                                        d="M12 15.75C14.0711 15.75 15.75 14.0711 15.75 12C15.75 9.92893 14.0711 8.25 12 8.25C9.92893 8.25 8.25 9.92893 8.25 12C8.25 14.0711 9.92893 15.75 12 15.75Z"
+                                        stroke="currentColor"
+                                        strokeWidth="1.4"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_1476_228">
+                                        <rect width="24" height="24" fill="white" />
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                        </div>
                     </div>
                     {passwordError && <p className="text-red text-sm mt-1">{passwordError}</p>}
                 </div>
@@ -117,17 +137,37 @@ const Signup = () => {
                         value={confirmPassword}
                         onChange={handleConfirmPasswordChange}
                         placeholder="Confirm Password"
-                        className="w-full h-10 rounded-md border border-stroke bg-[#EEEEEE] dark:bg-[#1D2532] pl-2 transition-all duration-200 box-border"
+                        className="w-full outline outline-none h-10 rounded-md border border-stroke bg-[#EEEEEE] dark:bg-[#1D2532] pl-2 transition-all duration-200 box-border"
                     />
                     <div
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xl cursor-pointer"
                         onClick={() => setShowConfirmPasswd(!showConfirmPasswd)}
                     >
-                        {showConfirmPasswd ? (
-                            <VscEye className="text-black dark:text-white" />
-                        ) : (
-                            <VscEyeClosed className="text-black dark:text-white" />
-                        )}
+                        <div className="text-black dark:text-white">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g clipPath="url(#clip0_1476_228)">
+                                    <path
+                                        d="M12 5.25C4.5 5.25 1.5 12 1.5 12C1.5 12 4.5 18.75 12 18.75C19.5 18.75 22.5 12 22.5 12C22.5 12 19.5 5.25 12 5.25Z"
+                                        stroke="currentColor"
+                                        strokeWidth="1.4"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                    <path
+                                        d="M12 15.75C14.0711 15.75 15.75 14.0711 15.75 12C15.75 9.92893 14.0711 8.25 12 8.25C9.92893 8.25 8.25 9.92893 8.25 12C8.25 14.0711 9.92893 15.75 12 15.75Z"
+                                        stroke="currentColor"
+                                        strokeWidth="1.4"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_1476_228">
+                                        <rect width="24" height="24" fill="white" />
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                        </div>
                     </div>
                     {confirmPasswordError && <p className="text-red text-sm mt-1">{confirmPasswordError}</p>}
                 </div>

@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 
 const DefaultLayout = () => {
   // const isAuthenticated = useSelector((state)=>state.auth.isAuthenticated);
-  const isAuthenticated = false;
+  const isAuthenticated = true;
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
 

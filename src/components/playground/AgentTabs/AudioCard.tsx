@@ -12,8 +12,8 @@ const AudioCard = ({
   setVoice,
 }) => {
   return (
-    <div className="flex items-center justify-center rounded-xl bg-[#c0bfbf] p-4 dark:bg-[#242E3E] sm:p-6">
-      <div className="flex w-full flex-col gap-4 rounded-lg shadow-lg">
+    <div className="flex items-center justify-center rounded-xl bg-[#faf7f7] p-4 dark:bg-[#242E3E] sm:p-6">
+      <div className="flex w-full flex-col gap-4 rounded-lg ">
         <div className="flex flex-col items-start gap-[6px]">
           <div className="flex items-center justify-start gap-3">
             <svg

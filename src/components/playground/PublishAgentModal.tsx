@@ -3,7 +3,7 @@ import cross from '../../images/cross.png';
 import './modal.css';
 import Select from 'react-select';
 import clsx from 'clsx';
-import { publishAgent } from '../../api/modules/Swiftsync.class';
+import { publishAgent, publishAgentDetails } from '../../api/modules/Swiftsync.class';
 import { BeatLoader } from 'react-spinners';
 
 interface PhoneNumber {
@@ -12,7 +12,7 @@ interface PhoneNumber {
   account_sid: string;
   account_auth_token: string;
   name: string;
-  status:number;
+  status: number;
 }
 
 // Custom styles for react-select with dark mode support
@@ -32,13 +32,20 @@ const PublishAgentModal = ({
   sttProvider,
   gender,
   voice,
+  productPricing,
+  services,
+  company,
+  pricing,
+  general,
+  knowledge,
+  setGetAgentDetails,
 }: {
   details: any;
   isOpen: any;
   setIsOpen: any;
   closeModal: any;
   openModal: any;
-  setError: (error: string | null) => void;
+  setError: (error: string,success: string) => void;
   firstMessage: any;
   selectedProvider: any;
   selectedModel: any;
@@ -47,8 +54,14 @@ const PublishAgentModal = ({
   sttProvider: any;
   gender: any;
   voice: any;
-  selectedAgent:any;
-  
+  productPricing: any;
+  services: any;
+  company: any;
+  pricing: any;
+  general: any;
+  selectedAgent: any;
+  knowledge: any;
+  setGetAgentDetails:any;
 }) => {
   const [selectedOption, setSelectedOption] = useState<{
     value: string;
@@ -68,9 +81,20 @@ const PublishAgentModal = ({
     setSelectedOption(option);
   };
 
+  const files = [
+    { file: knowledge, file_type: 'prompt_files' },
+    { file: productPricing, file_type: 'product_pricing' },
+    { file: pricing, file_type: 'pricing' },
+    { file: general, file_type: 'general_information' },
+    { file: company, file_type: 'company_information' },
+    { file: services, file_type: 'product_information' },
+  ];
+
   const handleOpen = async () => {
     setLoading(true);
-    const res = await publishAgent(selectedAgent?.id, {
+
+    // Prepare data with conditional assignment of feed_files or feed_questions
+    const requestData = {
       first_message: firstMessage,
       active: true,
       gender: gender,
@@ -81,21 +105,54 @@ const PublishAgentModal = ({
       twillio_number: selectedOption?.id,
       tts_technology_provider: ttsProvider,
       stt_technology_provider: sttProvider,
-      feed_questions: questions,
-    });
-    console.log(res);
-    if (res?.status == 200) {
-      setLoading(false);
+      ...(selectedAgent?.type === 'sales'
+        ? { files: files }
+        : { feed_questions: questions }),
+    };
 
-      closeModal();
+    try {
+      const res = await publishAgent(selectedAgent?.id, requestData);
+      console.log(res);
+
+      if (res?.status === 200) {
+        setLoading(false);
+        closeModal();
+        setError({error:'',success:"Agent Published Successfully"})
+        const res=await publishAgentDetails(selectedAgent?.id,selectedAgent?.type)
+    setGetAgentDetails(res?.data);
+      }
+    } catch (error) {
+      console.error('Error in publishing agent:', error);
+      setLoading(false);
     }
   };
   return (
     <div>
       <button
         onClick={() => openModal()}
+        disabled={
+          !(
+            firstMessage ||
+            selectedProvider ||
+            selectedModel ||
+            productPricing ||
+            questions ||
+            ttsProvider ||
+            sttProvider ||
+            gender ||
+            voice ||
+            productPricing ||
+            services ||
+            company ||
+            pricing ||
+            general ||
+            knowledge
+          )
+        }
         type="submit"
-        className="mt-[14px] flex items-center justify-center gap-[6px] rounded-[4px] bg-[#2691B6] p-3 text-xs font-semibold text-white"
+        className={`mt-[14px] flex items-center justify-center gap-[6px] rounded-[4px] bg-[#2691B6] p-3 text-xs font-semibold text-white ${
+          !firstMessage && 'cursor-not-allowed opacity-50'
+        }`}
       >
         <svg
           width="22"
@@ -155,7 +212,7 @@ const PublishAgentModal = ({
                   value={selectedOption}
                   onChange={handleChange}
                   classNames={{
-                    control: () => 'dark:bg-[#1D2532] dark:text-[white]',
+                    control: () => '',
                     option: () =>
                       'dark:bg-[#1D2532] dark:text-[white] cursor-pointer',
                   }}
@@ -171,7 +228,7 @@ const PublishAgentModal = ({
                   className="absolute top-2 left-1"
                 >
                   <path
-                    className="fill-[#1D2532] dark:fill-white"
+                    className="fill-[#1D2532] "
                     d="M19.95 21C17.8667 21 15.8083 20.5458 13.775 19.6375C11.7417 18.7292 9.89167 17.4417 8.225 15.775C6.55833 14.1083 5.27083 12.2583 4.3625 10.225C3.45417 8.19167 3 6.13333 3 4.05C3 3.75 3.1 3.5 3.3 3.3C3.5 3.1 3.75 3 4.05 3H8.1C8.33333 3 8.54167 3.07917 8.725 3.2375C8.90833 3.39583 9.01667 3.58333 9.05 3.8L9.7 7.3C9.73333 7.56667 9.725 7.79167 9.675 7.975C9.625 8.15833 9.53333 8.31667 9.4 8.45L6.975 10.9C7.30833 11.5167 7.70417 12.1125 8.1625 12.6875C8.62083 13.2625 9.125 13.8167 9.675 14.35C10.1917 14.8667 10.7333 15.3458 11.3 15.7875C11.8667 16.2292 12.4667 16.6333 13.1 17L15.45 14.65C15.6 14.5 15.7958 14.3875 16.0375 14.3125C16.2792 14.2375 16.5167 14.2167 16.75 14.25L20.2 14.95C20.4333 15.0167 20.625 15.1375 20.775 15.3125C20.925 15.4875 21 15.6833 21 15.9V19.95C21 20.25 20.9 20.5 20.7 20.7C20.5 20.9 20.25 21 19.95 21ZM6.025 9L7.675 7.35L7.25 5H5.025C5.10833 5.68333 5.225 6.35833 5.375 7.025C5.525 7.69167 5.74167 8.35 6.025 9ZM14.975 17.95C15.625 18.2333 16.2875 18.4583 16.9625 18.625C17.6375 18.7917 18.3167 18.9 19 18.95V16.75L16.65 16.275L14.975 17.95Z"
                     fill="#D6D6D5"
                   />
@@ -182,8 +239,9 @@ const PublishAgentModal = ({
             <div className="flex justify-between gap-[8px]">
               <button
                 type="button"
+                disabled={!selectedOption}
                 onClick={handleOpen}
-                className="flex w-full items-center justify-center gap-2 rounded-[6px] bg-[#2691B6] p-[12px] text-sm font-semibold text-white"
+                className={`flex w-full items-center justify-center gap-2 rounded-[6px] bg-[#2691B6] p-[12px] text-sm font-semibold text-white ${!selectedOption && 'cursor-not-allowed opacity-5'}`}
               >
                 {loading ? (
                   <BeatLoader color="white" />

@@ -8,7 +8,7 @@ import order_cnfrm from '../../images/order_cnfrm.png';
 import tracking from '../../images/tracking.png';
 import support from '../../images/support.png';
 import general_qa from '../../images/general_qa.png';
-import { createAgent } from '../../api/modules/Swiftsync.class';
+import { createAgent, getAgents } from '../../api/modules/Swiftsync.class';
 import { BeatLoader } from 'react-spinners';
 
 const AgentModal = ({
@@ -16,11 +16,13 @@ const AgentModal = ({
   setIsOpen,
   openModal,
   closeModal,
+  setAgentData,
 }: {
   isOpen: any;
   setIsOpen: any;
   closeModal: any;
   openModal: any;
+  setAgentData:any;
 }) => {
   const [selectedTemplate, setSelectedTemplate] = useState<string>('feedback');
   const [agentName, setAgentName] = useState('');
@@ -79,10 +81,13 @@ const AgentModal = ({
       name: agentName,
       agent_type: selectedTemplate,
     });
+    
     if (res?.status === 201) {
       setLoading(false);
       closeModal();
     }
+    const resp = await getAgents();
+    setAgentData(resp?.data)
   };
 
   return (
@@ -141,8 +146,8 @@ const AgentModal = ({
                     onClick={() => handleTemplateSelect(template.id)}
                     className={`cursor-pointer rounded-lg border p-[16px] transition duration-200 ${
                       selectedTemplate === template.id
-                        ? 'border-white bg-[#c0bfbf] dark:bg-[#242E3E]'
-                        : 'border-transparent'
+                        ? 'border-white dark:bg-[#242E3E]'
+                        : 'border-transparent bg-[#faf7f7] dark:bg-[#242E3E]'
                     }  hover:border-white`}
                   >
                     <div className="mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-[30px] bg-[#EEEEEE]  dark:bg-[#1D2532]">

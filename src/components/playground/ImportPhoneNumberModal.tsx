@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import importBtn from '../../images/import.png';
-import ReactFlagsSelect from 'react-flags-select';
 import './modal.css';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/bootstrap.css';
 import {
   addPhoneNumber,
   getPhoneNumber,
@@ -26,50 +27,58 @@ const ImportPhoneNumberModal = ({
   const [selected, setSelected] = useState(''); // Country code
   const [twilioPhoneNumber, setTwilioPhoneNumber] = useState('');
   const [accountSid, setAccountSid] = useState('');
+  const [apiSid, setApiSid] = useState('');
+  const [apisecret, setApiSecret] = useState('');
   const [authToken, setAuthToken] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [theme, setTheme] = useState(''); // Default theme is dark
+
+  useEffect(() => {
+    // Retrieve theme from localStorage
+    const storedTheme = localStorage.getItem('color-theme'); // Fallback to light if no theme is set
+    setTheme(storedTheme);
+  }, [theme]);
 
   const handleClick = async () => {
     // Create a new FormData object
     const formData = new FormData();
-    formData.append('phone_number',  twilioPhoneNumber);
+    formData.append('phone_number', `+${twilioPhoneNumber}`);
     formData.append('account_sid', accountSid);
     formData.append('auth_token', authToken);
     formData.append('name', name);
+    formData.append('account_api_secret', apisecret);
+    formData.append('account_api_sid', apiSid);
 
     // Send data to API
     setLoading(true);
     try {
-        const res = await addPhoneNumber(formData);
+      const res = await addPhoneNumber(formData);
 
-        // Parse the error message from responseText if success is false
-        if (!res.success) {
-            let errorMessage = '';
-            if (res?.message?.request?.responseText) {
-                const errorResponse = JSON.parse(res.message.request.responseText); // Parse the responseText
-                errorMessage = errorResponse.error || 'An error occurred';
-            }
-            setError({ success: '', error: errorMessage });
-            closeModal();
-        } else {
-            const phoneNumbers = await getPhoneNumber();
-            setData(phoneNumbers);
-            setError({ success: 'Phone number added successfully', error: '' });
-            closeModal();
+      // Parse the error message from responseText if success is false
+      if (!res.success) {
+        let errorMessage = '';
+        if (res?.message?.request?.responseText) {
+          const errorResponse = JSON.parse(res.message.request.responseText); // Parse the responseText
+          errorMessage = errorResponse.error || 'An error occurred';
         }
+        setError({ success: '', error: errorMessage });
+        closeModal();
+      } else {
+        const phoneNumbers = await getPhoneNumber();
+        setData(phoneNumbers);
+        setError({ success: 'Phone number added successfully', error: '' });
+        closeModal();
+      }
     } catch (err) {
-        // Handle any unexpected errors
-        console.error('Error:', err);
-        setError({ success: '', error: 'Something went wrong' });
+      // Handle any unexpected errors
+      console.error('Error:', err);
+      setError({ success: '', error: 'Something went wrong' });
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
-  // const handleSelect = (code: string) => {
-  //   setSelected(customLabels[code]);
-  // };
   return (
     <div>
       <button
@@ -106,24 +115,21 @@ const ImportPhoneNumberModal = ({
             <form className="space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-normal text-[#7E7E7E] dark:text-[#D6D6D5]">
-                  Twilio Phone Number With Country Code
+                  Twilio Phone Number
                 </label>
                 <div className="flex items-center justify-center space-x-2">
-                  <ReactFlagsSelect
-                    selected={selected}
-                    // onSelect={handleSelect}
-                    // customLabels={customLabels}
-                    onSelect={(code) => setSelected(code)}
-                    showSelectedLabel={true}
-                    fullWidth={false}
-                    searchable
-                  />
-                  <input
-                    type="text"
+                  <PhoneInput
+                    country={'eg'}
+                    enableSearch={true}
                     value={twilioPhoneNumber}
-                    onChange={(e) => setTwilioPhoneNumber(e.target.value)}
-                    className="w-full rounded-md bg-[#c0bfbf]  p-3 text-[#1D2532] focus:outline-none dark:bg-[#2C3B4A] dark:text-white"
-                    placeholder="Enter Your Twilio Phone Number"
+                    onChange={(phone) => setTwilioPhoneNumber(phone)}
+                    inputStyle={{
+                      background: theme === '"dark"' ? '#2C3B4A' : '#FFFFFF',
+                      color: theme === '"dark"' ? 'white' : '#1D2532',
+                      padding: '12px',
+                      paddingLeft: '55px',
+                      width: '100%',
+                    }}
                   />
                 </div>
               </div>
@@ -136,11 +142,34 @@ const ImportPhoneNumberModal = ({
                   type="text"
                   value={accountSid}
                   onChange={(e) => setAccountSid(e.target.value)}
-                  className="w-full rounded-md bg-[#c0bfbf] p-3 text-[#1D2532] focus:outline-none dark:bg-[#2C3B4A] dark:text-white"
+                  className="w-full rounded-md bg-[#FFFFFF] p-3 text-[#1D2532] focus:outline-none dark:bg-[#2C3B4A] dark:text-white"
                   placeholder="Enter Your Account SID"
                 />
               </div>
-
+              <div>
+                <label className="mb-2 block text-sm font-normal text-[#7E7E7E] dark:text-[#D6D6D5]">
+                  Twilio Api SID
+                </label>
+                <input
+                  type="text"
+                  value={apiSid}
+                  onChange={(e) => setApiSid(e.target.value)}
+                  className="w-full rounded-md bg-[#FFFFFF] p-3 text-[#1D2532] focus:outline-none dark:bg-[#2C3B4A] dark:text-white"
+                  placeholder="Enter Your Api SID"
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-normal text-[#7E7E7E] dark:text-[#D6D6D5]">
+                  Twilio Api Secret
+                </label>
+                <input
+                  type="text"
+                  value={apisecret}
+                  onChange={(e) => setApiSecret(e.target.value)}
+                  className="w-full rounded-md bg-[#FFFFFF] p-3 text-[#1D2532] focus:outline-none dark:bg-[#2C3B4A] dark:text-white"
+                  placeholder="Enter Your Api secret"
+                />
+              </div>
               <div>
                 <label className="mb-2 block text-sm font-normal text-[#7E7E7E] dark:text-[#D6D6D5]">
                   Twilio Auth Token
@@ -149,7 +178,7 @@ const ImportPhoneNumberModal = ({
                   type="text"
                   value={authToken}
                   onChange={(e) => setAuthToken(e.target.value)}
-                  className="w-full rounded-md bg-[#c0bfbf] p-3 text-[#1D2532] focus:outline-none dark:bg-[#2C3B4A] dark:text-white"
+                  className="w-full rounded-md bg-[#FFFFFF] p-3 text-[#1D2532] focus:outline-none dark:bg-[#2C3B4A] dark:text-white"
                   placeholder="Enter Your Auth Token"
                 />
               </div>
@@ -162,7 +191,7 @@ const ImportPhoneNumberModal = ({
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-md bg-[#c0bfbf] p-3 text-[#1D2532] focus:outline-none dark:bg-[#2C3B4A] dark:text-white"
+                  className="w-full rounded-md bg-[#FFFFFF] p-3 text-[#1D2532] focus:outline-none dark:bg-[#2C3B4A] dark:text-white"
                   placeholder="Enter Your Name"
                 />
               </div>

@@ -2,17 +2,28 @@ import React, { useEffect, useState } from 'react';
 import AgentModal from './AgentModal';
 import agentimg from '../../images/agent.png';
 import AgentDetails from './AgentDetails';
-import { getAgents } from '../../api/modules/Swiftsync.class';
+import { getAgents, publishAgentDetails } from '../../api/modules/Swiftsync.class';
+import Loader from '../../common/Loader';
+import Toaster from '../Toast/Toast';
 
 const Agent: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const openModal = () => setIsOpen(true);
+  
   const closeModal = () => setIsOpen(false);
   const [agentData, setAgentData] = useState<any>({});
   const [selectedAgent, setSelectedAgent] = useState<any>(null);
-
-  const handleSelectAgent = (id: string, type: string) => {
+  const [loading, setLoading] = useState(false);
+  const[getAgentDetails,setGetAgentDetails] = useState()
+  const [error, setError] = useState({ success: '', error: '' });
+  const handleSelectAgent = async(id: string, type: string) => {
+    setLoading(true)
     setSelectedAgent({ id, type });
+    const res=await publishAgentDetails(id,type)
+    setGetAgentDetails(res?.data);
+    setLoading(false)
+
+
   };
 
   const agents = [
@@ -23,9 +34,13 @@ const Agent: React.FC = () => {
   useEffect(() => {
     const fetchAgents = async () => {
       try {
+        setLoading(true);
         const res = await getAgents();
 
-        if (res?.data?.feedback_agents.length > 0 || res?.data?.sales_agents.length > 0) {
+        if (
+          res?.data?.feedback_agents.length > 0 ||
+          res?.data?.sales_agents.length > 0
+        ) {
           setAgentData(res?.data);
 
           // Set the first agent as the default selected agent
@@ -36,6 +51,7 @@ const Agent: React.FC = () => {
             type: firstAgent.type,
           });
         }
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -44,8 +60,11 @@ const Agent: React.FC = () => {
     fetchAgents();
   }, []);
 
-  return (
+  return loading ? (
+    <Loader />
+  ) : (
     <>
+    <Toaster message={error}/>
       {agents.length > 0 ? (
         <div className="flex flex-col items-start justify-start gap-4">
           <div className="flex w-full flex-col gap-6 rounded-t-xl bg-[#EEEEEE] p-6 dark:bg-[#1D2532]">
@@ -63,6 +82,7 @@ const Agent: React.FC = () => {
                 setIsOpen={setIsOpen}
                 openModal={openModal}
                 closeModal={closeModal}
+                setAgentData={setAgentData}
               />
             </div>
 
@@ -91,13 +111,13 @@ const Agent: React.FC = () => {
             </div>
 
             {/* Grid layout for larger screens */}
-            <div className="scrollbar hidden w-full items-center justify-between gap-3 overflow-x-auto md:flex">
+            <div className="scrollbar hidden w-full items-center justify-start gap-3 overflow-x-auto md:flex">
               {agents?.map((agent) => (
                 <div
                   key={agent?.id}
-                  className={`flex min-w-[150px] cursor-pointer flex-col rounded-md p-2 gap-2${
+                  className={`flex min-w-[180px] cursor-pointer flex-col rounded-md p-4 gap-2${
                     selectedAgent?.id === agent?.id
-                      ? ' border-[#333B48] bg-[#c0bfbf] dark:bg-[#242E3E]'
+                      ? ' border-[#333B48] bg-[#faf7f7] dark:bg-[#242E3E]'
                       : ''
                   }`}
                   onClick={() => handleSelectAgent(agent?.id, agent?.type)}
@@ -113,7 +133,7 @@ const Agent: React.FC = () => {
             </div>
           </div>
 
-          <AgentDetails selectedAgent={selectedAgent} />
+          <AgentDetails selectedAgent={selectedAgent} getAgentDetails={getAgentDetails} setError={setError} setGetAgentDetails={setGetAgentDetails}/>
         </div>
       ) : (
         <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-[#EEEEEE]  p-6 dark:bg-[#1D2532]">
@@ -136,6 +156,7 @@ const Agent: React.FC = () => {
               setIsOpen={setIsOpen}
               openModal={openModal}
               closeModal={closeModal}
+              setAgentData={setAgentData}
             />
           </div>
         </div>

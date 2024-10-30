@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import FeedbackCard from './AgentTabs/FeedbackCard';
 import ModelCard from './AgentTabs/ModelCard';
 import AudioCard from './AgentTabs/AudioCard';
+import WorkFlowCard from './AgentTabs/WorkFlowCard';
 const AgentTabs: React.FC = ({
   details,
   selectedAgent,
@@ -21,6 +22,20 @@ const AgentTabs: React.FC = ({
   setGender,
   voice,
   setVoice,
+  productPricing,
+  setProductPricing,
+  services,
+  setServices,
+  company,
+  setCompany,
+  pricing,
+  setPricing,
+  general,
+  setGeneral,
+  knowledge,
+  setKnowledge,
+  setError,
+  setGetAgentDetails,
 }) => {
   const [openTab, setOpenTab] = useState(1);
 
@@ -59,27 +74,49 @@ const AgentTabs: React.FC = ({
           }`}
           onClick={() => setOpenTab(2)}
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g clip-path="url(#clip0_519_2489)">
-              <path
-                className=" fill-black dark:fill-white"
-                d="M20 2H4C2.9 2 2.01 2.9 2.01 4L2 22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4.58 16.59L4 17.17V4H20V16ZM10.5 14H18V12H12.5L10.5 14ZM14.36 8.13C14.56 7.93 14.56 7.62 14.36 7.42L12.59 5.65C12.39 5.45 12.08 5.45 11.88 5.65L6 11.53V14H8.47L14.36 8.13Z"
-                fill="#333B48"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_519_2489">
-                <rect width="24" height="24" fill="white" />
-              </clipPath>
-            </defs>
-          </svg>
-          Feedback
+          {selectedAgent?.type === 'feedback' ? (
+            <>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g clip-path="url(#clip0_519_2489)">
+                  <path
+                    className=" fill-black dark:fill-white"
+                    d="M20 2H4C2.9 2 2.01 2.9 2.01 4L2 22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4.58 16.59L4 17.17V4H20V16ZM10.5 14H18V12H12.5L10.5 14ZM14.36 8.13C14.56 7.93 14.56 7.62 14.36 7.42L12.59 5.65C12.39 5.45 12.08 5.45 11.88 5.65L6 11.53V14H8.47L14.36 8.13Z"
+                    fill="#333B48"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_519_2489">
+                    <rect width="24" height="24" fill="white" />
+                  </clipPath>
+                </defs>
+              </svg>
+              <span>Feedback</span>
+            </>
+          ) : (
+            <>
+              {' '}
+              <svg
+                width="23"
+                height="22"
+                viewBox="0 0 23 22"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  className=" fill-black dark:fill-white"
+                  d="M14.2502 17.4167V16.5H12.4168C11.9127 16.5 11.4811 16.3205 11.122 15.9615C10.763 15.6024 10.5835 15.1708 10.5835 14.6667V7.33333H8.75016V8.25C8.75016 8.75417 8.57065 9.18576 8.21162 9.54479C7.85259 9.90382 7.421 10.0833 6.91683 10.0833H4.16683C3.66266 10.0833 3.23107 9.90382 2.87204 9.54479C2.51301 9.18576 2.3335 8.75417 2.3335 8.25V4.58333C2.3335 4.07917 2.51301 3.64757 2.87204 3.28854C3.23107 2.92951 3.66266 2.75 4.16683 2.75H6.91683C7.421 2.75 7.85259 2.92951 8.21162 3.28854C8.57065 3.64757 8.75016 4.07917 8.75016 4.58333V5.5H14.2502V4.58333C14.2502 4.07917 14.4297 3.64757 14.7887 3.28854C15.1477 2.92951 15.5793 2.75 16.0835 2.75H18.8335C19.3377 2.75 19.7693 2.92951 20.1283 3.28854C20.4873 3.64757 20.6668 4.07917 20.6668 4.58333V8.25C20.6668 8.75417 20.4873 9.18576 20.1283 9.54479C19.7693 9.90382 19.3377 10.0833 18.8335 10.0833H16.0835C15.5793 10.0833 15.1477 9.90382 14.7887 9.54479C14.4297 9.18576 14.2502 8.75417 14.2502 8.25V7.33333H12.4168V14.6667H14.2502V13.75C14.2502 13.2458 14.4297 12.8142 14.7887 12.4552C15.1477 12.0962 15.5793 11.9167 16.0835 11.9167H18.8335C19.3377 11.9167 19.7693 12.0962 20.1283 12.4552C20.4873 12.8142 20.6668 13.2458 20.6668 13.75V17.4167C20.6668 17.9208 20.4873 18.3524 20.1283 18.7115C19.7693 19.0705 19.3377 19.25 18.8335 19.25H16.0835C15.5793 19.25 15.1477 19.0705 14.7887 18.7115C14.4297 18.3524 14.2502 17.9208 14.2502 17.4167ZM16.0835 8.25H18.8335V4.58333H16.0835V8.25ZM16.0835 17.4167H18.8335V13.75H16.0835V17.4167ZM4.16683 8.25H6.91683V4.58333H4.16683V8.25Z"
+                  fill="white"
+                />
+              </svg>
+              <span>WorkFlow</span>
+            </>
+          )}
         </div>
         <div
           className={`flex  w-[25%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
@@ -117,12 +154,30 @@ const AgentTabs: React.FC = ({
             firstMessage={firstMessage}
             selectedProvider={selectedProvider}
             selectedModel={selectedModel}
+            knowledge={knowledge}
+            setKnowledge={setKnowledge}
           />
         </div>
         <div
           className={`leading-relaxed ${openTab === 2 ? 'block' : 'hidden'}`}
         >
-          <FeedbackCard questions={questions} setQuestions={setQuestions} />
+          {selectedAgent?.type === 'feedback' ? (
+            <FeedbackCard questions={questions} setQuestions={setQuestions} setError={setError} setGetAgentDetails={setGetAgentDetails} selectedAgent={selectedAgent}/>
+          ) : (
+            <WorkFlowCard
+              files={details?.files}
+              productPricing={productPricing}
+              setProductPricing={setProductPricing}
+              services={services}
+              setServices={setServices}
+              company={company}
+              setCompany={setCompany}
+              pricing={pricing}
+              setPricing={setPricing}
+              general={general}
+              setGeneral={setGeneral}
+            />
+          )}
         </div>
         <div
           className={`leading-relaxed ${openTab === 3 ? 'block' : 'hidden'}`}

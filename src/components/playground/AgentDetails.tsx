@@ -5,34 +5,38 @@ import DoughnutChart from './DoughnutChart';
 import AgentTabs from './AgentTabs';
 import PublishAgentModal from './PublishAgentModal';
 import { agentDetails } from '../../api/modules/Swiftsync.class';
-const AgentDetails: React.FC = ({ selectedAgent }) => {
+const AgentDetails: React.FC = ({ setError,selectedAgent, getAgentDetails ,setGetAgentDetails}) => {
+  
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
-  const [error, setError] = useState({ success: '', error: '' });
+  
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState([]);
   const [firstMessage, setFirstMessage] = useState(
-    'Hello, this is Dominy. How may I assist you today?'
+    getAgentDetails?.first_message || ''
   );
-  const [questions, setQuestions] = useState([]);
-  const [selectedProvider, setSelectedProvider] = useState('');
-  const [ttsProvider, setTtsProvider] = useState('');
-  const [sttProvider, setSttProvider] = useState('');
-  const [gender, setGender] = useState('');
-  const [voice, setVoice] = useState();
-  const [selectedModel, setSelectedModel] = useState('');
+  const [questions, setQuestions] = useState(getAgentDetails?.feed_questions);
+  const [selectedProvider, setSelectedProvider] = useState(
+    getAgentDetails?.ai_tec
+  );
+  const [ttsProvider, setTtsProvider] = useState(
+    getAgentDetails?.tts_technology_provider
+  );
+  const [sttProvider, setSttProvider] = useState(
+    getAgentDetails?.stt_technology_provider
+  );
 
-  console.log(
-    selectedProvider,
-    selectedModel,
-    ttsProvider,
-    sttProvider,
-    gender,
-    voice,
-    questions,
-    firstMessage
-  );
+  
+  const [gender, setGender] = useState(getAgentDetails?.gender);
+  const [voice, setVoice] = useState(getAgentDetails?.voice_name);
+  const [selectedModel, setSelectedModel] = useState(getAgentDetails?.ai_model);
+  const [productPricing, setProductPricing] = useState('');
+  const [services, setServices] = useState('');
+  const [company, setCompany] = useState('');
+  const [pricing, setPricing] = useState('');
+  const [general, setGeneral] = useState('');
+  const [knowledge, setKnowledge] = useState(getAgentDetails?.ai_tec);
 
   useEffect(() => {
     try {
@@ -50,7 +54,36 @@ const AgentDetails: React.FC = ({ selectedAgent }) => {
       console.log(error);
     }
   }, []);
+  useEffect(() => {
+    if (getAgentDetails?.associated_files) {
+      getAgentDetails?.associated_files?.forEach((file) => {
+        console.log(file?.file_id);
 
+        switch (file?.file_type) {
+          case 'product_pricing':
+            setProductPricing(file.file_id);
+            break;
+          case 'product_information':
+            setServices(file.file_id);
+            break;
+          case 'company_information':
+            setCompany(file.file_id);
+            break;
+          case 'pricing':
+            setPricing(file.file_id);
+            break;
+          case 'general_information':
+            setGeneral(file.file_id);
+            break;
+            case 'prompt_files':
+            setKnowledge(file.file_id);
+            break;
+          default:
+            break;
+        }
+      });
+    }
+  }, [getAgentDetails]);
   return (
     <>
       <div className="flex w-full flex-col flex-wrap  justify-between gap-6 rounded-t-xl bg-[#EEEEEE]  p-6 dark:bg-[#1D2532]">
@@ -101,7 +134,7 @@ const AgentDetails: React.FC = ({ selectedAgent }) => {
                 Talk with Agent
               </span>
             </button>
-            <div className="border-1 cursor-pointer rounded-md bg-[#c0bfbf] p-3 dark:bg-[#242E3E]">
+            <div className="border-1 cursor-pointer rounded-md bg-[#faf7f7] p-3 dark:bg-[#242E3E]">
               <svg
                 width="24"
                 height="24"
@@ -119,7 +152,7 @@ const AgentDetails: React.FC = ({ selectedAgent }) => {
           </div>
         </div>
         <div className="flex w-full flex-wrap justify-between gap-1 ">
-          <div className="rounded-[10px] bg-[#c0bfbf] p-4 dark:bg-[#242E3E] sm:w-[49%] ">
+          <div className="rounded-[10px] bg-[#faf7f7] p-4 dark:bg-[#242E3E] sm:w-[49%] ">
             <div className="flex items-center justify-between">
               <div className="w-full ">
                 <div className="flex items-start justify-between gap-1">
@@ -197,7 +230,7 @@ const AgentDetails: React.FC = ({ selectedAgent }) => {
               <DoughnutChart />
             </div>
           </div>
-          <div className="rounded-[10px] bg-[#c0bfbf] p-4 dark:bg-[#242E3E] sm:w-[49%] ">
+          <div className="rounded-[10px] bg-[#faf7f7] p-4 dark:bg-[#242E3E] sm:w-[49%] ">
             <div className="flex items-center justify-between">
               <div className="w-full">
                 <div className="flex items-start justify-between">
@@ -286,6 +319,8 @@ const AgentDetails: React.FC = ({ selectedAgent }) => {
           firstMessage={firstMessage}
           selectedProvider={selectedProvider}
           selectedModel={selectedModel}
+          knowledge={knowledge}
+          setKnowledge={setKnowledge}
           questions={questions}
           setQuestions={setQuestions}
           ttsProvider={ttsProvider}
@@ -296,6 +331,19 @@ const AgentDetails: React.FC = ({ selectedAgent }) => {
           setGender={setGender}
           voice={voice}
           setVoice={setVoice}
+          productPricing={productPricing}
+          setProductPricing={setProductPricing}
+          services={services}
+          setServices={setServices}
+          company={company}
+          setCompany={setCompany}
+          pricing={pricing}
+          setPricing={setPricing}
+          general={general}
+          setGeneral={setGeneral}
+          setError={setError}
+          setGetAgentDetails={setGetAgentDetails}
+          
         />
         <div className="flex items-center justify-end">
           <PublishAgentModal
@@ -314,6 +362,13 @@ const AgentDetails: React.FC = ({ selectedAgent }) => {
             sttProvider={sttProvider}
             gender={gender}
             voice={voice}
+            productPricing={productPricing}
+            services={services}
+            company={company}
+            pricing={pricing}
+            general={general}
+            knowledge={knowledge}
+            setGetAgentDetails={setGetAgentDetails}
           />
         </div>
       </div>

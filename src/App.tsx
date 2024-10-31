@@ -131,16 +131,6 @@ function App() {
               />
 
               <Route
-                path="/Authentication/ForgetPassword"
-                element={
-                  <>
-                    <PageTitle title="ForgetPassword" />
-                    <ForgetPassword />
-                  </>
-                }
-              />
-
-              <Route
                 path="/Authentication/ResetPassword"
                 element={
                   <>

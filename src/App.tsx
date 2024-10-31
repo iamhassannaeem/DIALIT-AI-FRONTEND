@@ -22,6 +22,7 @@ import Member from './components/Member';
 import Settings from './pages/settings/Settings';
 import ForgetPassword from './pages/Authentication/ForgetPassword';
 import SignUp from './pages/Authentication/SignUp';
+import ResetPassword from './pages/Authentication/ResetPassword';
 
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
@@ -29,7 +30,7 @@ const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   // const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
-  const isAuthenticated = false;
+  const isAuthenticated = true;
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
@@ -135,6 +136,16 @@ function App() {
                   <>
                     <PageTitle title="ForgetPassword" />
                     <ForgetPassword />
+                  </>
+                }
+              />
+
+              <Route
+                path="/Authentication/ResetPassword"
+                element={
+                  <>
+                    <PageTitle title="ResetPassword" />
+                    <ResetPassword />
                   </>
                 }
               />

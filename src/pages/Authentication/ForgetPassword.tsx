@@ -26,7 +26,7 @@ const ForgetPassword = () => {
         <div className="flex  mt-10 items-center justify-center gap-7">
             {/* First Div - Full Width on Small Screens */}
             <div className="w-full bg-[#EEEEEE] dark:bg-[#1D2532] py-9 px-10 rounded-md md:w-[35%]">
-                <div className="text-black dark:text-white font-normal text-2xl">Reset Password</div>
+                <div className="text-black dark:text-white font-normal text-2xl">Forget Password</div>
                 <div className="text-[#75849B] dark:text-white">
                     Enter the email address associated with your account, and we'll email you a link to reset your password.
                 </div>

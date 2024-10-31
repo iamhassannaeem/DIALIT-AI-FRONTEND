@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
 function Carousel() {
+  
     const [currentIndex, setCurrentIndex] = useState(0);
     const images = [
         "/images/carousel/carousel-01.jpg",

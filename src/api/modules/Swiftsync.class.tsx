@@ -12,16 +12,47 @@ interface ApiResponse {
   message: string;
 }
 
-
-// login
-export const login = async (payload: payload): Promise<ApiResponse> => {
+// SignUp
+export const register = async (payload: payload): Promise<ApiResponse> => {
   try {
-    const response = await axios.post(endpoints.login, payload);
-    return response.data as ApiResponse;
+    const response = await axios.post(endpoints.signUp, payload);
+    return response as ApiResponse;
   } catch (error: any) {
     return { success: false, message: error };
   }
 };
+// login
+export const login = async (payload: payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.post(endpoints.login, payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// Forget Password
+export const forgetPassword = async (payload: payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.post(endpoints.forgetPassword, payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+
+// new Password
+export const newPassword = async (payload: payload,token:string): Promise<ApiResponse> => {
+  console.log('t',token)
+  try {
+    const response = await axios.post(`${endpoints.newPassword}${token}/`, payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
 // refresh token
 export const refreshTokenRequest = async (
   payload: payload

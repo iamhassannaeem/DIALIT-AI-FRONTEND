@@ -6,9 +6,9 @@ import { setAdminStatus } from '../redux/slices/isAdminSlice';
 const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
 export const AuthService = {
-  login: async (email: string, password: string) => {
+  verifyCode: async (payload: payload) => {
     try {
-      const response = await axios.post(`${BASE_URL}user/token/`, { email, password });
+      const response = await axios.post(`${BASE_URL}user/verify/code/`, payload);
       return response;
     } catch (error) {
       throw error;

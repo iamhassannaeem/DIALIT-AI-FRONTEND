@@ -24,6 +24,7 @@ import ForgetPassword from './pages/Authentication/ForgetPassword';
 import SignUp from './pages/Authentication/SignUp';
 import TwoFA from './pages/Authentication/TwoFA';
 import NewPassword from './pages/Authentication/NewPassword';
+import ResetPassword from './pages/Authentication/ResetPassword';
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
@@ -153,6 +154,15 @@ function App() {
                   <>
                     <PageTitle title="ForgetPassword" />
                     <ForgetPassword />
+                  </>
+                }
+              />
+             <Route
+                path="/reset/password"
+                element={
+                  <>
+                    <PageTitle title="ResetPassword" />
+                    <ResetPassword />
                   </>
                 }
               />

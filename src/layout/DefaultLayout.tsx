@@ -6,8 +6,8 @@ import { useSelector } from 'react-redux';
 import Footer from '../components/Footer';
 
 const DefaultLayout = () => {
-  //const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const isAuthenticated = true;
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  // const isAuthenticated = true;
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
     <div>

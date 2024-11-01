@@ -33,8 +33,8 @@ const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
-  //const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
-  const isAuthenticated = true;
+  const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
+  // const isAuthenticated = true;
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
@@ -179,24 +179,13 @@ function App() {
                   </>
                 }
               />
-
-              <Route
-                path="/reset/password"
-                element={
-                  <>
-                    <PageTitle title="ResetPassword" />
-                    <ResetPassword />
-                  </>
-                }
-
-
               <Route
                 path="/user/forgot/password/:token"
-                element={<NewPassword />}
+                element={<><PageTitle title="ForgotPassword" /> <NewPassword /></>}
               />
                <Route
                 path="/user/activate/:token"
-                element={<ActivateUser />}
+                element={<><PageTitle title="UserActivate" /> <ActivateUser /></>}
 
               />
 

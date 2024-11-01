@@ -323,17 +323,15 @@ const LibraryDetails: React.FC = ({ files, loading, setFiles }) => {
                         <p className="mt-2 text-sm font-semibold text-[#1D2532] dark:text-[#FFFFFF]  md:mt-0">
                             Agent Name
                           </p>
-                          <select className="border-gray-300 rounded border p-2 text-sm font-normal text-[#7E7E7E] dark:text-[#D6D6D5] dark:bg-[#1D2532] w-30">
-                            
-                           
+                         <div className='flex gap-1'>
                             {LibraryData?.agent_details?.map(
-                              (element, index) => (
-                                <option key={index} value={element?.name}>
-                                  {element?.agent_details?.name}
-                                </option>
+                              (item, index) => (
+                                <button className=" rounded-md bg-[#3BA2B8] py-1 px-1 text-xs font-normal text-white ">
+                                {item?.agent_details?.name}
+                              </button>
                               )
                             )}
-                          </select>
+                          </div>
                         </div>
                       </div>
                       <div className=" flex flex-wrap gap-2.5">

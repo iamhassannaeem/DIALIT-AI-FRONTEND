@@ -5,6 +5,9 @@ export interface ApiEndpoints {
   addPhoneNumber: string;
   forgetPassword: string;
   newPassword: string;
+  resetPassword: string;
+  logOut:string;
+  activate:string;
   getFiles: string;
   uploadFile: string;
   downloadFile: string;
@@ -22,7 +25,10 @@ const endpoints: ApiEndpoints = {
   refreshTokenRequest: 'user/token/refresh/',
   forgetPassword:'user/password_reset_request/',
   newPassword: 'user/forgot/password/',
-  addPhoneNumber: 'ai_call_agent/twillio_auth/',
+  resetPassword:"user/reset/password/",
+  activate:"user/activate/",
+  logOut: 'user/logout/',
+  addPhoneNumber: 'agent/twillio_auth/',
   getFiles: 'agent/library/',
   downloadFile: 'agent/library/download/',
   uploadFile: 'agent/library/',

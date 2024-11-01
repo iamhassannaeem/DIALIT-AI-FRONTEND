@@ -54,20 +54,19 @@ const ImportPhoneNumberModal = ({
     setLoading(true);
     try {
       const res = await addPhoneNumber(formData);
-
-      // Parse the error message from responseText if success is false
-      if (!res.success) {
+      
+      if (res.status === 201) {
+        const phoneNumbers = await getPhoneNumber();
+        setData(phoneNumbers);
+        setError({ success: 'Phone number added successfully', error: '' });
+        closeModal();
+      } else {
         let errorMessage = '';
         if (res?.message?.request?.responseText) {
           const errorResponse = JSON.parse(res.message.request.responseText); // Parse the responseText
           errorMessage = errorResponse.error || 'An error occurred';
         }
         setError({ success: '', error: errorMessage });
-        closeModal();
-      } else {
-        const phoneNumbers = await getPhoneNumber();
-        setData(phoneNumbers);
-        setError({ success: 'Phone number added successfully', error: '' });
         closeModal();
       }
     } catch (err) {

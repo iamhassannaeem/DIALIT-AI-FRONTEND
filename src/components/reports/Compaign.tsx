@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import * as XLSX from 'xlsx';
 
 
 const data = [
@@ -37,6 +38,7 @@ const Compaign: React.FC = () => {
     const [modalOpenAdd, setModalOpenAdd] = useState(false);
     const [isChecked, setIsChecked] = useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [datas, setData] = useState([]);
     const modal = useRef<any>(null);
 
 
@@ -87,7 +89,24 @@ const Compaign: React.FC = () => {
         return () => document.removeEventListener('keydown', keyHandler);
     }, [isModalOpen]);
 
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const binaryStr = e.target.result;
+                const workbook = XLSX.read(binaryStr, { type: 'binary' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
+                // Filter and map the data to numbers 1 to 10
+                const numbers = jsonData.flat().filter((num) => num >= 1 && num <= 10);
+                setData(numbers);
+            };
+            reader.readAsBinaryString(file);
+        }
+    };
 
 
     return (
@@ -342,7 +361,24 @@ const Compaign: React.FC = () => {
                                                 <div>Pakistan</div>
                                             </div>
                                         </div>
-                                        <input className='mt-5' type='file'></input>
+                                        <input
+                                            className="mt-5 p-2 "
+                                            type="file"
+                                            accept=".xlsx, .xls"
+                                            onChange={handleFileChange}
+                                        />
+                                        <table className="mt-5 table-auto w-full border border-gray-300">
+                                            <thead>
+
+                                            </thead>
+                                            <tbody>
+                                                {datas.map((num, index) => (
+                                                    <tr key={index}>
+                                                        <td className="border border-gray-300 px-4 py-2">{num}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             )}

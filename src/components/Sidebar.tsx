@@ -390,6 +390,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               Call Logs
                             </NavLink>
                           </li>
+                          
                         </ul>
                       </div>
                       {/* <!-- Dropdown Menu End --> */}

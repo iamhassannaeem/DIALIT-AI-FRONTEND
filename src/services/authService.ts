@@ -25,14 +25,14 @@ export const AuthService = {
   },
  
 };
-export const isAdminfetchAdminStatus = () => {
-  return async (dispatch: any) => { 
-    try {
-      const response = await isAdmin(); 
-      dispatch(setAdminStatus(response));
-    } catch (error) {
+// export const isAdminfetchAdminStatus = () => {
+//   return async (dispatch: any) => { 
+//     try {
+//       const response = await isAdmin(); 
+//       dispatch(setAdminStatus(response));
+//     } catch (error) {
      
-      console.error('Error fetching admin status:', error);
-    }
-  };
-};
+//       console.error('Error fetching admin status:', error);
+//     }
+//   };
+// };

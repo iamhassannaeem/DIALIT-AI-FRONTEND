@@ -25,6 +25,7 @@ import SignUp from './pages/Authentication/SignUp';
 import TwoFA from './pages/Authentication/TwoFA';
 import NewPassword from './pages/Authentication/NewPassword';
 import ResetPassword from './pages/Authentication/ResetPassword';
+import ActivateUser from './pages/Authentication/ActivateUser';
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
@@ -41,6 +42,7 @@ function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  
   useEffect(() => {
     dispatch(isAdminfetchAdminStatus());
   }, [dispatch]);
@@ -117,7 +119,15 @@ function App() {
                   </>
                 }
               />
-
+              <Route
+                path="/reset/password"
+                element={
+                  <>
+                    <PageTitle title="ResetPassword" />
+                    <ResetPassword />
+                  </>
+                }
+              />
               <Route
                 path="/member"
                 element={
@@ -157,16 +167,15 @@ function App() {
                   </>
                 }
               />
-             <Route
-                path="/reset/password"
-                element={
-                  <>
-                    <PageTitle title="ResetPassword" />
-                    <ResetPassword />
-                  </>
-                }
+
+              <Route
+                path="/user/forgot/password/:token"
+                element={<NewPassword />}
               />
-              <Route path="/user/forgot/password/:token" element={<NewPassword />} />
+               <Route
+                path="/user/activate/:token"
+                element={<ActivateUser />}
+              />
 
               <Route
                 path="/2fa"
@@ -174,6 +183,15 @@ function App() {
                   <>
                     <PageTitle title="TwoFA" />
                     <TwoFA />
+                  </>
+                }
+              />
+               <Route
+                path="/signin"
+                element={
+                  <>
+                    <PageTitle title="Signin" />
+                    <SignIn />
                   </>
                 }
               />

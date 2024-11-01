@@ -261,14 +261,14 @@ export const editQuestion = async (id:number,payload): Promise<ApiResponse> => {
 // };
 // Assign Role
 //  get user Roles
-export const isAdmin = async (onNavigate:any): Promise<ApiResponse> => {
-  try {
-    const response = await axios.get(endpoints.isAdmin);
-    return response.data as ApiResponse;
-  } catch (error: any) {
-    return {success: false, error: error.message};
-  }
-};
+// export const isAdmin = async (onNavigate:any): Promise<ApiResponse> => {
+//   try {
+//     const response = await axios.get(endpoints.isAdmin);
+//     return response.data as ApiResponse;
+//   } catch (error: any) {
+//     return {success: false, error: error.message};
+//   }
+// };
 
 //  filter Stat
 // export const filterStats = async (organization, to, from,onNavigate:any) => {

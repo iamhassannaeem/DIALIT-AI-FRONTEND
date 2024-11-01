@@ -46,9 +46,9 @@ function App() {
   const dispatch = useDispatch();
 
   
-  useEffect(() => {
-    dispatch(isAdminfetchAdminStatus());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(isAdminfetchAdminStatus());
+  // }, [dispatch]);
 
   return loading ? (
     <Loader />

@@ -13,7 +13,11 @@ const TwoFA = () => {
   const [error, setError] = useState({ success: '', error: '' });
   const [loading, setLoading] = useState(false);
   const location = useLocation();
-  const email = location?.state?.email;
+  const email = location?.state?.email
+  console.log(location?.state);
+  const jwt=location?.state?.jwt;
+  const trusted=location?.state?.trusted;
+  console.log(jwt,trusted);
   const navigate = useNavigate();
   const dispatch=useDispatch()
   // Handle button click
@@ -28,7 +32,9 @@ const TwoFA = () => {
     setLoading(true);
     const payload={
         verification_code: code,
-        user_email: email,
+        // user_email: email,
+        token: jwt,
+        is_trusted:trusted,
       }
     await AuthService.verifyCode(payload)
       .then((res) => {
@@ -49,14 +55,19 @@ const TwoFA = () => {
            
         //   }, 3000);
         } else {
+          
           setError({
-            error: 'The Provided Code is Invalid',
+            error: res?.response?.data?.error,
             success: '',
           });
         }
       })
       .catch((error) => {
         console.log(error);
+        setError({
+          error: error?.response?.data?.error,
+          success: '',
+        });
       });
     setLoading(false);
   };

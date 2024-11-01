@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../images/logo/logo.png';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import organisation from '../images/organisation/sitemap.svg';
@@ -19,6 +19,8 @@ import call from '../images/reports/call.png';
 import { setTitle } from '../redux/slices/titleSlice';
 import { useAppDispatch } from '../hooks/hooks'; // Import your custom hook
 import dashboardDark from '../images/dadhboard-dark.svg';
+import { logout } from '../redux/slices/authSlice';
+import { logOut } from '../api/modules/Swiftsync.class';
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
@@ -37,7 +39,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const [sidebarExpanded, setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true'
   );
-
+  const refresh = useSelector((state) => state?.auth?.refresh);
+  const navigate=useNavigate()
+  const handleLogOut = async () => {
+   
+    logOut({refresh: refresh});
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
+    navigate('/signin')
+    dispatch(logout())
+  };
   useEffect(() => {
     setDarkMode(localStorage.getItem('color-theme') === 'dark');
   }, [darkMode]);
@@ -80,7 +91,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const handleLinkClick = (title: string) => {
     dispatch(setTitle(title));
   };
-
+  
   return (
     <aside
       ref={sidebar}
@@ -122,7 +133,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         <nav className="py-4 px-2 lg:px-2">
           <div>
             <ul className="mb-6 flex flex-col gap-1.5">
-              
               <li onClick={() => handleLinkClick('Dashboard')}>
                 <NavLink
                   to="/dashboard"
@@ -143,7 +153,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       fill="#333B48"
                     />
                   </svg>
-                 
                   Dashboard
                 </NavLink>
               </li>
@@ -160,7 +169,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <React.Fragment>
                       <NavLink
                         to="#"
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-[#1D2532]  duration-100 ease-in-out dark:text-[#1D2532] dark:text-white  ${
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-[#1D2532]  duration-100 ease-in-out  dark:text-white  ${
                           (pathname === '/playgroung/agent' ||
                             pathname.includes('playgroung/agent')) &&
                           'bg-graydark dark:bg-meta-4'
@@ -215,7 +224,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             <NavLink
                               to="/playground/agent"
                               className={({ isActive }) =>
-                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ' +
+                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out  dark:text-white  ' +
                                 (isActive &&
                                   '!dark:text-[#1D2532] border-l-2 border-[#1D2532] text-[#1D2532] dark:border-white dark:text-white')
                               }
@@ -240,7 +249,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             <NavLink
                               to="/playground/phone"
                               className={({ isActive }) =>
-                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ' +
+                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out  dark:text-white  ' +
                                 (isActive &&
                                   '!dark:text-[#1D2532] border-l-2 border-[#1D2532] text-[#1D2532] dark:border-white dark:text-white')
                               }
@@ -265,7 +274,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             <NavLink
                               to="/playground/library"
                               className={({ isActive }) =>
-                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ' +
+                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out  dark:text-white  ' +
                                 (isActive &&
                                   '!dark:text-[#1D2532] border-l-2 border-[#1D2532] text-[#1D2532] dark:border-white dark:text-white')
                               }
@@ -305,7 +314,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <React.Fragment>
                       <NavLink
                         to="#"
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-[#1D2532]  duration-100 ease-in-out dark:text-[#1D2532] dark:text-white  ${
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-[#1D2532]  duration-100 ease-in-out  dark:text-white  ${
                           (pathname === '/reports/call' ||
                             pathname.includes('reports/call')) &&
                           ''
@@ -360,7 +369,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             <NavLink
                               to="/reports/call"
                               className={({ isActive }) =>
-                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ' +
+                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out  dark:text-white  ' +
                                 (isActive &&
                                   '!dark:text-[#1D2532] border-l-2 border-[#1D2532] text-[#1D2532] dark:border-white dark:text-white')
                               }
@@ -392,7 +401,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li onClick={() => handleLinkClick('Billing')}>
                 <NavLink
                   to="/billing"
-                  className={`group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ${
+                  className={`group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out  dark:text-white  ${
                     pathname.includes('/billing') &&
                     'border-l-2 border-[#1D2532] text-black dark:border-white'
                   }`}
@@ -413,7 +422,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Billing
                 </NavLink>
               </li>
-              <li onClick={() => handleLinkClick('Members')}>
+              <li>
                 <NavLink
                   to="/member"
                   className={`group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ${
@@ -436,6 +445,27 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   </svg>
                   Members
                 </NavLink>
+              </li>
+              <li
+                className="absolute bottom-6 w-[80%] cursor-pointer  bg-white p-3 dark:bg-[#242E3E]"
+                onClick={handleLogOut}
+              >
+                <button className="group flex items-center gap-[14px] rounded-sm text-sm font-semibold  text-[#1D2532]  duration-100 ease-in-out dark:text-white">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 22 22"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="fill-black dark:fill-white"
+                      d="M4.77778 19C4.28889 19 3.87037 18.8259 3.52222 18.4778C3.17407 18.1296 3 17.7111 3 17.2222V4.77778C3 4.28889 3.17407 3.87037 3.52222 3.52222C3.87037 3.17407 4.28889 3 4.77778 3H10.1111C10.363 3 10.5741 3.08519 10.7444 3.25556C10.9148 3.42593 11 3.63704 11 3.88889C11 4.14074 10.9148 4.35185 10.7444 4.52222C10.5741 4.69259 10.363 4.77778 10.1111 4.77778H4.77778V17.2222H10.1111C10.363 17.2222 10.5741 17.3074 10.7444 17.4778C10.9148 17.6481 11 17.8593 11 18.1111C11 18.363 10.9148 18.5741 10.7444 18.7444C10.5741 18.9148 10.363 19 10.1111 19H4.77778ZM15.6 11.8889H9.22222C8.97037 11.8889 8.75926 11.8037 8.58889 11.6333C8.41852 11.463 8.33333 11.2519 8.33333 11C8.33333 10.7481 8.41852 10.537 8.58889 10.3667C8.75926 10.1963 8.97037 10.1111 9.22222 10.1111H15.6L13.9333 8.44444C13.7704 8.28148 13.6889 8.08148 13.6889 7.84444C13.6889 7.60741 13.7704 7.4 13.9333 7.22222C14.0963 7.04444 14.3037 6.95185 14.5556 6.94444C14.8074 6.93704 15.0222 7.02222 15.2 7.2L18.3778 10.3778C18.5556 10.5556 18.6444 10.763 18.6444 11C18.6444 11.237 18.5556 11.4444 18.3778 11.6222L15.2 14.8C15.0222 14.9778 14.8111 15.063 14.5667 15.0556C14.3222 15.0481 14.1111 14.9556 13.9333 14.7778C13.7704 14.6 13.6926 14.3889 13.7 14.1444C13.7074 13.9 13.7926 13.6963 13.9556 13.5333L15.6 11.8889Z"
+                      fill="white"
+                    />
+                  </svg>
+                  Logout
+                </button>
               </li>
             </ul>
           </div>

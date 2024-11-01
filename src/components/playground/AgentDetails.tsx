@@ -4,17 +4,23 @@ import dropdown from '../../images/dropdown.png';
 import DoughnutChart from './DoughnutChart';
 import AgentTabs from './AgentTabs';
 import PublishAgentModal from './PublishAgentModal';
-import { agentDetails } from '../../api/modules/Swiftsync.class';
-const AgentDetails: React.FC = ({ setError,selectedAgent, getAgentDetails ,setGetAgentDetails}) => {
-  
+import { agentDetails, publishAgent, publishAgentDetails } from '../../api/modules/Swiftsync.class';
+const AgentDetails: React.FC = ({
+  setError,
+  selectedAgent,
+  getAgentDetails,
+  setGetAgentDetails,
+  agentstatus,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
-  
+
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState([]);
   const [firstMessage, setFirstMessage] = useState(
-    getAgentDetails?.first_message || ''
+    getAgentDetails?.first_message ||
+      'Hello, this is Domify. How may I assist you today?'
   );
   const [questions, setQuestions] = useState(getAgentDetails?.feed_questions);
   const [selectedProvider, setSelectedProvider] = useState(
@@ -27,7 +33,6 @@ const AgentDetails: React.FC = ({ setError,selectedAgent, getAgentDetails ,setGe
     getAgentDetails?.stt_technology_provider
   );
 
-  
   const [gender, setGender] = useState(getAgentDetails?.gender);
   const [voice, setVoice] = useState(getAgentDetails?.voice_name);
   const [selectedModel, setSelectedModel] = useState(getAgentDetails?.ai_model);
@@ -37,6 +42,7 @@ const AgentDetails: React.FC = ({ setError,selectedAgent, getAgentDetails ,setGe
   const [pricing, setPricing] = useState('');
   const [general, setGeneral] = useState('');
   const [knowledge, setKnowledge] = useState(getAgentDetails?.ai_tec);
+  const [isChecked, setIsChecked] = useState(getAgentDetails?.active);
 
   useEffect(() => {
     try {
@@ -75,7 +81,7 @@ const AgentDetails: React.FC = ({ setError,selectedAgent, getAgentDetails ,setGe
           case 'general_information':
             setGeneral(file.file_id);
             break;
-            case 'prompt_files':
+          case 'prompt_files':
             setKnowledge(file.file_id);
             break;
           default:
@@ -84,6 +90,29 @@ const AgentDetails: React.FC = ({ setError,selectedAgent, getAgentDetails ,setGe
       });
     }
   }, [getAgentDetails]);
+
+  const handleToggle =async () => {
+    setIsChecked(!isChecked);
+    const requestData = {
+      active: !isChecked,
+      agent_type: selectedAgent?.type,
+    }
+    try {
+      const res = await publishAgent(selectedAgent?.id, requestData);
+      console.log(res);
+
+      if (res?.status === 200) {
+        setLoading(false);
+        closeModal();
+        setError({error:'',success:"Agent Status Updated"})
+        const res=await publishAgentDetails(selectedAgent?.id,selectedAgent?.type)
+    setGetAgentDetails(res?.data);
+      }
+    } catch (error) {
+      console.error('Error in publishing agent:', error);
+      setLoading(false);
+    }
+  };
   return (
     <>
       <div className="flex w-full flex-col flex-wrap  justify-between gap-6 rounded-t-xl bg-[#EEEEEE]  p-6 dark:bg-[#1D2532]">
@@ -124,6 +153,30 @@ const AgentDetails: React.FC = ({ setError,selectedAgent, getAgentDetails ,setGe
                     />
                   </svg>
                 </span>
+                <span className="text-[#1D2532] dark:text-white">
+                  Status: {agentstatus ? 'Active' : 'Draft'}
+                </span>
+                <div className="py-3 px-6">
+                  <label
+                    className={`relative block h-7.5 w-14 cursor-pointer rounded-full transition-colors duration-300 ${
+                      isChecked ? 'bg-[#2691b6]' : 'bg-[#bed5f3]'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={handleToggle}
+                      className="absolute top-0 z-50 h-full w-full cursor-pointer opacity-0"
+                    />
+                    <span
+                      className={`absolute top-1/2 left-[3px] bg-white h-6 w-6 -translate-y-1/2 transform rounded-full shadow-sm transition-transform duration-300 ${
+                        isChecked
+                          ? 'bg-green-500 translate-x-6'
+                          : 'translate-x-0 '
+                      }`}
+                    ></span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -343,7 +396,6 @@ const AgentDetails: React.FC = ({ setError,selectedAgent, getAgentDetails ,setGe
           setGeneral={setGeneral}
           setError={setError}
           setGetAgentDetails={setGetAgentDetails}
-          
         />
         <div className="flex items-center justify-end">
           <PublishAgentModal

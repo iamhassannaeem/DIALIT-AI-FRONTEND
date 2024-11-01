@@ -35,9 +35,7 @@ console.log(token)
       setLoading(true);
       setError({ error: '', success: res?.data?.message });
       setTimeout(() => {
-        navigate('signin', {
-          
-        });
+        navigate('signin');
       }, 3000);
     } else {
       setError({

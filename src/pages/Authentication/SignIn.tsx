@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Carousel from '../../components/Carousel/Carousel';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../api/modules/Swiftsync.class';
 import { BeatLoader } from 'react-spinners';
 import Toaster from '../../components/Toast/Toast';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../../redux/slices/authSlice';
 
 const SignIn = () => {
   const [showPasswd, setShowPasswd] = useState(false);
@@ -13,7 +15,11 @@ const SignIn = () => {
   const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({ success: '', error: '' });
-  const validateEmail = (value: any) => {
+  const [rememberMe, setRememberMe] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const validateEmail = (value) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(value)) {
       setEmailError('Please enter a valid email address');
@@ -22,7 +28,7 @@ const SignIn = () => {
     }
   };
 
-  const validatePassword = (value: any) => {
+  const validatePassword = (value) => {
     if (value.length < 6) {
       setPasswordError('Password must be at least 6 characters');
     } else {
@@ -30,58 +36,81 @@ const SignIn = () => {
     }
   };
 
-  const handleEmailChange = (e: any) => {
+  const handleEmailChange = (e) => {
     setEmail(e.target.value);
     validateEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e: any) => {
+  const handlePasswordChange = (e) => {
     setPassword(e.target.value);
     validatePassword(e.target.value);
   };
 
   const isFormValid = email && password && !emailError && !passwordError;
 
-  const navigate = useNavigate();
-
+  useEffect(() => {
+    const storedRememberMe = localStorage.getItem('rememberMe');
+    if (storedRememberMe) {
+      setRememberMe(JSON.parse(storedRememberMe));
+    }
+  }, []);
 
   const handleLogIn = async () => {
-
     setLoading(true);
     try {
-      const res = await login({
-        email: email,
-        password: password,
-      });
-      console.log(res);
+      // Create a FormData object and append fields to it
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('is_trusted', rememberMe);
+
+      const res = await login(formData);
+
       if (res?.status === 200) {
         setError({ error: '', success: res?.data?.message });
-        setTimeout(() => {
-          navigate('/2fa', {
-            state: {
-              email: email,
-            },
-          });
-        }, 3000);
-
-
+        if (res?.data?.access_token) {
+          const refresh = res?.data?.refresh_token;
+          const access = res?.data?.access_token;
+          dispatch(loginSuccess({ access, refresh }));
+          localStorage.setItem('access', access);
+          localStorage.setItem('refresh', refresh);
+          window.location.reload();
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 3000);
+        } else {
+          setTimeout(() => {
+            navigate('/2fa', {
+              state: {
+                email: email,
+                jwt: res?.data?.token,
+                trusted: res?.data?.is_trusted,
+              },
+            });
+          }, 3000);
+        }
       } else {
         setError({
-          error: 'Invalid Credentials',
+          error: res?.message?.response?.data?.non_field_errors[0],
           success: '',
         });
       }
-      setLoading(false);
     } catch (error) {
       console.log(error);
     }
+    setLoading(false);
   };
+
+  const handleRememberMeChange = (e) => {
+    setRememberMe(e.target.checked);
+    localStorage.setItem('rememberMe', e.target.checked);
+  };
+
   return (
     <>
       <Toaster message={error} />
-      <div className="mt-2 flex items-center justify-center gap-7 md:mt-5">
-        {/* First Div - Full Width on Small Screens */}
-        <div className="w-full md:w-[45%]">
+      <div className="mt-2 flex items-center justify-center gap-7 p-2 sm:mt-15 sm:p-10">
+        <div className="w-full md:w-[50%]">
           <div className="text-2xl font-normal text-black dark:text-white">
             Login to your account
           </div>
@@ -102,7 +131,9 @@ const SignIn = () => {
               onChange={handleEmailChange}
               placeholder="Enter Your Email"
             />
-            {emailError && <p className="mt-1 text-sm text-red">{emailError}</p>}
+            {emailError && (
+              <p className="mt-1 text-sm text-red">{emailError}</p>
+            )}
           </div>
 
           <div className="mt-6 text-[#75849B] dark:text-white">
@@ -118,8 +149,6 @@ const SignIn = () => {
               placeholder="Enter Your Password"
               className="h-10 w-full rounded-md border border-stroke bg-[#EEEEEE] pl-2 outline-none dark:bg-[#1D2532]"
             />
-
-
             <svg
               width="24"
               height="24"
@@ -151,8 +180,6 @@ const SignIn = () => {
                 </clipPath>
               </defs>
             </svg>
-
-
             {passwordError && (
               <p className="mt-1 text-sm text-red">{passwordError}</p>
             )}
@@ -160,22 +187,28 @@ const SignIn = () => {
 
           <div className="mt-4 flex items-center justify-between">
             <div className="flex gap-1">
-              <input className="rounded-md" type="checkbox" />
+              <input
+                className="rounded-md"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={handleRememberMeChange}
+              />
               <span className="text-[#8491A6]">Remember me</span>
             </div>
             <div
               className="cursor-pointer font-thin hover:underline"
-              onClick={() => navigate('/ForgetPassword')} // Add onClick to navigate
+              onClick={() => navigate('/ForgetPassword')}
             >
               Forgot password?
             </div>
           </div>
 
           <button
-            className={`mt-9 w-full rounded-md py-2 ${isFormValid
-              ? 'cursor-pointer bg-[#1D2532] text-white hover:bg-[#2C3E50]' // Enabled styles
-              : 'cursor-not-allowed bg-[#EEEEEE]' // Disabled styles
-              }`}
+            className={`mt-9 w-full rounded-md py-2 ${
+              isFormValid
+                ? 'cursor-pointer bg-[#1D2532] text-white hover:bg-[#2C3E50]'
+                : 'cursor-not-allowed bg-[#EEEEEE]'
+            }`}
             disabled={!isFormValid}
             onClick={handleLogIn}
           >
@@ -183,7 +216,30 @@ const SignIn = () => {
           </button>
 
           <button className="mt-3 flex w-full items-center justify-center gap-1 rounded-md bg-[#EEEEEE] py-2 font-medium text-[#4E5B6F] dark:bg-[#1D2532] dark:text-white">
-            Continue with Google
+            <span> Continue with Google</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 48 48"
+              width="24px"
+              height="24px"
+            >
+              <path
+                fill="#fbc02d"
+                d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12	s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20	s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
+              />
+              <path
+                fill="#e53935"
+                d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039	l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
+              />
+              <path
+                fill="#4caf50"
+                d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36	c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
+              />
+              <path
+                fill="#1565c0"
+                d="M43.611,20.083L43.595,20L42,20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571	c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
+              />
+            </svg>
           </button>
           <div className="mt-3 text-center text-[#8A92A0] dark:text-white">
             Don't have an account?{' '}
@@ -195,9 +251,7 @@ const SignIn = () => {
             </span>
           </div>
         </div>
-
-        {/* Carousel - Visible on Medium Screens and Up */}
-        <div className="hidden h-full w-[55%] md:block">
+        <div className="hidden h-full w-[50%] md:block">
           <Carousel />
         </div>
       </div>

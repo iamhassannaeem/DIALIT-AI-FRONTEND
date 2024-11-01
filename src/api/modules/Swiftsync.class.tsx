@@ -44,9 +44,41 @@ export const forgetPassword = async (payload: payload): Promise<ApiResponse> => 
 
 // new Password
 export const newPassword = async (payload: payload,token:string): Promise<ApiResponse> => {
-  console.log('t',token)
+
   try {
     const response = await axios.post(`${endpoints.newPassword}${token}/`, payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+// Activate User
+export const activate = async (token:string): Promise<ApiResponse> => {
+
+  try {
+    const response = await axios.post(`${endpoints.activate}${token}/`);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// Reset Password
+export const resetPassword = async (payload: payload): Promise<ApiResponse> => {
+  
+  try {
+    const response = await axios.post(endpoints.resetPassword, payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+
+// Log Out
+export const logOut = async (payload: payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.post(endpoints.logOut, payload);
     return response as ApiResponse;
   } catch (error: any) {
     return { success: false, message: error };
@@ -77,7 +109,7 @@ export const getPhoneNumber = async (): Promise<ApiResponse> => {
 export const addPhoneNumber = async (payload: payload): Promise<ApiResponse> => {
   try {
     const response = await axios.post(endpoints.addPhoneNumber, payload);
-    return response.data as ApiResponse;
+    return response as ApiResponse;
   } catch (error: any) {
     return { success: false, message: error };
   }

@@ -15,8 +15,10 @@ const Agent: React.FC = () => {
   const [selectedAgent, setSelectedAgent] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const[getAgentDetails,setGetAgentDetails] = useState()
+  const[agentstatus, setAgentStatus] = useState('')
   const [error, setError] = useState({ success: '', error: '' });
-  const handleSelectAgent = async(id: string, type: string) => {
+  const handleSelectAgent = async(id: string, type: string,status:string) => {
+    setAgentStatus(status)
     setLoading(true)
     setSelectedAgent({ id, type });
     const res=await publishAgentDetails(id,type)
@@ -95,7 +97,7 @@ const Agent: React.FC = () => {
                     (agent) => String(agent.id) === e.target.value // Convert to string for comparison
                   );
                   if (selectedOption) {
-                    handleSelectAgent(selectedOption.id, selectedOption.type); // Update selected agent
+                    handleSelectAgent(selectedOption.id, selectedOption.type, selectedOption?.active); // Update selected agent
                   }
                 }}
               >
@@ -120,7 +122,7 @@ const Agent: React.FC = () => {
                       ? ' border-[#333B48] bg-[#faf7f7] dark:bg-[#242E3E]'
                       : ''
                   }`}
-                  onClick={() => handleSelectAgent(agent?.id, agent?.type)}
+                  onClick={() => handleSelectAgent(agent?.id, agent?.type ,agent?.active)}
                 >
                   <h6 className="text-sm font-semibold text-[#1D2532] dark:text-white">
                     {agent?.name}
@@ -133,7 +135,7 @@ const Agent: React.FC = () => {
             </div>
           </div>
 
-          <AgentDetails selectedAgent={selectedAgent} getAgentDetails={getAgentDetails} setError={setError} setGetAgentDetails={setGetAgentDetails}/>
+          <AgentDetails selectedAgent={selectedAgent} getAgentDetails={getAgentDetails} setError={setError} setGetAgentDetails={setGetAgentDetails} agentstatus={agentstatus}/>
         </div>
       ) : (
         <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-[#EEEEEE]  p-6 dark:bg-[#1D2532]">

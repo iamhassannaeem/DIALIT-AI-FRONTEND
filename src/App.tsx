@@ -25,12 +25,14 @@ import SignUp from './pages/Authentication/SignUp';
 import TwoFA from './pages/Authentication/TwoFA';
 import NewPassword from './pages/Authentication/NewPassword';
 import ResetPassword from './pages/Authentication/ResetPassword';
+import Compaign from './components/reports/Compaign';
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
-  const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
+  //const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
+  const isAuthenticated = true;
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
@@ -109,6 +111,15 @@ function App() {
                 }
               />
               <Route
+                path="/reports/Compaign"
+                element={
+                  <>
+                    <PageTitle title="Compaign" />
+                    <Compaign />
+                  </>
+                }
+              />
+              <Route
                 path="/billing"
                 element={
                   <>
@@ -157,7 +168,7 @@ function App() {
                   </>
                 }
               />
-             <Route
+              <Route
                 path="/reset/password"
                 element={
                   <>

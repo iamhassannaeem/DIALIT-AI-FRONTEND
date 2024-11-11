@@ -227,7 +227,7 @@ export const deleteQuestion = async (id:number): Promise<ApiResponse> => {
 };
 
 // delete the Question
-export const editQuestion = async (id:number,payload): Promise<ApiResponse> => {
+export const editQuestion = async (id:number,payload:payload): Promise<ApiResponse> => {
   try {
     const response = await axios.put(`${endpoints.deleteQuestion}${id}/`,payload);
     return response as ApiResponse;
@@ -236,7 +236,62 @@ export const editQuestion = async (id:number,payload): Promise<ApiResponse> => {
   }
 };
 
+// get Compaigns 
+export const compaignsList = async (): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(endpoints.compaignsList);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+// Post Compaigns 
+export const postCompaign = async (payload:payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.post(endpoints.compaignsList,payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
 
+// Edit Compaigns 
+export const editCompaign = async (id:number,payload:payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.put(`${endpoints.compaignsList}${id}/`,payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+// Delete Compaigns 
+export const deleteCompaign = async (id:number): Promise<ApiResponse> => {
+  try {
+    const response = await axios.delete(`${endpoints.compaignsList}${id}/`);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// get Call Details  
+export const callDetails = async (): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(endpoints.callDetails);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+// get feedback report  
+export const feedbackReport = async (): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(endpoints.feedbackReport);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
 // organisation create
 // export const organisationCreate = async (
 //   payload: Payload,

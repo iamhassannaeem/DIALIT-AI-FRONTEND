@@ -27,6 +27,8 @@ import NewPassword from './pages/Authentication/NewPassword';
 import ResetPassword from './pages/Authentication/ResetPassword';
 import Compaign from './components/reports/Compaign';
 import ActivateUser from './pages/Authentication/ActivateUser';
+import FeedbackCard from './components/playground/AgentTabs/FeedbackCard';
+import FeedbackReport from './components/reports/FeedbackReport';
 
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
@@ -119,6 +121,15 @@ function App() {
                   <>
                     <PageTitle title="Compaign" />
                     <Compaign />
+                  </>
+                }
+              />
+                 <Route
+                path="/reports/feedback/report"
+                element={
+                  <>
+                    <PageTitle title="Compaign" />
+                    <FeedbackReport />
                   </>
                 }
               />

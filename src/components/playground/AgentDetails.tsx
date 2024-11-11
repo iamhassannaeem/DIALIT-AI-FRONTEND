@@ -15,7 +15,6 @@ const AgentDetails: React.FC = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
-
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState([]);
   const [firstMessage, setFirstMessage] = useState(

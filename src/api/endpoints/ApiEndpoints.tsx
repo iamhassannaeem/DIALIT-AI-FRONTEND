@@ -17,6 +17,9 @@ export interface ApiEndpoints {
   agentDetails: string;
   publishAgent: string;
   deleteQuestion: string;
+  compaignsList: string;
+  callDetails: string;
+  feedbackReport: string;
 }
 
 const endpoints: ApiEndpoints = {
@@ -38,6 +41,9 @@ const endpoints: ApiEndpoints = {
   agentDetails: 'agent/agents/InputData/',
   publishAgent: 'agent/agent/',
   deleteQuestion: 'agent/feedback-questions/',
+  compaignsList:'agent/campaigns/',
+  callDetails:'agent/call/details/',
+  feedbackReport:'agent/feedbackreport/'
 };
 
 export default endpoints;

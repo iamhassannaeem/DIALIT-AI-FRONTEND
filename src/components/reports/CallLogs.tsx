@@ -4,42 +4,9 @@ import CallCost from './CallCost';
 import Logs from './Logs';
 import Messages from './Messages';
 import Transcripts from './Transcripts';
-
-const callLogsData = [
-  {
-    type: 'Web',
-    callId: '83796ab...',
-    callCost: '$0.14',
-    endedReason: 'Customer Ended Call',
-    endedReasonColor: '[#1FCD67]',
-    assistant: 'Ava',
-    phoneNumber: '+1 688 7811927',
-    customer: 'Lorem',
-    callTimeDuration: '4 Sep 2024, 14:30 - 4 Sep 2024, 15:00',
-  },
-  {
-    type: 'Web',
-    callId: '83796ab...',
-    callCost: '$0.98',
-    endedReason: 'Customer Ended Call',
-    endedReasonColor: '[#1FCD67]',
-    assistant: 'Ava',
-    phoneNumber: '+1 688 7811927',
-    customer: 'Ipsum',
-    callTimeDuration: '4 Sep 2024, 14:30 - 4 Sep 2024, 15:00',
-  },
-  {
-    type: 'Web',
-    callId: '83796ab...',
-    callCost: '$0.00',
-    endedReason: 'No Microphone Permission',
-    endedReasonColor: '[#F23030]',
-    assistant: 'Ava',
-    phoneNumber: '+1 688 7811927',
-    customer: 'Dolor Sit',
-    callTimeDuration: '4 Sep 2024, 14:30 - 4 Sep 2024, 15:00',
-  },
-];
+import { callDetails } from '../../api/modules/Swiftsync.class';
+import Datepicker from 'react-tailwindcss-datepicker';
+import Loader from '../../common/Loader';
 
 const activeClasses =
   'border-b-2 border-[#242E3E] dark:border-white pb-3 text-white';
@@ -52,6 +19,18 @@ const CallLogs: React.FC = () => {
   const [Tab, setTab] = useState(1);
   const [copied, setCopied] = useState(false);
   const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [calllog, setCallLog] = useState();
+  const [loading, setLoading] = useState(false);
+  const [filteredFiles, setFilteredFiles] = useState();
+  const [selectedFileType, setSelectedFileType] = useState('');
+  const [selectedDate, setSelectedDate] = useState({
+    startDate: null,
+    endDate: null,
+  });
+
+  const handleDateChange = (newDate) => {
+    setSelectedDate(newDate);
+  };
   const modal = useRef<any>(null);
 
   const copyToClipboard = () => {
@@ -85,59 +64,60 @@ const CallLogs: React.FC = () => {
     navigator.clipboard.writeText(text);
   };
 
-  return (
+  useEffect(() => {
+    try {
+      const api = async () => {
+        setLoading(true);
+        const res = await callDetails();
+        setCallLog(res?.data);
+        setLoading(false);
+      };
+      api();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+  const handleFilter = () => {};
+
+  return loading ? (
+    <Loader />
+  ) : (
     <>
       <div className="flex flex-col gap-6 rounded-xl bg-[#EEEEEE] px-3 py-6 shadow-default dark:bg-[#1D2532]">
         {/* Search and Filter Section */}
-        <div className="flex flex-wrap items-start items-center justify-between gap-6">
-          <div className="relative">
-            <input
-              type="text"
-              name=""
-              id=""
-              className="w-[270px] rounded-md border-[1px] bg-white py-3 pl-3 pr-2 text-sm font-normal text-[#1D2532]  dark:border-[#333B48] dark:bg-[#242E3E] dark:text-[#D6D6D5] md:w-[311px] md:pr-4"
-              placeholder="Search all column or enter UUID..."
+        <div className=" flex w-full items-end justify-center gap-4 md:w-[50%]">
+          <div className="w-full ">
+            <select
+              id="model"
+              value={selectedFileType}
+              onChange={(e) => setSelectedFileType(e.target.value)}
+              className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+            >
+              <option value="">Filter on the base Agent type</option>
+            </select>
+          </div>
+          <div className="mx-auto w-full max-w-md">
+            <Datepicker
+              value={selectedDate}
+              onChange={handleDateChange}
+              displayFormat="YYYY-MM-DD"
+              useRange={true} // Set to `true` if you want a range picker
+              placeholder="Select a date range"
             />
-            <svg
-              className="absolute top-3 right-1"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                className="fill-black dark:fill-white"
-                d="M9.5 16C7.68333 16 6.14583 15.3708 4.8875 14.1125C3.62917 12.8542 3 11.3167 3 9.5C3 7.68333 3.62917 6.14583 4.8875 4.8875C6.14583 3.62917 7.68333 3 9.5 3C11.3167 3 12.8542 3.62917 14.1125 4.8875C15.3708 6.14583 16 7.68333 16 9.5C16 10.2333 15.8833 10.925 15.65 11.575C15.4167 12.225 15.1 12.8 14.7 13.3L20.3 18.9C20.4833 19.0833 20.575 19.3167 20.575 19.6C20.575 19.8833 20.4833 20.1167 20.3 20.3C20.1167 20.4833 19.8833 20.575 19.6 20.575C19.3167 20.575 19.0833 20.4833 18.9 20.3L13.3 14.7C12.8 15.1 12.225 15.4167 11.575 15.65C10.925 15.8833 10.2333 16 9.5 16ZM9.5 14C10.75 14 11.8125 13.5625 12.6875 12.6875C13.5625 11.8125 14 10.75 14 9.5C14 8.25 13.5625 7.1875 12.6875 6.3125C11.8125 5.4375 10.75 5 9.5 5C8.25 5 7.1875 5.4375 6.3125 6.3125C5.4375 7.1875 5 8.25 5 9.5C5 10.75 5.4375 11.8125 6.3125 12.6875C7.1875 13.5625 8.25 14 9.5 14Z"
-                fill="#D6D6D5"
-              />
-            </svg>
           </div>
-
-          <div className="flex gap-[6px] rounded-md border-[1px] p-[8px] dark:border-[#333B48] dark:bg-[#242E3E]">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 22 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                className="fill-black dark:fill-white"
-                d="M10.084 18.3333C9.82425 18.3333 9.60655 18.2455 9.43085 18.0698C9.25516 17.8941 9.16731 17.6764 9.16731 17.4167V11.9167L3.85064 5.13334C3.62148 4.82778 3.5871 4.50695 3.74752 4.17084C3.90794 3.83473 4.18675 3.66667 4.58398 3.66667H17.4173C17.8145 3.66667 18.0934 3.83473 18.2538 4.17084C18.4142 4.50695 18.3798 4.82778 18.1506 5.13334L12.834 11.9167V17.4167C12.834 17.6764 12.7461 17.8941 12.5704 18.0698C12.3947 18.2455 12.177 18.3333 11.9173 18.3333H10.084ZM11.0006 11.275L15.5381 5.50001H6.46314L11.0006 11.275Z"
-                fill="#D6D6D5"
-              />
-            </svg>
-
-            <span className="text-sm font-normal text-[#1D2532] dark:text-[#D6D6D5]">
-              Web Calls
-            </span>
-          </div>
+          <button
+            onClick={handleFilter}
+            type="button"
+            disabled={!selectedFileType}
+            className="cursor-pointer rounded border-2 border-[#2691B6] bg-transparent px-4 py-3 text-center text-sm font-semibold text-[#2691B6]"
+          >
+            Filter
+          </button>
         </div>
 
         {/* Table Header */}
         <div className="scrollbar overflow-x-scroll">
-          <div className="grid min-w-[900px] grid-cols-11  border-t  border-stroke  dark:border-strokedark ">
+          <div className="grid min-w-[900px] grid-cols-12  border-t  border-stroke  dark:border-strokedark ">
             <div className=" flex items-center px-3 py-4">
               <p className="text-sm  font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
                 Type
@@ -151,6 +131,11 @@ const CallLogs: React.FC = () => {
             <div className=" flex items-center px-3 py-4">
               <p className=" text-sm font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
                 Call Cost
+              </p>
+            </div>
+            <div className=" flex items-center px-3 py-4">
+              <p className=" text-sm font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
+                Status
               </p>
             </div>
             <div className=" flex items-center px-3 py-4">
@@ -187,10 +172,10 @@ const CallLogs: React.FC = () => {
           </div>
 
           {/* Mapping JSON Data */}
-          {callLogsData?.map((log, index) => (
+          {calllog?.map((log, index) => (
             <div
               key={index}
-              className="grid min-w-[900px] grid-cols-11 border-t  border-stroke  dark:border-strokedark"
+              className="grid min-w-[900px] grid-cols-12 border-t  border-stroke  dark:border-strokedark"
             >
               <div className=" flex items-center justify-start px-3 py-4">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
@@ -220,10 +205,17 @@ const CallLogs: React.FC = () => {
                   </svg>
                 </div>
               </div>
-
+              <div className="flex items-center justify-start">
+                <div className="flex items-center gap-1 px-3 py-4">
+                  {' '}
+                  <p className="break-all text-base font-normal text-black dark:text-[#D6D6D5]">
+                    {log.status}
+                  </p>
+                </div>
+              </div>
               <div className="flex items-center justify-start px-3 py-4 ">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
-                  {log.callCost}
+                  {log.call_cost}
                 </p>
               </div>
 
@@ -251,7 +243,7 @@ const CallLogs: React.FC = () => {
               </div>
               <div className="flex items-center justify-start px-3 py-4">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
-                  {log.phoneNumber}
+                  {log?.phone_number}
                 </p>
               </div>
 
@@ -288,7 +280,7 @@ const CallLogs: React.FC = () => {
               {/* modal will open */}
               {modalOpen && (
                 <div
-                  className={`fixed top-0 left-0 z-999999 flex h-full min-h-screen w-full items-center justify-center overflow-y-scroll bg-[#EEEEEE]/50 px-4  dark:bg-black/60 ${
+                  className={`fixed top-0 left-0 z-999999 flex h-full min-h-screen w-full items-center justify-center overflow-y-scroll bg-[#EEEEEE]/50 px-4  dark:bg-black/90 ${
                     modalOpen ? 'block' : 'hidden'
                   }`}
                 >

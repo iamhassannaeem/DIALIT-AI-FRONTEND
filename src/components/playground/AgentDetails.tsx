@@ -4,7 +4,11 @@ import dropdown from '../../images/dropdown.png';
 import DoughnutChart from './DoughnutChart';
 import AgentTabs from './AgentTabs';
 import PublishAgentModal from './PublishAgentModal';
-import { agentDetails, publishAgent, publishAgentDetails } from '../../api/modules/Swiftsync.class';
+import {
+  agentDetails,
+  publishAgent,
+  publishAgentDetails,
+} from '../../api/modules/Swiftsync.class';
 const AgentDetails: React.FC = ({
   setError,
   selectedAgent,
@@ -15,14 +19,15 @@ const AgentDetails: React.FC = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
-
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState([]);
   const [firstMessage, setFirstMessage] = useState(
     getAgentDetails?.first_message ||
       'Hello, this is Domify. How may I assist you today?'
   );
-  const [questions, setQuestions] = useState(getAgentDetails?.feed_questions);
+  const [questions, setQuestions] = useState(
+    getAgentDetails?.feed_questions || getAgentDetails?.questions
+  );
   const [selectedProvider, setSelectedProvider] = useState(
     getAgentDetails?.ai_tec
   );
@@ -37,7 +42,7 @@ const AgentDetails: React.FC = ({
   const [voice, setVoice] = useState(getAgentDetails?.voice_name);
   const [selectedModel, setSelectedModel] = useState(getAgentDetails?.ai_model);
   const [productPricing, setProductPricing] = useState('');
-  const [services, setServices] = useState('');
+  const [services, setServices] = useState();
   const [company, setCompany] = useState('');
   const [pricing, setPricing] = useState('');
   const [general, setGeneral] = useState('');
@@ -61,28 +66,28 @@ const AgentDetails: React.FC = ({
     }
   }, []);
   useEffect(() => {
-    if (getAgentDetails?.associated_files) {
-      getAgentDetails?.associated_files?.forEach((file) => {
-        console.log(file?.file_id);
-
+    
+    if (getAgentDetails?.files) {
+      getAgentDetails?.files?.forEach((file) => {
         switch (file?.file_type) {
           case 'product_pricing':
-            setProductPricing(file.file_id);
+            console.log(file)
+            setProductPricing(file?.file);
             break;
           case 'product_information':
-            setServices(file.file_id);
+            setServices(file?.file);
             break;
           case 'company_information':
-            setCompany(file.file_id);
+            setCompany(file?.file);
             break;
           case 'pricing':
-            setPricing(file.file_id);
+            setPricing(file?.file);
             break;
           case 'general_information':
-            setGeneral(file.file_id);
+            setGeneral(file?.file);
             break;
           case 'prompt_files':
-            setKnowledge(file.file_id);
+            setKnowledge(file?.file);
             break;
           default:
             break;
@@ -91,22 +96,28 @@ const AgentDetails: React.FC = ({
     }
   }, [getAgentDetails]);
 
-  const handleToggle =async () => {
+  const handleToggle = async () => {
     setIsChecked(!isChecked);
     const requestData = {
       active: !isChecked,
       agent_type: selectedAgent?.type,
-    }
+    };
     try {
       const res = await publishAgent(selectedAgent?.id, requestData);
-      console.log(res);
 
       if (res?.status === 200) {
         setLoading(false);
         closeModal();
-        setError({error:'',success:"Agent Status Updated"})
-        const res=await publishAgentDetails(selectedAgent?.id,selectedAgent?.type)
-    setGetAgentDetails(res?.data);
+        setError({ error: '', success: 'Agent Status Updated' });
+        const res = await publishAgentDetails(
+          selectedAgent?.id,
+          selectedAgent?.type
+        );
+        setGetAgentDetails(res?.data);
+      }
+      else{
+        setError({ error: res?.message?.response?.data?.error, success: '' });
+        setGetAgentDetails(res?.data);
       }
     } catch (error) {
       console.error('Error in publishing agent:', error);
@@ -169,7 +180,7 @@ const AgentDetails: React.FC = ({
                       className="absolute top-0 z-50 h-full w-full cursor-pointer opacity-0"
                     />
                     <span
-                      className={`absolute top-1/2 left-[3px] bg-white h-6 w-6 -translate-y-1/2 transform rounded-full shadow-sm transition-transform duration-300 ${
+                      className={`absolute top-1/2 left-[3px] h-6 w-6 -translate-y-1/2 transform rounded-full bg-white shadow-sm transition-transform duration-300 ${
                         isChecked
                           ? 'bg-green-500 translate-x-6'
                           : 'translate-x-0 '
@@ -397,7 +408,7 @@ const AgentDetails: React.FC = ({
           setError={setError}
           setGetAgentDetails={setGetAgentDetails}
         />
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-end gap-2">
           <PublishAgentModal
             details={details}
             isOpen={isOpen}

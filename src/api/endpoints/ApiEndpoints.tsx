@@ -12,11 +12,16 @@ export interface ApiEndpoints {
   uploadFile: string;
   downloadFile: string;
   deleteFile: string;
+  replaceFile:string;
   inactivePhoneNumber: string;
   createAgent: string;
   agentDetails: string;
   publishAgent: string;
   deleteQuestion: string;
+  compaignsList: string;
+  callDetails: string;
+  feedbackReport: string;
+  stopCompaign: string;
 }
 
 const endpoints: ApiEndpoints = {
@@ -33,11 +38,16 @@ const endpoints: ApiEndpoints = {
   downloadFile: 'agent/library/download/',
   uploadFile: 'agent/library/',
   deleteFile: 'agent/library/',
+  replaceFile: 'agent/library/replace/',
   inactivePhoneNumber: 'agent/twillio_auth/',
   createAgent: 'agent/agent/',
   agentDetails: 'agent/agents/InputData/',
   publishAgent: 'agent/agent/',
-  deleteQuestion: 'agent/feedback-questions/',
+  deleteQuestion: 'agent/questions/',
+  compaignsList:'agent/campaigns/',
+  callDetails:'agent/call/details/',
+  feedbackReport:'agent/feedbackreport/',
+  stopCompaign:"/agent/stopcampaigns/"
 };
 
 export default endpoints;

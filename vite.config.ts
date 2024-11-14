@@ -8,6 +8,6 @@ export default defineConfig({
     port:9001
   },
   build: {
-    outDir: 'SwiftSync-Admin',
+    outDir: 'Dialit.ai',
   },
 })

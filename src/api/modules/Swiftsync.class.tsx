@@ -168,6 +168,16 @@ export const deleteFile = async (id:number): Promise<ApiResponse> => {
     return { success: false, message: error };
   }
 };
+
+// Replace the File
+export const replaceFile = async (id:number ,payload:payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.put(`${endpoints.replaceFile}${id}/`,payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
 // create agent
 export const createAgent = async (payload:payload): Promise<ApiResponse> => {
   try {
@@ -207,9 +217,19 @@ export const publishAgent = async (id:number,payload:payload): Promise<ApiRespon
   }
 };
 // get published agent details
-export const publishAgentDetails = async (id:number,type:string): Promise<ApiResponse> => {
+export const publishAgentDetails = async (id:number): Promise<ApiResponse> => {
   try {
-    const response = await axios.get(`${endpoints.publishAgent}${type}/${id}/`);
+    const response = await axios.get(`${endpoints.publishAgent}${id}/`);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// add the Question
+export const addQuestion = async (payload:payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.post(`${endpoints.deleteQuestion}`,payload);
     return response as ApiResponse;
   } catch (error: any) {
     return { success: false, message: error };
@@ -226,8 +246,8 @@ export const deleteQuestion = async (id:number): Promise<ApiResponse> => {
   }
 };
 
-// delete the Question
-export const editQuestion = async (id:number,payload): Promise<ApiResponse> => {
+// edit the Question
+export const editQuestion = async (id:number ,payload:payload): Promise<ApiResponse> => {
   try {
     const response = await axios.put(`${endpoints.deleteQuestion}${id}/`,payload);
     return response as ApiResponse;
@@ -236,7 +256,73 @@ export const editQuestion = async (id:number,payload): Promise<ApiResponse> => {
   }
 };
 
+// get Compaigns 
+export const compaignsList = async (): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(endpoints.compaignsList);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+// Post Compaigns 
+export const postCompaign = async (payload:payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.post(endpoints.compaignsList,payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
 
+// Edit Compaigns 
+export const editCompaign = async (id:number,payload:payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.put(`${endpoints.compaignsList}${id}/`,payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+// Delete Compaigns 
+export const deleteCompaign = async (id:number): Promise<ApiResponse> => {
+  try {
+    const response = await axios.delete(`${endpoints.compaignsList}${id}/`);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// HardStop Compaigns 
+export const stopCampaigns = async (id:number): Promise<ApiResponse> => {
+  try {
+    const response = await axios.post(`${endpoints.stopCompaign}${id}/stop/`);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+
+// get Call Details  
+export const callDetails = async (): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(endpoints.callDetails);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+// get feedback report  
+export const feedbackReport = async (): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(endpoints.feedbackReport);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
 // organisation create
 // export const organisationCreate = async (
 //   payload: Payload,

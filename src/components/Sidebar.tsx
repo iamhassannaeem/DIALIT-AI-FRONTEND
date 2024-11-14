@@ -40,14 +40,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true'
   );
   const refresh = useSelector((state) => state?.auth?.refresh);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const handleLogOut = async () => {
-   
-    logOut({refresh: refresh});
+    logOut({ refresh: refresh });
     localStorage.removeItem('access');
     localStorage.removeItem('refresh');
-    navigate('/signin')
-    dispatch(logout())
+    navigate('/signin');
+    dispatch(logout());
   };
   useEffect(() => {
     setDarkMode(localStorage.getItem('color-theme') === 'dark');
@@ -91,7 +90,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const handleLinkClick = (title: string) => {
     dispatch(setTitle(title));
   };
-  
+
   return (
     <aside
       ref={sidebar}
@@ -101,7 +100,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-5  p-[24px] text-center">
-        <NavLink to="/  ">
+        <NavLink to="/">
           <img src={logo} alt="" />
         </NavLink>
 
@@ -394,7 +393,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             <NavLink
                               to="/reports/Compaign"
                               className={({ isActive }) =>
-                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out dark:text-[#1D2532] dark:text-white  ' +
+                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out  dark:text-white  ' +
                                 (isActive &&
                                   '!dark:text-[#1D2532] border-l-2 border-[#1D2532] text-[#1D2532] dark:border-white dark:text-white')
                               }
@@ -413,6 +412,40 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 />
                               </svg>
                               Compaign
+                            </NavLink>
+                          </li>
+                          <li
+                            onClick={() => handleLinkClick('Feedback Report')}
+                          >
+                            <NavLink
+                              to="/reports/feedback/report"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out  dark:text-white  ' +
+                                (isActive &&
+                                  '!dark:text-[#1D2532] border-l-2 border-[#1D2532] text-[#1D2532] dark:border-white dark:text-white')
+                              }
+                            >
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <g clip-path="url(#clip0_519_2489)">
+                                  <path
+                                    className="fill-black dark:fill-white"
+                                    d="M20 2H4C2.9 2 2.01 2.9 2.01 4L2 22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4.58 16.59L4 17.17V4H20V16ZM10.5 14H18V12H12.5L10.5 14ZM14.36 8.13C14.56 7.93 14.56 7.62 14.36 7.42L12.59 5.65C12.39 5.45 12.08 5.45 11.88 5.65L6 11.53V14H8.47L14.36 8.13Z"
+                                    fill="#333B48"
+                                  />
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_519_2489">
+                                    <rect width="24" height="24" fill="white" />
+                                  </clipPath>
+                                </defs>
+                              </svg>
+                              Feedback Report
                             </NavLink>
                           </li>
                         </ul>

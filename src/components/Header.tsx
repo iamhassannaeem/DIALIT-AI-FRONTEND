@@ -40,8 +40,12 @@ const Header = (props: {
         return 'Billing';
       case '/member':
         return 'Members';
-        case '/settings':
+      case '/settings':
           return 'Settings';
+      case '/reports/Compaign':
+          return 'Compaign';
+      case '/reports/feedback/report':
+            return 'Feedback Report'; 
       default:
         return 'Home'; // default title
     }

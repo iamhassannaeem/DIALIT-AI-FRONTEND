@@ -5,13 +5,14 @@ import Loader from '../../common/Loader';
 const FeedbackReport: React.FC = () => {
   const [feedbackData, setFeedbackData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [expanded, setExpanded] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const res = await feedbackReport();
-        setFeedbackData(res?.data); // Set the fetched data to state
+        setFeedbackData(res?.data); 
       } catch (error) {
         console.error('Error fetching feedback report:', error);
       }
@@ -20,7 +21,10 @@ const FeedbackReport: React.FC = () => {
     fetchData();
   }, []);
 
-  // Extract unique questions from the first data item
+  const toggleExpand = (index) => {
+    setExpanded(expanded === index ? null : index);
+  };
+
   const questions =
     feedbackData?.length > 0
       ? feedbackData[0].combined_answers.map((item) => item.question_text)
@@ -29,62 +33,32 @@ const FeedbackReport: React.FC = () => {
   return loading ? (
     <Loader />
   ) : (
-    <>
-      <div className="flex flex-col gap-6 rounded-xl bg-[#EEEEEE] px-3 py-6 shadow-default dark:bg-[#1D2532]">
-        <div className="feedback-table">
-          <table className="w-full border-collapse">
-            <thead>
-              {/* Row with Q1, Q2, Q3, etc. */}
-              <tr className="bg-gray-200">
-                <th className="border p-2 text-black dark:text-white">
-                  Phone Number
-                </th>
-                {questions.map((_, index) => (
-                  <th
-                    key={index}
-                    className="border p-2 text-center text-black dark:text-white"
-                  >
-                    Q{index + 1}
-                  </th>
-                ))}
-              </tr>
-              {/* Row with questions */}
-              <tr className="bg-gray-200">
-                <th className="border p-2 text-black dark:text-white"></th>
-                {questions.map((question, index) => (
-                  <th
-                    key={index}
-                    className="border p-2 text-center text-black dark:text-white"
-                  >
-                    {question}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {feedbackData.map((item, rowIndex) => (
-                <tr key={rowIndex}>
-                  <td className="border p-2 text-center text-black dark:text-white">
-                    {item.phone_number}
-                  </td>
-                  {questions.map((_, questionIndex) => {
-                    const answerObj = item.combined_answers[questionIndex];
-                    return (
-                      <td
-                        key={questionIndex}
-                        className="border p-2 text-center text-black dark:text-white"
-                      >
-                        {answerObj ? answerObj.answer : ''}
-                      </td>
-                    );
-                  })}
-                </tr>
+    <div className="flex flex-col gap-4 p-6 dark:bg-[#1D2532] bg-[#EEEEEE]">
+      {feedbackData ?
+      feedbackData?.map((item, rowIndex) => (
+        <div
+          key={rowIndex}
+          className="rounded-lg bg-white p-4 shadow-md dark:bg-[#2A2E3B] dark:text-white"
+        >
+          <button
+            className="text-lg font-semibold w-full text-left mb-3"
+            onClick={() => toggleExpand(rowIndex)}
+          >
+            Phone Number: {item.phone_number} {expanded === rowIndex ? '-' : '+'}
+          </button>
+          {expanded === rowIndex && (
+            <div className="grid grid-cols-1 gap-4">
+              {item.combined_answers.map((answerObj, index) => (
+                <div key={index} className="p-2 bg-gray-100 rounded-md bg-[#EEEEEE] dark:bg-[#333845]">
+                  <p className="font-medium">{`${questions[index]} ?` }</p>
+                  <p>{answerObj?.answer || 'No answer provided'}</p>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          )}
         </div>
-      </div>
-    </>
+      )): "No Data Available"}
+    </div>
   );
 };
 

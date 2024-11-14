@@ -1,69 +1,95 @@
 import React, { useState } from 'react';
-import { deleteQuestion, editQuestion, publishAgentDetails } from '../../../api/modules/Swiftsync.class';
-const FeedbackCard = ({ questions, setQuestions,setError,setGetAgentDetails,selectedAgent }) => {
-  const [isAdding, setIsAdding] = useState(false); // For showing the add form
-  const [newQuestion, setNewQuestion] = useState(''); // For handling new question input
-  const [editQuestionId, setEditQuestionId] = useState(null); // State to track editing
-  const [order,setOrder]=useState(null); // State to track
-  const handleEdit = (id, text,order) => {
+import {
+  addQuestion,
+  deleteQuestion,
+  editQuestion,
+  publishAgentDetails,
+} from '../../../api/modules/Swiftsync.class';
+import { BeatLoader } from 'react-spinners';
+const FeedbackCard = ({
+  questions,
+  setQuestions,
+  setError,
+  setGetAgentDetails,
+  selectedAgent,
+}) => {
+  const [isAdding, setIsAdding] = useState(false);
+  const [newQuestion, setNewQuestion] = useState('');
+  const [editQuestionId, setEditQuestionId] = useState(null);
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const handleEdit = (id, text, order) => {
     setIsAdding(true);
     setNewQuestion(text);
-    setEditQuestionId(id); 
+    setEditQuestionId(id);
     setOrder(order);
-  }
+  };
 
-  
   const handleSaveQuestion = async (e) => {
     e.preventDefault();
     if (newQuestion.trim() === '') return;
 
-    if (editQuestionId !== null) {
-      // Edit mode: Update the question via API
-      try {
-        const res = await editQuestion(editQuestionId, { question_text: newQuestion ,order:order});
-        if (res.status === 200) {
+    try {
+      setLoading(true);
+      if (editQuestionId !== null) {
+        // Edit mode
+        const res = await editQuestion(editQuestionId, {
+          question_text: newQuestion,
+          order,
+          agent: selectedAgent?.id,
+        });
+        if (res?.status === 200) {
           setQuestions((prev) =>
-            prev?.map((q) => (q.id === editQuestionId ? { ...q, question_text: newQuestion } : q))
+            prev?.map((q) =>
+              q?.id === editQuestionId ? { ...q, question_text: newQuestion } : q
+            )
           );
           setError({ error: '', success: 'Question updated successfully' });
-          setGetAgentDetails((await publishAgentDetails(selectedAgent?.id, selectedAgent?.type)).data);
         }
-      } catch (err) {
-        setError({ error: 'Failed to update question', success: '' });
+      } else {
+        // Add mode
+        const res = await addQuestion({
+          question_text: newQuestion,
+          agent: selectedAgent?.id,
+        });
+        if (res?.status === 201) {
+          setQuestions((prev) => [...prev, res?.data]);
+          setError({ error: '', success: 'Question added successfully' });
+        }
       }
-    } else {
-      // Add mode: Add new question to the list
-      setQuestions([
-        ...questions,
-        { order: questions?.length + 1, question_text: newQuestion },
-      ]);
-      setError({ error: '', success: 'Question added successfully' });
+      await updateAgentDetails();
+      setLoading(false);
+    } catch (err) {
+      setError({ error: 'Failed to save question', success: '' });
     }
 
+    // Reset state after save
     setNewQuestion('');
     setIsAdding(false);
     setEditQuestionId(null);
   };
 
+  const updateAgentDetails = async () => {
+    const detailsRes = await publishAgentDetails(
+      selectedAgent?.id,
+      selectedAgent?.type
+    );
+    setGetAgentDetails(detailsRes.data);
+  };
 
-  const handleDel = async (id: number) => {
+  const handleDel = async (id) => {
     try {
       const res = await deleteQuestion(id);
       if (res.status === 204) {
-        const detailsRes = await publishAgentDetails(selectedAgent?.id, selectedAgent?.type);
-        setGetAgentDetails(detailsRes?.data);
-        console.log(detailsRes);
+        setQuestions((prev) => prev.filter((q) => q.id !== id));
         setError({ error: '', success: 'Question deleted successfully' });
-      } else {
-        setError({ error: 'Question deletion failed', success: '' });
+        await updateAgentDetails();
       }
     } catch (err) {
-      console.log(err);
-      setError({ error: 'An error occurred', success: '' });
+      setError({ error: 'Failed to delete question', success: '' });
     }
   };
-  
-  
+
   return (
     <div className=" mx-auto rounded-lg bg-[#faf7f7] p-2 shadow-md dark:bg-[#242E3E]  sm:p-4">
       <div className="mb-4 flex flex-col items-start sm:flex-row sm:items-center sm:justify-between">
@@ -101,8 +127,8 @@ const FeedbackCard = ({ questions, setQuestions,setError,setGetAgentDetails,sele
           className="flex items-center justify-center gap-2 rounded-full p-2 text-[#1D2532] dark:text-white sm:p-3"
           onClick={() => {
             setIsAdding(true);
-            setEditQuestionId(null); // Reset edit mode
-            setNewQuestion(''); // Clear input
+            setEditQuestionId(null);
+            setNewQuestion('');
           }}
         >
           Add New Question{' '}
@@ -138,19 +164,25 @@ const FeedbackCard = ({ questions, setQuestions,setError,setGetAgentDetails,sele
               type="submit"
               className="mt-[14px] flex items-center justify-center gap-[6px] rounded-[4px] bg-[#2691B6] p-2 text-xs font-semibold text-white"
             >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M3.75 15.75C3.3375 15.75 2.98438 15.6031 2.69063 15.3094C2.39687 15.0156 2.25 14.6625 2.25 14.25V3.75C2.25 3.3375 2.39687 2.98438 2.69063 2.69063C2.98438 2.39687 3.3375 2.25 3.75 2.25H12.1313C12.3313 2.25 12.5219 2.2875 12.7031 2.3625C12.8844 2.4375 13.0438 2.54375 13.1813 2.68125L15.3188 4.81875C15.4563 4.95625 15.5625 5.11563 15.6375 5.29688C15.7125 5.47813 15.75 5.66875 15.75 5.86875V14.25C15.75 14.6625 15.6031 15.0156 15.3094 15.3094C15.0156 15.6031 14.6625 15.75 14.25 15.75H3.75ZM14.25 5.8875L12.1125 3.75H3.75V14.25H14.25V5.8875ZM9 13.5C9.625 13.5 10.1563 13.2812 10.5938 12.8438C11.0312 12.4062 11.25 11.875 11.25 11.25C11.25 10.625 11.0312 10.0938 10.5938 9.65625C10.1563 9.21875 9.625 9 9 9C8.375 9 7.84375 9.21875 7.40625 9.65625C6.96875 10.0938 6.75 10.625 6.75 11.25C6.75 11.875 6.96875 12.4062 7.40625 12.8438C7.84375 13.2812 8.375 13.5 9 13.5ZM5.25 7.5H10.5C10.7125 7.5 10.8906 7.42813 11.0344 7.28438C11.1781 7.14062 11.25 6.9625 11.25 6.75V5.25C11.25 5.0375 11.1781 4.85938 11.0344 4.71563C10.8906 4.57188 10.7125 4.5 10.5 4.5H5.25C5.0375 4.5 4.85938 4.57188 4.71563 4.71563C4.57188 4.85938 4.5 5.0375 4.5 5.25V6.75C4.5 6.9625 4.57188 7.14062 4.71563 7.28438C4.85938 7.42813 5.0375 7.5 5.25 7.5ZM3.75 5.8875V14.25V3.75V5.8875Z"
-                  fill="white"
-                />
-              </svg>
-              <span>Save Question</span>
+              {loading ? (
+                <BeatLoader color="white" />
+              ) : (
+                <>
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 18 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M3.75 15.75C3.3375 15.75 2.98438 15.6031 2.69063 15.3094C2.39687 15.0156 2.25 14.6625 2.25 14.25V3.75C2.25 3.3375 2.39687 2.98438 2.69063 2.69063C2.98438 2.39687 3.3375 2.25 3.75 2.25H12.1313C12.3313 2.25 12.5219 2.2875 12.7031 2.3625C12.8844 2.4375 13.0438 2.54375 13.1813 2.68125L15.3188 4.81875C15.4563 4.95625 15.5625 5.11563 15.6375 5.29688C15.7125 5.47813 15.75 5.66875 15.75 5.86875V14.25C15.75 14.6625 15.6031 15.0156 15.3094 15.3094C15.0156 15.6031 14.6625 15.75 14.25 15.75H3.75ZM14.25 5.8875L12.1125 3.75H3.75V14.25H14.25V5.8875ZM9 13.5C9.625 13.5 10.1563 13.2812 10.5938 12.8438C11.0312 12.4062 11.25 11.875 11.25 11.25C11.25 10.625 11.0312 10.0938 10.5938 9.65625C10.1563 9.21875 9.625 9 9 9C8.375 9 7.84375 9.21875 7.40625 9.65625C6.96875 10.0938 6.75 10.625 6.75 11.25C6.75 11.875 6.96875 12.4062 7.40625 12.8438C7.84375 13.2812 8.375 13.5 9 13.5ZM5.25 7.5H10.5C10.7125 7.5 10.8906 7.42813 11.0344 7.28438C11.1781 7.14062 11.25 6.9625 11.25 6.75V5.25C11.25 5.0375 11.1781 4.85938 11.0344 4.71563C10.8906 4.57188 10.7125 4.5 10.5 4.5H5.25C5.0375 4.5 4.85938 4.57188 4.71563 4.71563C4.57188 4.85938 4.5 5.0375 4.5 5.25V6.75C4.5 6.9625 4.57188 7.14062 4.71563 7.28438C4.85938 7.42813 5.0375 7.5 5.25 7.5ZM3.75 5.8875V14.25V3.75V5.8875Z"
+                      fill="white"
+                    />
+                  </svg>
+                  <span>Save Question</span>
+                </>
+              )}
             </button>
             <button
               onClick={() => setIsAdding(false)}
@@ -163,7 +195,7 @@ const FeedbackCard = ({ questions, setQuestions,setError,setGetAgentDetails,sele
         </form>
       ) : (
         <div>
-          {questions?.map((item,index) => (
+          {questions?.map((item, index) => (
             <div
               key={index}
               className="mt-3 flex w-full items-center justify-between rounded-md bg-[#EEEEEE]  p-3 dark:bg-[#1D2532] sm:p-4"
@@ -184,7 +216,9 @@ const FeedbackCard = ({ questions, setQuestions,setError,setGetAgentDetails,sele
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                   className="cursor-pointer"
-                   onClick={() => handleEdit(item?.id, item?.question_text,item?.order)}
+                  onClick={() =>
+                    handleEdit(item.id, item.question_text, item.order)
+                  }
                 >
                   <path
                     className="cursor-pointer fill-black dark:fill-white"

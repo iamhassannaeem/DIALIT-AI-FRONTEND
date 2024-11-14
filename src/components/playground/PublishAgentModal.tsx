@@ -3,7 +3,10 @@ import cross from '../../images/cross.png';
 import './modal.css';
 import Select from 'react-select';
 import clsx from 'clsx';
-import { publishAgent, publishAgentDetails } from '../../api/modules/Swiftsync.class';
+import {
+  publishAgent,
+  publishAgentDetails,
+} from '../../api/modules/Swiftsync.class';
 import { BeatLoader } from 'react-spinners';
 
 interface PhoneNumber {
@@ -45,7 +48,7 @@ const PublishAgentModal = ({
   setIsOpen: any;
   closeModal: any;
   openModal: any;
-  setError: (error: string,success: string) => void;
+  setError: (error: string, success: string) => void;
   firstMessage: any;
   selectedProvider: any;
   selectedModel: any;
@@ -61,7 +64,7 @@ const PublishAgentModal = ({
   general: any;
   selectedAgent: any;
   knowledge: any;
-  setGetAgentDetails:any;
+  setGetAgentDetails: any;
 }) => {
   const [selectedOption, setSelectedOption] = useState<{
     value: string;
@@ -89,7 +92,43 @@ const PublishAgentModal = ({
     { file: company, file_type: 'company_information' },
     { file: services, file_type: 'product_information' },
   ];
+  const handleDraft = async () => {
+    setLoading(true);
 
+    // Prepare data with conditional assignment of feed_files or feed_questions
+    const requestData = {
+      first_message: firstMessage,
+      active: false,
+      gender: gender,
+      ai_model: selectedModel,
+      ai_tec: selectedProvider,
+      voice_name: voice,
+      agent_type: selectedAgent?.type,
+      twillio_number: selectedOption?.id,
+      tts_technology_provider: ttsProvider,
+      stt_technology_provider: sttProvider,
+      ...(selectedAgent?.type === 'sales' && { files: files }),
+    };
+
+    try {
+      const res = await publishAgent(selectedAgent?.id, requestData);
+      console.log(res);
+
+      if (res?.status === 200) {
+        setLoading(false);
+        closeModal();
+        setError({ error: '', success: 'Agent Saved As Draft' });
+        const res = await publishAgentDetails(
+          selectedAgent?.id,
+          selectedAgent?.type
+        );
+        setGetAgentDetails(res?.data);
+      }
+    } catch (error) {
+      console.error('Error in publishing agent:', error);
+      setLoading(false);
+    }
+  };
   const handleOpen = async () => {
     setLoading(true);
 
@@ -105,9 +144,7 @@ const PublishAgentModal = ({
       twillio_number: selectedOption?.id,
       tts_technology_provider: ttsProvider,
       stt_technology_provider: sttProvider,
-      ...(selectedAgent?.type === 'sales'
-        ? { files: files }
-        : { feed_questions: questions }),
+      ...(selectedAgent?.type === 'sales' && { files: files }),
     };
 
     try {
@@ -117,9 +154,12 @@ const PublishAgentModal = ({
       if (res?.status === 200) {
         setLoading(false);
         closeModal();
-        setError({error:'',success:"Agent Published Successfully"})
-        const res=await publishAgentDetails(selectedAgent?.id,selectedAgent?.type)
-    setGetAgentDetails(res?.data);
+        setError({ error: '', success: 'Agent Published Successfully' });
+        const res = await publishAgentDetails(
+          selectedAgent?.id,
+          selectedAgent?.type
+        );
+        setGetAgentDetails(res?.data);
       }
     } catch (error) {
       console.error('Error in publishing agent:', error);
@@ -128,55 +168,62 @@ const PublishAgentModal = ({
   };
   return (
     <div>
-      <button
-        onClick={() => openModal()}
-        disabled={
-          !(
-            firstMessage ||
-            selectedProvider ||
-            selectedModel ||
-            productPricing ||
-            questions ||
-            ttsProvider ||
-            sttProvider ||
-            gender ||
-            voice ||
-            productPricing ||
-            services ||
-            company ||
-            pricing ||
-            general ||
-            knowledge
-          )
-        }
-        type="submit"
-        className={`mt-[14px] flex items-center justify-center gap-[6px] rounded-[4px] bg-[#2691B6] p-3 text-xs font-semibold text-white ${
-          !firstMessage && 'cursor-not-allowed opacity-50'
-        }`}
-      >
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 22 22"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+      <div className="flex items-center justify-center gap-3">
+        <button
+          onClick={() => openModal()}
+          disabled={
+            !(
+              firstMessage ||
+              selectedProvider ||
+              selectedModel ||
+              productPricing ||
+              questions ||
+              ttsProvider ||
+              sttProvider ||
+              gender ||
+              voice ||
+              productPricing ||
+              services ||
+              company ||
+              pricing ||
+              general ||
+              knowledge
+            )
+          }
+          type="submit"
+          className={` flex items-center justify-center gap-[6px] rounded-[4px] bg-[#2691B6] p-3 text-xs font-semibold text-white ${
+            !firstMessage && 'cursor-not-allowed opacity-50'
+          }`}
         >
-          <g clip-path="url(#clip0_556_1489)">
-            <path
-              d="M4.5835 3.66669H17.4168V5.50002H4.5835V3.66669ZM4.5835 12.8334H8.25016V18.3334H13.7502V12.8334H17.4168L11.0002 6.41669L4.5835 12.8334ZM11.9168 11V16.5H10.0835V11H9.011L11.0002 9.01085L12.9893 11H11.9168Z"
-              fill="white"
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0_556_1489">
-              <rect width="22" height="22" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 22 22"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g clip-path="url(#clip0_556_1489)">
+              <path
+                d="M4.5835 3.66669H17.4168V5.50002H4.5835V3.66669ZM4.5835 12.8334H8.25016V18.3334H13.7502V12.8334H17.4168L11.0002 6.41669L4.5835 12.8334ZM11.9168 11V16.5H10.0835V11H9.011L11.0002 9.01085L12.9893 11H11.9168Z"
+                fill="white"
+              />
+            </g>
+            <defs>
+              <clipPath id="clip0_556_1489">
+                <rect width="22" height="22" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
 
-        <span>Publish</span>
-      </button>
-
+          <span>Publish</span>
+        </button>
+        <button
+          onClick={handleDraft}
+          className="rounded-[4px] bg-[#2691B6] p-3 py-3.5 text-xs font-semibold text-white"
+        >
+          {loading ? <BeatLoader color="white" /> : 'Save as Draft'}
+        </button>
+      </div>
       {isOpen && (
         <div className=" fixed top-0 left-0 z-999999 flex h-full min-h-screen w-full items-center justify-center bg-black/95 ">
           <div className="flex w-full max-w-142.5 flex-col gap-6 rounded-lg bg-[#EEEEEE]  p-8 dark:bg-[#222e42] ">
@@ -241,7 +288,9 @@ const PublishAgentModal = ({
                 type="button"
                 disabled={!selectedOption}
                 onClick={handleOpen}
-                className={`flex w-full items-center justify-center gap-2 rounded-[6px] bg-[#2691B6] p-[12px] text-sm font-semibold text-white ${!selectedOption && 'cursor-not-allowed opacity-5'}`}
+                className={`flex w-full items-center justify-center gap-2 rounded-[6px] bg-[#2691B6] p-[12px] text-sm font-semibold text-white ${
+                  !selectedOption && 'cursor-not-allowed opacity-50'
+                }`}
               >
                 {loading ? (
                   <BeatLoader color="white" />

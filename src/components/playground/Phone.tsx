@@ -94,7 +94,7 @@ const Phone: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item, index) => (
+                {data?.map((item, index) => (
                   <tr
                     key={index}
                     className="border-t border-[#333b48] text-[#7E7E7E] dark:text-[#D6D6D5]"
@@ -106,13 +106,13 @@ const Phone: React.FC = () => {
                       {item?.usage_count}
                     </td>
                     <td className="py-3 px-4 text-sm font-normal">
-                    {item?.created_date
-                              ? new Date(item?.created_date)
-                                  .toISOString()
-                                  .split('T')[0]
-                              : ''}
-
+                      {item?.created_date
+                        ? new Date(item.created_date.replace('Z', ''))
+                            .toISOString()
+                            .split('T')[0]
+                        : 'N/A'}
                     </td>
+
                     <td className="py-3 px-4 text-sm font-normal uppercase">
                       {item?.auth_token_label}
                     </td>

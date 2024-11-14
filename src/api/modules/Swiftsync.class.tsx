@@ -168,6 +168,16 @@ export const deleteFile = async (id:number): Promise<ApiResponse> => {
     return { success: false, message: error };
   }
 };
+
+// Replace the File
+export const replaceFile = async (id:number ,payload:payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.put(`${endpoints.replaceFile}${id}/`,payload);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
 // create agent
 export const createAgent = async (payload:payload): Promise<ApiResponse> => {
   try {
@@ -207,9 +217,19 @@ export const publishAgent = async (id:number,payload:payload): Promise<ApiRespon
   }
 };
 // get published agent details
-export const publishAgentDetails = async (id:number,type:string): Promise<ApiResponse> => {
+export const publishAgentDetails = async (id:number): Promise<ApiResponse> => {
   try {
-    const response = await axios.get(`${endpoints.publishAgent}${type}/${id}/`);
+    const response = await axios.get(`${endpoints.publishAgent}${id}/`);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// add the Question
+export const addQuestion = async (payload:payload): Promise<ApiResponse> => {
+  try {
+    const response = await axios.post(`${endpoints.deleteQuestion}`,payload);
     return response as ApiResponse;
   } catch (error: any) {
     return { success: false, message: error };
@@ -226,8 +246,8 @@ export const deleteQuestion = async (id:number): Promise<ApiResponse> => {
   }
 };
 
-// delete the Question
-export const editQuestion = async (id:number,payload:payload): Promise<ApiResponse> => {
+// edit the Question
+export const editQuestion = async (id:number ,payload:payload): Promise<ApiResponse> => {
   try {
     const response = await axios.put(`${endpoints.deleteQuestion}${id}/`,payload);
     return response as ApiResponse;
@@ -273,6 +293,17 @@ export const deleteCompaign = async (id:number): Promise<ApiResponse> => {
     return { success: false, message: error };
   }
 };
+
+// HardStop Compaigns 
+export const stopCampaigns = async (id:number): Promise<ApiResponse> => {
+  try {
+    const response = await axios.post(`${endpoints.stopCompaign}${id}/stop/`);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
 
 // get Call Details  
 export const callDetails = async (): Promise<ApiResponse> => {

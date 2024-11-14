@@ -19,7 +19,7 @@ const Campaign = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpenAdd, setModalOpenAdd] = useState(false);
   const [activeToggleId, setActiveToggleId] = useState<number | null>(null);
-  const [toggleStates, setToggleStates] = useState<Record<number, boolean>>({});
+  const [toggleStates, setToggleStates] = useState(false);
   const [datas, setData] = useState([]);
   const [compaigns, setCampaigns] = useState();
   const [loading, setLoading] = useState(false);
@@ -63,19 +63,9 @@ const Campaign = () => {
   }, [isModalOpen]);
 
   const handleToggle = (id: number) => {
-    setActiveToggleId(id); // Set active row ID for which modal is open
+    setSelectedCampaign(id);
+    setActiveToggleId(id);
     setIsModalOpen(true); // Open modal
-  };
-
-  const handleStartCampaign = (campaign) => {
-    if (activeToggleId !== null) {
-      setToggleStates((prevState) => ({
-        ...prevState,
-        [activeToggleId]: true,
-      }));
-      setIsModalOpen(false);
-    }
-    setSelectedCampaign(campaign);
   };
 
   const handleFileChange = (event) => {
@@ -115,11 +105,6 @@ const Campaign = () => {
 
         if (res?.status === 200) {
           setCampaigns(res?.data);
-          const initialToggleStates = res?.data.reduce((acc, item) => {
-            acc[item.id] = false;
-            return acc;
-          }, {});
-          setToggleStates(initialToggleStates);
         }
       } catch (error) {
         console.error(error);
@@ -128,7 +113,6 @@ const Campaign = () => {
     };
     fetchCampaigns();
   }, []);
- 
 
   return loading ? (
     <Loader />
@@ -182,7 +166,7 @@ const Campaign = () => {
             </div>
             <div className="flex min-w-[100px] flex-[1] items-center px-3 py-4">
               <p className="text-sm font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
-                Toggle
+                Force Stop
               </p>
             </div>
             <div className="flex min-w-[100px] flex-[1] items-center px-3 py-4">
@@ -195,7 +179,7 @@ const Campaign = () => {
           {/* Table Rows */}
           {compaigns?.map((campaign) => (
             <div
-              key={campaign.id}
+              key={campaign?.id}
               className="flex border-t border-stroke dark:border-strokedark"
             >
               <div className="flex min-w-[150px] flex-[1] items-center px-3 py-4">
@@ -210,48 +194,52 @@ const Campaign = () => {
               </div>
               <div className="flex min-w-[150px] flex-[1] items-center px-3 py-4">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
-                  {campaign.type === 1 ? 'Outbound' : 'Inbound'}
+                  {campaign?.type === 1 ? 'Outbound' : 'Inbound'}
                 </p>
               </div>
               <div className="flex min-w-[100px] flex-[1] items-center px-3 py-4">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
                   {campaign?.status === 1
                     ? 'Started'
-                    : compaigns?.status === 2
+                    : campaign?.status === 2
                     ? 'Not Started'
-                    : 'Completed'}
+                    : campaign?.status === 3
+                    ? 'Completed'
+                    : 'stop'}
                 </p>
               </div>
               <div className="flex min-w-[100px] flex-[1] items-center px-3 py-4">
-                <div className="py-3">
-                  <label
-                    className={`relative block h-7.5 w-14 cursor-pointer rounded-full transition-colors duration-300 ${
-                      toggleStates[campaign.id]
-                        ? 'bg-[#2691b6]'
-                        : 'bg-[#bed5f3]'
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={toggleStates[campaign?.id] || false}
-                      onChange={() => handleToggle(campaign?.id)}
-                      className="absolute top-0 z-50 h-full w-full cursor-pointer opacity-0"
-                    />
-                    <span
-                      className={`absolute top-1/2 left-[3px] h-6 w-6 -translate-y-1/2 transform rounded-full bg-white shadow-sm transition-transform duration-300 ${
-                        toggleStates[campaign.id]
-                          ? 'bg-green-500 translate-x-6'
-                          : 'translate-x-0'
+                {campaign?.status === 1 && (
+                  <div className="py-3">
+                    <label
+                      className={`relative block h-7.5 w-14 cursor-pointer rounded-full transition-colors duration-300 ${
+                        campaign?.status === 4 ? 'bg-[#2691b6]' : 'bg-[#bed5f3]'
                       }`}
-                    ></span>
-                  </label>
-                  <CompaignToggle
-                    isModalOpen={isModalOpen}
-                    setIsModalOpen={setIsModalOpen}
-                    handleStartCampaign={() => handleStartCampaign(campaign)}
-                    item={selectedCampaign}
-                  />
-                </div>
+                    >
+                      <input
+                        type="checkbox"
+                        checked={campaign?.status === 4}
+                        onChange={() => handleToggle(campaign?.id)}
+                        className="absolute top-0 z-50 h-full w-full cursor-pointer opacity-0"
+                      />
+                      <span
+                        className={`absolute top-1/2 left-[3px] h-6 w-6 -translate-y-1/2 transform rounded-full bg-white shadow-sm transition-transform duration-300 ${
+                          campaign?.status === 4
+                            ? 'bg-green-500 translate-x-6'
+                            : 'translate-x-0'
+                        }`}
+                      ></span>
+                    </label>
+
+                    <CompaignToggle
+                      isModalOpen={isModalOpen}
+                      setIsModalOpen={setIsModalOpen}
+                      item={selectedCampaign}
+                      setError={setError}
+                      setCampaigns={setCampaigns}
+                    />
+                  </div>
+                )}
               </div>
               <div className="flex min-w-[100px] flex-[1] items-center px-3 py-4">
                 <div className="flex gap-1">

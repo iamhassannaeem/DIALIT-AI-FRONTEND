@@ -36,6 +36,7 @@ const AgentTabs: React.FC = ({
   setKnowledge,
   setError,
   setGetAgentDetails,
+  
 }) => {
   const [openTab, setOpenTab] = useState(1);
 
@@ -48,7 +49,7 @@ const AgentTabs: React.FC = ({
     <div className="flex  w-full flex-col gap-[24px] rounded-sm shadow-default">
       <div className="flex flex-wrap items-center justify-around gap-5 border-b  sm:gap-10">
         <div
-          className={`flex w-[25%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
+          className={`flex w-[20%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
             openTab === 1 ? activeClasses : inactiveClasses
           }`}
           onClick={() => setOpenTab(1)}
@@ -69,38 +70,45 @@ const AgentTabs: React.FC = ({
           <span>Model</span>
         </div>
         <div
-          className={`flex  w-[25%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
+          className={`flex  w-[20%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
             openTab === 2 ? activeClasses : inactiveClasses
           }`}
           onClick={() => setOpenTab(2)}
         >
-          {selectedAgent?.type === 'feedback' ? (
-            <>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g clip-path="url(#clip0_519_2489)">
-                  <path
-                    className=" fill-black dark:fill-white"
-                    d="M20 2H4C2.9 2 2.01 2.9 2.01 4L2 22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4.58 16.59L4 17.17V4H20V16ZM10.5 14H18V12H12.5L10.5 14ZM14.36 8.13C14.56 7.93 14.56 7.62 14.36 7.42L12.59 5.65C12.39 5.45 12.08 5.45 11.88 5.65L6 11.53V14H8.47L14.36 8.13Z"
-                    fill="#333B48"
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_519_2489">
-                    <rect width="24" height="24" fill="white" />
-                  </clipPath>
-                </defs>
-              </svg>
-              <span>Feedback</span>
-            </>
-          ) : (
-            <>
-              {' '}
+       
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clip-path="url(#clip0_519_2489)">
+                <path
+                  className=" fill-black dark:fill-white"
+                  d="M20 2H4C2.9 2 2.01 2.9 2.01 4L2 22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4.58 16.59L4 17.17V4H20V16ZM10.5 14H18V12H12.5L10.5 14ZM14.36 8.13C14.56 7.93 14.56 7.62 14.36 7.42L12.59 5.65C12.39 5.45 12.08 5.45 11.88 5.65L6 11.53V14H8.47L14.36 8.13Z"
+                  fill="#333B48"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_519_2489">
+                  <rect width="24" height="24" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+            <span>Feedback</span>
+         
+        </div>
+        {selectedAgent?.type === 'sales' && (
+        <div
+          className={`flex  w-[20%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
+            openTab === 3 ? activeClasses : inactiveClasses
+          }`}
+          onClick={() => setOpenTab(3)}
+        >
+          
+          
+
               <svg
                 width="23"
                 height="22"
@@ -115,14 +123,15 @@ const AgentTabs: React.FC = ({
                 />
               </svg>
               <span>WorkFlow</span>
-            </>
-          )}
+          
+          
         </div>
+      )}
         <div
-          className={`flex  w-[25%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
-            openTab === 3 ? activeClasses : inactiveClasses
+          className={`flex  w-[20%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
+            openTab === 4 ? activeClasses : inactiveClasses
           }`}
-          onClick={() => setOpenTab(3)}
+          onClick={() => setOpenTab(4)}
         >
           <svg
             width="24"
@@ -161,9 +170,18 @@ const AgentTabs: React.FC = ({
         <div
           className={`leading-relaxed ${openTab === 2 ? 'block' : 'hidden'}`}
         >
-          {selectedAgent?.type === 'feedback' ? (
-            <FeedbackCard questions={questions} setQuestions={setQuestions} setError={setError} setGetAgentDetails={setGetAgentDetails} selectedAgent={selectedAgent}/>
-          ) : (
+          <FeedbackCard
+            questions={questions}
+            setQuestions={setQuestions}
+            setError={setError}
+            setGetAgentDetails={setGetAgentDetails}
+            selectedAgent={selectedAgent}
+          />
+        </div>
+        <div
+          className={`leading-relaxed ${openTab === 3 ? 'block' : 'hidden'}`}
+        >
+          {selectedAgent?.type === 'sales' && (
             <WorkFlowCard
               files={details?.files}
               productPricing={productPricing}
@@ -179,8 +197,9 @@ const AgentTabs: React.FC = ({
             />
           )}
         </div>
+
         <div
-          className={`leading-relaxed ${openTab === 3 ? 'block' : 'hidden'}`}
+          className={`leading-relaxed ${openTab === 4 ? 'block' : 'hidden'}`}
         >
           <AudioCard
             model={details}

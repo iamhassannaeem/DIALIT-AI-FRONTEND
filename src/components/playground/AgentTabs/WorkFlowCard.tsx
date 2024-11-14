@@ -13,7 +13,7 @@ const WorkFlowCard = ({
   general,
   setGeneral,
 }) => {
-   
+  console.log(files)
   return (
     
     <>
@@ -56,6 +56,7 @@ const WorkFlowCard = ({
                   value={productPricing}
                   className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
                 >
+                <option value="">Select a value</option>
                   {files?.map((item) => (
                     <option value={item?.id}>{item?.file_name}</option>
                   ))}
@@ -74,6 +75,7 @@ const WorkFlowCard = ({
                   value={services}
                   className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
                 >
+                  <option value="">Select a value</option>
                   {files?.map((item) => (
                     <option value={item?.id}>{item?.file_name}</option>
                   ))}
@@ -94,6 +96,7 @@ const WorkFlowCard = ({
                   value={pricing}
                   className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
                 >
+                  <option value="">Select a value</option>
                   {files?.map((item) => (
                     <option value={item?.id}>{item?.file_name}</option>
                   ))}
@@ -112,6 +115,7 @@ const WorkFlowCard = ({
                   value={company}
                   className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
                 >
+                  <option value="">Select a value</option>
                   {files?.map((item) => (
                     <option value={item?.id}>{item?.file_name}</option>
                   ))}
@@ -130,6 +134,7 @@ const WorkFlowCard = ({
                   value={general}
                   className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
                 >
+                  <option value="">Select a value</option>
                   {files?.map((item) => (
                     <option value={item?.id}>{item?.file_name}</option>
                   ))}

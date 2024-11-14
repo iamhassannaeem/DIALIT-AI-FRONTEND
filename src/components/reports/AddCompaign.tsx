@@ -7,7 +7,7 @@ import {
 } from '../../api/modules/Swiftsync.class';
 import { BeatLoader } from 'react-spinners';
 import Timezones from '../../utils/Timezone';
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 export const AddCompaign = ({
   modalOpenAdd,
   setModalOpenAdd,
@@ -81,52 +81,55 @@ export const AddCompaign = ({
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     console.log(file);
-  
+
     if (file) {
       setFileSelected(true);
       const reader = new FileReader();
-  
+
       reader.onload = (e) => {
         const binaryStr = e.target.result;
-  
+
         // Read the Excel workbook
         const workbook = XLSX.read(binaryStr, { type: 'binary' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
-  
+
         // Convert worksheet to JSON with each row as an array
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-  
+
         // Flatten the array and extract phone numbers in the desired format
         const phoneNumbers = jsonData
           .flat()
-          .filter((value) => typeof value === 'string' || typeof value === 'number')
+          .filter(
+            (value) => typeof value === 'string' || typeof value === 'number'
+          )
           .map((phone) => {
             // Convert numbers to strings and handle the format
             let phoneStr = phone.toString();
-           
+
             return { phone_number: phoneStr };
           });
-  
+
         console.log(phoneNumbers); // Log formatted phone numbers
         setData(phoneNumbers); // Update state with formatted phone numbers
       };
-  
+
       reader.readAsBinaryString(file);
     } else {
       setFileSelected(false);
     }
-  
+
     setFileError(!file ? 'Please choose a file to upload' : '');
   };
-  
 
   const handleSave = async (e) => {
     e.preventDefault();
     if (!isFormValid) return; // Prevent submission if form is invalid
 
     setLoading(true);
-    const formattedDateTime = dayjs(startDateTime).format("YYYY-MM-DD HH:mm:ss");
+    const formattedDateTime = dayjs(startDateTime).format(
+      'YYYY-MM-DD HH:mm:ss'
+    );
 
     try {
       const res = await postCompaign({
@@ -170,8 +173,6 @@ export const AddCompaign = ({
     }
   }, [timeZone]);
 
- 
-  
   useEffect(() => {
     const fetchAgents = async () => {
       try {
@@ -264,16 +265,20 @@ export const AddCompaign = ({
             >
               <option value="">Select Type</option>
               {campaignType == 1
-                ? agentData?.feedback_agents?.map((item, index) => (
-                    <option key={index} value={item?.id}>
-                      {item?.name}
-                    </option>
-                  ))
-                : agentData?.sales_agents?.map((item, index) => (
-                    <option key={index} value={item?.id}>
-                      {item?.name}
-                    </option>
-                  ))}
+                ? agentData?.feedback_agents
+                    ?.filter((agent) => agent?.active)
+                    .map((item, index) => (
+                      <option key={index} value={item?.id}>
+                        {item?.name}
+                      </option>
+                    ))
+                : agentData?.sales_agents
+                    ?.filter((agent) => agent?.active)
+                    .map((item, index) => (
+                      <option key={index} value={item?.id}>
+                        {item?.name}
+                      </option>
+                    ))}
             </select>
             {agentError && <p className="text-sm text-red">{agentError}</p>}
           </div>
@@ -296,16 +301,14 @@ export const AddCompaign = ({
             {timezoneError && (
               <p className="text-sm text-red">{timezoneError}</p>
             )}
-            {timeZone && (
-          <p>Current Time: {currentTime}</p>
-        )}
+            {timeZone && <p>Current Time: {currentTime}</p>}
           </div>
           {/* Start Date & Time */}
           <div>
             <label className="mb-1 text-[#7E7E7E] dark:text-[#D6D6D5]">
               Start Date & Time:
             </label>
-            
+
             <input
               type="datetime-local"
               className="w-full rounded-md bg-[#FFFFFF] p-3 pr-4 text-[#1D2532] focus:outline-none dark:bg-[#2C3B4A] dark:text-white"

@@ -12,7 +12,6 @@ const ModelCard = ({
   knowledge,
   setKnowledge
 }) => {
-  console.log(firstMessage)
   return (
     <div className=" flex items-center justify-center rounded-xl bg-[#faf7f7] p-2 dark:bg-[#242E3E] sm:p-4">
       <div className=" flex w-full  flex-col gap-6 rounded-lg ">

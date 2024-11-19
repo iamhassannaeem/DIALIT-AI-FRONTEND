@@ -19,7 +19,7 @@ import Library from './components/playground/library/Library';
 import CallLogs from './components/reports/CallLogs';
 import Billing from './components/billing/Billing';
 import Member from './components/Member';
-import Settings from './pages/settings/Settings';
+
 import ForgetPassword from './pages/Authentication/ForgetPassword';
 import SignUp from './pages/Authentication/SignUp';
 import TwoFA from './pages/Authentication/TwoFA';
@@ -29,14 +29,15 @@ import Compaign from './components/reports/Compaign';
 import ActivateUser from './pages/Authentication/ActivateUser';
 import FeedbackCard from './components/playground/AgentTabs/FeedbackCard';
 import FeedbackReport from './components/reports/FeedbackReport';
+import WorkSpace from './pages/settings/WorkSpace';
 
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
-  const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
-  // const isAuthenticated = true;
+  //const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
+  const isAuthenticated = true;
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
@@ -47,7 +48,7 @@ function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  
+
   // useEffect(() => {
   //   dispatch(isAdminfetchAdminStatus());
   // }, [dispatch]);
@@ -79,6 +80,9 @@ function App() {
                   </>
                 }
               />
+
+
+
               <Route
                 path="/playground/agent"
                 element={
@@ -88,6 +92,10 @@ function App() {
                   </>
                 }
               />
+
+
+
+
               <Route
                 path="/playground/phone"
                 element={
@@ -124,7 +132,7 @@ function App() {
                   </>
                 }
               />
-                 <Route
+              <Route
                 path="/reports/feedback/report"
                 element={
                   <>
@@ -161,11 +169,11 @@ function App() {
                 }
               />
               <Route
-                path="/settings"
+                path="/workspace"
                 element={
                   <>
-                    <PageTitle title="Settings" />
-                    <Settings />
+                    <PageTitle title="WorkSpace" />
+                    <WorkSpace />
                   </>
                 }
               />
@@ -194,7 +202,7 @@ function App() {
                 path="/user/forgot/password/:token"
                 element={<><PageTitle title="ForgotPassword" /> <NewPassword /></>}
               />
-               <Route
+              <Route
                 path="/user/activate/:token"
                 element={<><PageTitle title="UserActivate" /> <ActivateUser /></>}
 
@@ -209,7 +217,7 @@ function App() {
                   </>
                 }
               />
-               <Route
+              <Route
                 path="/signin"
                 element={
                   <>

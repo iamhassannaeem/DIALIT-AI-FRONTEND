@@ -103,7 +103,7 @@ const DropdownUser = () => {
 
             <span className="text-sm font-normal text-[#1D2532] dark:text-white">
               {' '}
-              Settings
+              My WorkSpace
             </span>
           </Link>
           <Link

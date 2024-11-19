@@ -159,6 +159,11 @@ const Campaign = () => {
                 Campaign Type
               </p>
             </div>
+            <div className="flex min-w-[150px] flex-[1] items-center px-3 py-4">
+              <p className="text-sm font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
+                Local Time
+              </p>
+            </div>
             <div className="flex min-w-[100px] flex-[1] items-center px-3 py-4">
               <p className="text-sm font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
                 Status
@@ -192,11 +197,27 @@ const Campaign = () => {
                   {campaign?.agent_name}
                 </p>
               </div>
+
               <div className="flex min-w-[150px] flex-[1] items-center px-3 py-4">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
                   {campaign?.type === 1 ? 'Outbound' : 'Inbound'}
                 </p>
               </div>
+              <div className="flex min-w-[100px] flex-[1] items-center px-3 py-4">
+                <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
+                  {campaign?.campaign_local_datetime
+                    ? new Date(
+                        campaign?.campaign_local_datetime
+                      ).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: true, // Set to false if you prefer 24-hour format
+                      })
+                    : ''}
+                </p>
+              </div>
+
               <div className="flex min-w-[100px] flex-[1] items-center px-3 py-4">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
                   {campaign?.status === 1

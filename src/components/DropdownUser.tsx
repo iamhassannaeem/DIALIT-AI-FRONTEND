@@ -75,17 +75,16 @@ const DropdownUser = () => {
         ref={dropdown}
         onFocus={() => setDropdownOpen(true)}
         onBlur={() => setDropdownOpen(false)}
-        className={`absolute right-0 mt-4  flex w-[206px] flex-col rounded-[12px] border border-[#333B48] bg-[#EEEEEE]  p-[12px] shadow-[#dedede3d] dark:bg-[#1D2532]  ${
-          dropdownOpen === true ? 'block' : 'hidden'
-        }`}
+        className={`absolute right-0 mt-4  flex w-[206px] flex-col rounded-[12px] border border-[#333B48] bg-[#EEEEEE]  p-[12px] shadow-[#dedede3d] dark:bg-[#1D2532]  ${dropdownOpen === true ? 'block' : 'hidden'
+          }`}
       >
         <div className="flex flex-col items-start justify-start gap-[6px]">
           <Link
             onClick={() => {
               setDropdownOpen(false);
-              handleLinkClick('Settings');
+              handleLinkClick('WorkSpace');
             }}
-            to="/settings"
+            to="/WorkSpace"
             className="sease-in-out flex items-center  gap-[10px] py-3 px-6 duration-300 "
           >
             <svg

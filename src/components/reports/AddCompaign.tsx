@@ -107,7 +107,7 @@ export const AddCompaign = ({
             // Convert numbers to strings and handle the format
             let phoneStr = phone.toString();
 
-            return { phone_number: phoneStr };
+            return { phone_number:  `+${phoneStr}` };
           });
 
         console.log(phoneNumbers); // Log formatted phone numbers
@@ -178,13 +178,7 @@ export const AddCompaign = ({
       try {
         setLoading(true);
         const res = await getAgents();
-
-        if (
-          res?.data?.feedback_agents.length > 0 ||
-          res?.data?.sales_agents.length > 0
-        ) {
-          setAgentData(res?.data);
-        }
+        setAgentData(res?.data);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -248,8 +242,8 @@ export const AddCompaign = ({
               onChange={handleCampaignTypeChange}
             >
               <option value="">Select type</option>
-              <option value="2">Inbound</option>
-              <option value="1">Outbound</option>
+              <option value="2">Outbound Sales</option>
+              <option value="1">Outbound Feedback</option>
             </select>
             {typeError && <p className="text-sm text-red">{typeError}</p>}
           </div>
@@ -264,21 +258,25 @@ export const AddCompaign = ({
               onChange={handleAgent}
             >
               <option value="">Select Type</option>
-              {campaignType == 1
-                ? agentData?.feedback_agents
-                    ?.filter((agent) => agent?.active)
-                    .map((item, index) => (
-                      <option key={index} value={item?.id}>
-                        {item?.name}
-                      </option>
-                    ))
-                : agentData?.sales_agents
-                    ?.filter((agent) => agent?.active)
-                    .map((item, index) => (
-                      <option key={index} value={item?.id}>
-                        {item?.name}
-                      </option>
-                    ))}
+              {
+                Array.isArray(agentData) && campaignType == 1
+                  ? agentData
+                      ?.filter((item) => item?.agent_type === 'feedback')
+                      .map((item, index) => (
+                        <option key={index} value={item?.id}>
+                          {item?.name}
+                        </option>
+                      ))
+                  : Array.isArray(agentData) && campaignType !== 1
+                  ? agentData
+                      ?.filter((item) => item?.agent_type === 'sales')
+                      .map((item, index) => (
+                        <option key={index} value={item?.id}>
+                          {item?.name}
+                        </option>
+                      ))
+                  : null // Optional fallback if agentData is not an array
+              }
             </select>
             {agentError && <p className="text-sm text-red">{agentError}</p>}
           </div>

@@ -39,13 +39,13 @@ export const DeleteCompaign = ({
   };
   return (
     <div
-      className={`fixed top-0 left-0 z-999999 flex h-full min-h-screen w-full items-center justify-center bg-black/90 px-4 ${
+      className={`fixed top-0 left-0 z-999999 flex h-screen min-h-screen w-full items-center justify-center  px-4 ${
         modalOpenDelete ? 'block' : 'hidden'
       }`}
     >
       <div
         ref={delmodal}
-        className="w-full max-w-142.5 rounded-lg bg-white py-7 px-8 dark:bg-boxdark"
+        className="w-full max-w-142.5 rounded-lg  bg-[#EEEEEE] p-8 dark:bg-[#222e42]"
       >
         <div className="text-center ">
           <svg

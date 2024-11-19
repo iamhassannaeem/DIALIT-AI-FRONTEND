@@ -45,8 +45,8 @@ const endpoints: ApiEndpoints = {
   publishAgent: 'agent/agent/',
   deleteQuestion: 'agent/questions/',
   compaignsList:'agent/campaigns/',
-  callDetails:'agent/call/details/',
-  feedbackReport:'agent/feedbackreport/',
+  callDetails:'agent/call/logs/',
+  feedbackReport:'agent/call/contentlogs/',
   stopCompaign:"/agent/stopcampaigns/"
 };
 

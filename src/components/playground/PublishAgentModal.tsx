@@ -42,6 +42,7 @@ const PublishAgentModal = ({
   general,
   knowledge,
   setGetAgentDetails,
+  workFlow,
 }: {
   details: any;
   isOpen: any;
@@ -65,6 +66,7 @@ const PublishAgentModal = ({
   selectedAgent: any;
   knowledge: any;
   setGetAgentDetails: any;
+  workFlow: any;
 }) => {
   const [selectedOption, setSelectedOption] = useState<{
     value: string;
@@ -140,6 +142,7 @@ const PublishAgentModal = ({
       ai_model: selectedModel,
       ai_tec: selectedProvider,
       voice_name: voice,
+      workflow:workFlow,
       agent_type: selectedAgent?.type,
       twillio_number: selectedOption?.id,
       tts_technology_provider: ttsProvider,

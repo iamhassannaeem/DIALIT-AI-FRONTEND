@@ -12,6 +12,8 @@ const WorkFlowCard = ({
   setPricing,
   general,
   setGeneral,
+  workFlow,
+  setWorkFlow
 }) => {
   console.log(files)
   return (
@@ -139,6 +141,23 @@ const WorkFlowCard = ({
                     <option value={item?.id}>{item?.file_name}</option>
                   ))}
                 </select>
+              </div>
+              <div className="mx-3 mt-5 flex w-full flex-col justify-start md:w-[100%]">
+                <label className="text-sm font-bold text-black dark:text-white">
+                  WorkFlow Description
+                </label>
+                <label className="text-sm font-normal text-black dark:text-white ">
+                  Knowledge base
+                </label>
+                <textarea
+                  id="general"
+                  rows={4}              
+                  onChange={(e) => setWorkFlow(e.target.value)}
+                  value={workFlow}
+                  className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+                />
+                  
+                
               </div>
             </div>
           </div>

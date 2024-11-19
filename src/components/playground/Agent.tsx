@@ -42,19 +42,26 @@ const Agent: React.FC = () => {
         setLoading(true);
         const res = await getAgents();
         setAgentData(res?.data);
-        const firstAgent =res?.data[0];
-        setSelectedAgent({
-          id: firstAgent.id,
-          type: firstAgent.type,
-        });
+  
+        const firstAgent = res?.data[0];
+        if (firstAgent) {
+          setSelectedAgent({
+            id: firstAgent.id,
+            type: firstAgent.type,
+          });
+          await handleSelectAgent(firstAgent.id, firstAgent.type, firstAgent?.active);
+        }
+  
         setLoading(false);
       } catch (error) {
         console.log(error);
+        setLoading(false);
       }
     };
-
+  
     fetchAgents();
   }, []);
+  
   return loading ? (
     <Loader />
   ) : (

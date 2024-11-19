@@ -46,6 +46,7 @@ const AgentDetails: React.FC = ({
   const [company, setCompany] = useState('');
   const [pricing, setPricing] = useState('');
   const [general, setGeneral] = useState('');
+  const [workFlow, setWorkFlow] = useState(getAgentDetails?.workflow);
   const [knowledge, setKnowledge] = useState(getAgentDetails?.ai_tec);
   const [isChecked, setIsChecked] = useState(getAgentDetails?.active);
 
@@ -165,7 +166,7 @@ const AgentDetails: React.FC = ({
                   </svg>
                 </span>
                 <span className="text-[#1D2532] dark:text-white">
-                  Status: {agentstatus ? 'Active' : 'Draft'}
+                  Status: {getAgentDetails?.active ? 'Active' : 'Draft'}
                 </span>
                 <div className="py-3 px-6">
                   <label
@@ -407,6 +408,8 @@ const AgentDetails: React.FC = ({
           setGeneral={setGeneral}
           setError={setError}
           setGetAgentDetails={setGetAgentDetails}
+          setWorkFlow={setWorkFlow}
+          workFlow={workFlow}
         />
         <div className="flex items-center justify-end gap-2">
           <PublishAgentModal
@@ -432,6 +435,7 @@ const AgentDetails: React.FC = ({
             general={general}
             knowledge={knowledge}
             setGetAgentDetails={setGetAgentDetails}
+            workFlow={workFlow}
           />
         </div>
       </div>

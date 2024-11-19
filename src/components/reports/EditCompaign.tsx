@@ -7,10 +7,10 @@ import dayjs from "dayjs";
 
 const EditCampaign = ({ modalOpenEdit, setModalOpenEdit, item ,setCampaigns,setError}) => {
   if (!modalOpenEdit || !item) return null;
-
+console.log(item);
   const editmodal = useRef(null);
   const [campaignName, setCampaignName] = useState(item?.name);
-  const [startDateTime, setStartDateTime] = useState(item?.start_time);
+  const [startDateTime, setStartDateTime] = useState();
   const [file, setFile] = useState(null);
   const [agent, setAgent] = useState();
   const [timeZone, setTimeZone] = useState('');
@@ -18,13 +18,14 @@ const EditCampaign = ({ modalOpenEdit, setModalOpenEdit, item ,setCampaigns,setE
   const [agentError, setAgentError] = useState('');
   const [timezoneError, setTimeZoneError] = useState('');
   const [typeError, setTypeError] = useState('');
-  const [agentData, setAgentData] = useState<any>(item?.feedback_agent|| item?.sales_agent);
+  const [agentData, setAgentData] = useState<any>({});
   const [loading, setLoading] = useState(false);
   const [campaignType, setCampaignType] = useState(item?.type);
   const [isFormValid, setIsFormValid] = useState(false);
   const [fileSelected, setFileSelected] = useState(false);
   const [fileError, setFileError] = useState('');
   const [currentTime, setCurrentTime] = useState('');
+
   useEffect(() => {
     if (timeZone) {
       const updateTime = () => {
@@ -48,51 +49,55 @@ const EditCampaign = ({ modalOpenEdit, setModalOpenEdit, item ,setCampaigns,setE
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     console.log(file);
-  
+
     if (file) {
       setFileSelected(true);
       const reader = new FileReader();
-  
+
       reader.onload = (e) => {
         const binaryStr = e.target.result;
-  
+
         // Read the Excel workbook
         const workbook = XLSX.read(binaryStr, { type: 'binary' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
-  
+
         // Convert worksheet to JSON with each row as an array
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-  
+
         // Flatten the array and extract phone numbers in the desired format
         const phoneNumbers = jsonData
           .flat()
-          .filter((value) => typeof value === 'string' || typeof value === 'number')
+          .filter(
+            (value) => typeof value === 'string' || typeof value === 'number'
+          )
           .map((phone) => {
             // Convert numbers to strings and handle the format
             let phoneStr = phone.toString();
-           
-            return { phone_number: phoneStr,campaign:item?.id };
+
+            return { phone_number:  `+${phoneStr}` };
           });
-  
+
         console.log(phoneNumbers); // Log formatted phone numbers
         setData(phoneNumbers); // Update state with formatted phone numbers
       };
-  
+
       reader.readAsBinaryString(file);
     } else {
       setFileSelected(false);
     }
-  
+
     setFileError(!file ? 'Please choose a file to upload' : '');
   };
 
   
   const handleAgent = (e) => {
     const value = e.target.value;
+    console.log(value); 
     setAgent(value);
     setAgentError(value === '' ? 'Please select an agent' : '');
   };
+;
  
   const handleTimeZone = (e) => {
     const value = e.target.value;
@@ -109,16 +114,10 @@ const EditCampaign = ({ modalOpenEdit, setModalOpenEdit, item ,setCampaigns,setE
   useEffect(() => {
     const fetchAgents = async () => {
       try {
-        setLoading(true);
+        
         const res = await getAgents();
-
-        if (
-          res?.data?.feedback_agents.length > 0 ||
-          res?.data?.sales_agents.length > 0
-        ) {
-          setAgentData(res?.data);
-        }
-        setLoading(false);
+       setAgentData(res?.data);
+       
       } catch (error) {
         console.log(error);
       }
@@ -129,7 +128,7 @@ const EditCampaign = ({ modalOpenEdit, setModalOpenEdit, item ,setCampaigns,setE
   
   useEffect(() => {
     // Form validation checks
-    const isNameValid = campaignName.length >= 4 && campaignName.length <= 50;
+    const isNameValid = campaignName?.length >= 4 && campaignName?.length <= 50;
     const isTypeSelected = campaignType !== '';
     const isDateSelected = startDateTime !== '';
     const isFileChosen = fileSelected;
@@ -140,17 +139,13 @@ const EditCampaign = ({ modalOpenEdit, setModalOpenEdit, item ,setCampaigns,setE
     );
   }, [campaignName, campaignType, startDateTime, fileSelected]);
 
-
   const handleSave = async (e) => {
     e.preventDefault();
     if (!isFormValid) return; // Prevent submission if form is invalid
 
     setLoading(true);
     const formattedDateTime = dayjs(startDateTime).format("YYYY-MM-DD HH:mm:ss");
-
     try {
-      
-
       const res = await editCompaign(item?.id,{
         name: campaignName,
         agent: agent,  
@@ -230,8 +225,8 @@ const EditCampaign = ({ modalOpenEdit, setModalOpenEdit, item ,setCampaigns,setE
               onChange={handleCampaignTypeChange}
             >
              <option value="">Select type</option>
-              <option value="2">Inbound</option>
-              <option value="1">Outbound</option>
+             <option value="2">Outbound Sales</option>
+             <option value="1">Outbound Feedback</option>
             </select>
           </div>
           {/* Agent List */}
@@ -241,21 +236,28 @@ const EditCampaign = ({ modalOpenEdit, setModalOpenEdit, item ,setCampaigns,setE
             </label>
             <select
               className="w-full rounded-md bg-[#FFFFFF] p-3 text-[#1D2532] focus:outline-none dark:bg-[#2C3B4A] dark:text-white"
-              value={item?.agent}
               onChange={handleAgent}
             >
-              <option value="">Select Type</option>
-              {campaignType == 1
-                ? agentData?.feedback_agents?.map((item, index) => (
-                    <option key={index} value={item?.id}>
-                      {item?.name}
-                    </option>
-                  ))
-                : agentData?.sales_agents?.map((item, index) => (
-                    <option key={index} value={item?.id}>
-                      {item?.name}
-                    </option>
-                  ))}
+               <option value="">Select Type</option>
+              {
+                Array.isArray(agentData) && campaignType == 1
+                  ? agentData
+                      ?.filter((item) => item?.agent_type === 'feedback')
+                      .map((item, index) => (
+                        <option key={index} value={item?.id}>
+                          {item?.name}
+                        </option>
+                      ))
+                  : Array.isArray(agentData) && campaignType !== 1
+                  ? agentData
+                      ?.filter((item) => item?.agent_type === 'sales')
+                      .map((item, index) => (
+                        <option key={index} value={item?.id}>
+                          {item?.name}
+                        </option>
+                      ))
+                  : null // Optional fallback if agentData is not an array
+              }
             </select>
             {agentError && <p className="text-sm text-red">{agentError}</p>}
           </div>

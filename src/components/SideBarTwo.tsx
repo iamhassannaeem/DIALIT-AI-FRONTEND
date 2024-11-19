@@ -21,7 +21,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             {/* Sidebar */}
             <aside
                 ref={sidebar}
-                className={`flex-shrink-0 w-full p-4 bg-[#EEEEEE] dark:bg-[#1D2532] duration-300 ease-linear 
+                className={`flex-shrink-0 w-full p-4 bg-[#EEEEEE] dark:bg-[#1D2532]  duration-300 ease-linear 
                     `}
             >
                 <nav>
@@ -32,7 +32,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <ul className=" flex flex-wrap py-5 justify-between mx-3 ">
                         <Link
                             to="#"
-                            className={`py-3 px-4 text-white text-sm  ${tab === 1 ? 'font-extrabold bg-[#242E3E]' : ''
+                            className={`py-3 px-4 text-black dark:text-white text-sm  ${tab === 1 ? 'font-extrabold bg-white dark:bg-[#242E3E]' : ''
                                 }`}
                             onClick={() => setTab(1)}
                         >
@@ -40,7 +40,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         </Link>
                         <Link
                             to="#"
-                            className={`py-3 px-4 text-sm text-white ${tab === 2 ? 'font-extrabold bg-[#242E3E]' : ''
+                            className={`py-3 px-4 text-sm text-black dark:text-white ${tab === 2 ? 'font-extrabold bg-white dark:bg-[#242E3E]' : ''
                                 }`}
                             onClick={() => setTab(2)}
                         >
@@ -48,7 +48,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         </Link>
                         <Link
                             to="#"
-                            className={`py-3 px-4 text-sm text-white ${tab === 3 ? 'font-extrabold bg-[#242E3E]' : ''
+                            className={`py-3 px-4 text-sm text-black dark:text-white ${tab === 3 ? 'font-extrabold bg-white dark:bg-[#242E3E]' : ''
                                 }`}
                             onClick={() => setTab(3)}
                         >
@@ -56,7 +56,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         </Link>
                         <Link
                             to="#"
-                            className={`py-3 px-4 text-sm text-white ${tab === 4 ? 'font-extrabold bg-[#242E3E]' : ''
+                            className={`py-3 px-4 text-sm text-black dark:text-white ${tab === 4 ? 'font-extrabold bg-white dark:bg-[#242E3E]' : ''
                                 }`}
                             onClick={() => setTab(4)}
                         >
@@ -64,7 +64,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         </Link>
                         <Link
                             to="#"
-                            className={`py-3 px-4 text-sm text-white ${tab === 5 ? 'font-extrabold bg-[#242E3E]' : ''
+                            className={`py-3 px-4 text-sm text-black dark:text-white ${tab === 5 ? 'font-extrabold bg-white dark:bg-[#242E3E]' : ''
                                 }`}
                             onClick={() => setTab(5)}
                         >
@@ -74,7 +74,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </nav>
 
             </aside>
-            <main className="flex-1 pl-4 mt-6 bg-[#1D2532]  overflow-y-auto">
+            <main className="flex-1 pl-4 mt-6 bg-[#EEEEEE] dark:bg-[#1D2532]  overflow-y-auto">
                 <div className={`${tab === 1 ? 'block' : 'hidden'}`}>
                     <General />
                 </div>

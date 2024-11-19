@@ -96,7 +96,7 @@ const ResetPassword = () => {
                 <button
                     onClick={handleResetPassword}
                     disabled={!oldPassword || !newPassword}
-                    className={`mt-6 w-full py-2 rounded-md bg-[#2691B6] font-medium text-[#4E5B6F]  dark:text-white ${!oldPassword || !newPassword ? 'cursor-not-allowed opacity-50' : ''}`}
+                    className={`mt-6 w-full py-2 rounded-md dark:bg-[#242E3E] bg-white font-medium dark:text-white  text-black ${!oldPassword || !newPassword ? 'cursor-not-allowed opacity-50' : ''}`}
                 >
                     Reset Password
                 </button>

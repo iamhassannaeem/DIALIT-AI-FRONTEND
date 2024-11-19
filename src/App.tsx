@@ -37,7 +37,7 @@ const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
-  // const isAuthenticated = true;
+  //const isAuthenticated = true;
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);

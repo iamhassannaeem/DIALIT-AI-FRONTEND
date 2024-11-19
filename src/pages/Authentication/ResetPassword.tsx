@@ -11,7 +11,7 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({ success: '', error: '' });
   const navigate = useNavigate();
-  const handleResetPassword =async () => {
+  const handleResetPassword = async () => {
     if (!oldPassword) setOldPasswordError('Old password is required.');
     else setOldPasswordError('');
 
@@ -27,9 +27,9 @@ const ResetPassword = () => {
     if (res?.status === 200) {
       setLoading(true);
       setError({ error: '', success: res?.data?.message });
-    //   setTimeout(() => {
-    //     navigate('signin');
-    //   }, 3000);
+      //   setTimeout(() => {
+      //     navigate('signin');
+      //   }, 3000);
     } else {
       setError({
         error: res?.message?.response?.data?.error,
@@ -92,11 +92,10 @@ const ResetPassword = () => {
           <button
             onClick={handleResetPassword}
             disabled={!oldPassword || !newPassword}
-            className={`mt-6 flex w-full items-center justify-center gap-1 rounded-md bg-white py-2 font-medium text-[#4E5B6F] dark:bg-[#242E3E] dark:text-white ${
-              !oldPassword || !newPassword
-                ? 'cursor-not-allowed opacity-50'
-                : ''
-            }`}
+            className={`mt-6 flex w-full items-center justify-center gap-1 rounded-md bg-white py-2 font-medium text-[#4E5B6F] dark:bg-[#242E3E] dark:text-white ${!oldPassword || !newPassword
+              ? 'cursor-not-allowed opacity-50'
+              : ''
+              }`}
           >
             Reset Password
           </button>

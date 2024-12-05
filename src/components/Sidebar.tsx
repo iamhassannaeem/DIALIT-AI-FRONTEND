@@ -448,6 +448,28 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               Feedback Report
                             </NavLink>
                           </li>
+                          <li onClick={() => handleLinkClick('Sales Report')}>
+                            <NavLink
+                              to="/reports/sales/report"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-[14px] rounded-sm py-3 px-4 text-sm font-semibold  text-[#1D2532] duration-100  ease-in-out  dark:text-white  ' +
+                                (isActive &&
+                                  '!dark:text-[#1D2532] border-l-2 border-[#1D2532] text-[#1D2532] dark:border-white dark:text-white')
+                              }
+                            >
+                              <svg
+                                className="text-black dark:text-white"
+                                width="20"
+                                fill="currentColor"
+                                height="18"
+                                viewBox="0 0 20 18"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path d="M13 16V15H11C10.45 15 9.97917 14.8042 9.5875 14.4125C9.19583 14.0208 9 13.55 9 13V5H7V6C7 6.55 6.80417 7.02083 6.4125 7.4125C6.02083 7.80417 5.55 8 5 8H2C1.45 8 0.979167 7.80417 0.5875 7.4125C0.195833 7.02083 0 6.55 0 6V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H5C5.55 0 6.02083 0.195833 6.4125 0.5875C6.80417 0.979167 7 1.45 7 2V3H13V2C13 1.45 13.1958 0.979167 13.5875 0.5875C13.9792 0.195833 14.45 0 15 0H18C18.55 0 19.0208 0.195833 19.4125 0.5875C19.8042 0.979167 20 1.45 20 2V6C20 6.55 19.8042 7.02083 19.4125 7.4125C19.0208 7.80417 18.55 8 18 8H15C14.45 8 13.9792 7.80417 13.5875 7.4125C13.1958 7.02083 13 6.55 13 6V5H11V13H13V12C13 11.45 13.1958 10.9792 13.5875 10.5875C13.9792 10.1958 14.45 10 15 10H18C18.55 10 19.0208 10.1958 19.4125 10.5875C19.8042 10.9792 20 11.45 20 12V16C20 16.55 19.8042 17.0208 19.4125 17.4125C19.0208 17.8042 18.55 18 18 18H15C14.45 18 13.9792 17.8042 13.5875 17.4125C13.1958 17.0208 13 16.55 13 16ZM15 6H18V2H15V6ZM15 16H18V12H15V16ZM2 6H5V2H2V6Z" />
+                              </svg>
+                              Sales Report
+                            </NavLink>
+                          </li>
                         </ul>
                       </div>
                       {/* <!-- Dropdown Menu End --> */}

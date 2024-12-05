@@ -24,7 +24,7 @@ const Campaign = () => {
   const [compaigns, setCampaigns] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({ success: '', error: '' });
-
+  
   // close if the esc key is pressed
   useEffect(() => {
     const keyHandler = ({ keyCode }: KeyboardEvent) => {
@@ -113,6 +113,27 @@ const Campaign = () => {
     };
     fetchCampaigns();
   }, []);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Calculate the total pages
+  const totalPages = Math.ceil(compaigns?.length / itemsPerPage);
+
+  // Get the campaigns for the current page
+  const paginatedCampaigns = compaigns?.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Handlers for Next and Previous buttons
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
 
   return loading ? (
     <Loader />
@@ -142,7 +163,7 @@ const Campaign = () => {
             setCampaigns={setCampaigns}
           />
         </div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto scrollbar">
           <div className="flex items-center justify-between border-t border-stroke dark:border-strokedark">
             <div className="flex min-w-[150px] flex-[1] items-center px-3 py-4">
               <p className="text-sm font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
@@ -182,10 +203,10 @@ const Campaign = () => {
           </div>
 
           {/* Table Rows */}
-          {compaigns?.map((campaign) => (
+          {paginatedCampaigns?.map((campaign) => (
             <div
               key={campaign?.id}
-              className="flex border-t border-stroke dark:border-strokedark"
+              className="flex border-t border-stroke dark:border-strokedark "
             >
               <div className="flex min-w-[150px] flex-[1] items-center px-3 py-4">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
@@ -322,6 +343,30 @@ const Campaign = () => {
             </div>
           ))}
         </div>
+        <div className="flex justify-center mt-4">
+        <button
+          onClick={handlePrevious}
+          disabled={currentPage === 1}
+          className={`px-4 py-2 rounded ${
+            currentPage === 1
+              ? "bg-gray cursor-not-allowed"
+              : "bg-blue text-white"
+          }`}
+        >
+          Previous
+        </button>
+        <button
+          onClick={handleNext}
+          disabled={currentPage === totalPages}
+          className={`px-4 py-2 rounded ${
+            currentPage === totalPages
+              ? "bg-gray cursor-not-allowed"
+              : "bg-blue text-white"
+          }`}
+        >
+          Next
+        </button>
+      </div>
       </div>
       <EditCampaign
         modalOpenEdit={modalOpenEdit}

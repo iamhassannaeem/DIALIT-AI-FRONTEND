@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 
 import { resetPassword } from '../api/modules/Swiftsync.class'
+import Toaster from './Toast/Toast';
 
 const ResetPassword = () => {
     const [oldPassword, setOldPassword] = useState('');
@@ -51,6 +52,8 @@ const ResetPassword = () => {
     };
 
     return (
+        <>
+        <Toaster message={error} />
         <div className=" rounded-md bg-[#EEEEEE]  py-9 px-10 dark:bg-[#1D2532]">
             <div className="text-2xl font-normal mb-4 text-black dark:text-white">
                 Reset Password
@@ -63,7 +66,7 @@ const ResetPassword = () => {
                 <div className="w-full ">
                     <label htmlFor="oldPassword" className="text-[#75849B] dark:text-white">Old password</label>
                     <input
-                        className="mt-1 h-10 w-full rounded-md bg-white pl-2 outline-none dark:bg-[#242E3E]"
+                        className="mt-2 h-12 w-full rounded-md bg-white px-4 outline-none dark:bg-[#242E3E]"
                         type="password"
                         id="oldPassword"
                         placeholder="Enter old password"
@@ -76,7 +79,7 @@ const ResetPassword = () => {
                 <div className="w-full ">
                     <label htmlFor="newPassword" className="text-[#75849B] dark:text-white">New password</label>
                     <input
-                        className="mt-1 h-10 pl-2 w-full rounded-md bg-white outline-none dark:bg-[#242E3E]"
+                        className="mt-2 h-12 px-4 w-full rounded-md bg-white outline-none dark:bg-[#242E3E]"
                         type="password"
                         id="newPassword"
                         placeholder="Enter new password"
@@ -96,7 +99,10 @@ const ResetPassword = () => {
                 <button
                     onClick={handleResetPassword}
                     disabled={!oldPassword || !newPassword}
-                    className={`mt-6 w-full py-2 rounded-md dark:bg-[#242E3E] bg-white font-medium dark:text-white  text-black ${!oldPassword || !newPassword ? 'cursor-not-allowed opacity-50' : ''}`}
+                    className={`mt-6 flex w-full items-center justify-center gap-1 rounded-md bg-[#2691B6] py-2 font-medium text-white  dark:text-white ${!oldPassword || !newPassword
+                        ? 'cursor-not-allowed opacity-50'
+                        : ''
+                        }`}
                 >
                     Reset Password
                 </button>
@@ -104,7 +110,7 @@ const ResetPassword = () => {
         </div>
 
 
-
+        </>
     );
 };
 

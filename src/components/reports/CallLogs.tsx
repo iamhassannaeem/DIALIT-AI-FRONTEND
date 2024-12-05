@@ -4,16 +4,14 @@ import CallCost from './CallCost';
 import Logs from './Logs';
 import Messages from './Messages';
 import Transcripts from './Transcripts';
-import { callDetails } from '../../api/modules/Swiftsync.class';
+import { callDetails, filteronDate } from '../../api/modules/Swiftsync.class';
 import Datepicker from 'react-tailwindcss-datepicker';
 import Loader from '../../common/Loader';
-
 const activeClasses =
   'border-b-2 border-[#242E3E] dark:border-white pb-3 text-white';
 const inactiveClasses = ' pb-3 text-white';
 
 const textToCopy = '83796abb-580e-4734-9053-f76dd6b312a3';
-
 const CallLogs: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [Tab, setTab] = useState(1);
@@ -23,14 +21,14 @@ const CallLogs: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [filteredFiles, setFilteredFiles] = useState();
   const [selectedFileType, setSelectedFileType] = useState('');
-  const [selectedDate, setSelectedDate] = useState({
+  const [value, setValue] = useState({
     startDate: null,
-    endDate: null,
-  });
+    endDate: null
+});
 
-  const handleDateChange = (newDate) => {
-    setSelectedDate(newDate);
-  };
+ 
+  
+  console.log(value)
   const modal = useRef<any>(null);
 
   const copyToClipboard = () => {
@@ -77,7 +75,43 @@ const CallLogs: React.FC = () => {
       console.log(error);
     }
   }, []);
-  const handleFilter = () => {};
+ 
+
+  const handleFilter = async () => {
+    setLoading(true);
+    if (!value?.startDate || !value?.endDate) {
+      alert("Please select both start and end dates.");
+      setLoading(false);
+      return;
+    }
+  
+    const convertDateFormat = (dateString) => {
+      const date = new Date(dateString); 
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0"); 
+      const day = String(date.getDate()).padStart(2, "0");
+       
+  
+      return `${year}-${month}-${day}`;
+    };
+  
+    try {
+      const formattedStartDate = convertDateFormat(value.startDate);
+      const formattedEndDate = convertDateFormat(value.endDate);
+      const res = await filteronDate({
+        start_date: formattedStartDate,
+        end_date: formattedEndDate,
+      });
+      setCallLog(res);
+    } catch (error) {
+      console.error("Error during filtering:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+  
 
   return loading ? (
     <Loader />
@@ -86,7 +120,7 @@ const CallLogs: React.FC = () => {
       <div className="flex flex-col gap-6 rounded-xl bg-[#EEEEEE] px-3 py-6 shadow-default dark:bg-[#1D2532]">
         {/* Search and Filter Section */}
         <div className=" flex w-full items-end justify-center gap-4 md:w-[50%]">
-          <div className="w-full ">
+          {/* <div className="w-full ">
             <select
               id="model"
               value={selectedFileType}
@@ -95,36 +129,39 @@ const CallLogs: React.FC = () => {
             >
               <option value="">Filter on the base Agent type</option>
             </select>
-          </div>
-          <div className="mx-auto w-full max-w-md">
+          </div> */}
+         
             <Datepicker
-              value={selectedDate}
-              onChange={handleDateChange}
+              
+              value={value} 
+              onChange={newValue => setValue(newValue)}
               displayFormat="YYYY-MM-DD"
-              useRange={true} // Set to `true` if you want a range picker
+              useRange={true} 
               placeholder="Select a date range"
+              showShortcuts={true}
+              // containerClassName="dark:bg-black"
             />
-          </div>
+        
           <button
             onClick={handleFilter}
             type="button"
-            disabled={!selectedFileType}
-            className="cursor-pointer rounded border-2 border-[#2691B6] bg-transparent px-4 py-3 text-center text-sm font-semibold text-[#2691B6]"
+            disabled={!value}
+            className="cursor-pointer rounded border-2 border-[#2691B6] bg-transparent px-4 py-2 text-center text-sm font-semibold text-[#2691B6]"
           >
             Filter
           </button>
         </div>
 
         {/* Table Header */}
-        <div className="scrollbar overflow-x-scroll">
+        <div className="scrollbar overflow-x-auto">
           <div className="grid min-w-[900px] grid-cols-12  border-t  border-stroke  dark:border-strokedark ">
-            <div className=" flex items-center px-3 py-4">
+            <div className="col-span-2 flex items-center px-3 py-4">
               <p className="text-sm  font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
                 Type
               </p>
             </div>
             <div className=" flex items-center px-3 py-4">
-              <p className=" text-sm  font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
+              <p className=" text-sm col-span-1 font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
                 Call ID
               </p>
             </div>
@@ -138,28 +175,24 @@ const CallLogs: React.FC = () => {
                 Status
               </p>
             </div>
-            <div className=" flex items-center px-3 py-4">
-              <p className=" text-sm font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
-                Ended Reason
-              </p>
-            </div>
+           
             <div className=" flex items-center px-3 py-4">
               <p className="text-sm  font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
                 Assistant
               </p>
             </div>
-            <div className=" flex items-center px-3 py-4">
+            <div className="  col-span-2 flex items-center px-3 py-4">
               <p className="text-sm  font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
                 Phone Number
               </p>
             </div>
             <div className=" flex items-center px-3 py-4">
               <p className=" text-sm font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
-                Customer
+                Tag
               </p>
             </div>
 
-            <div className=" col-span-3 flex items-center px-3 py-4">
+            <div className=" col-span-2 flex items-center px-3 py-4">
               <p className="break-words text-sm font-semibold text-[#1D2532] dark:text-[#D6D6D5]">
                 Call Times & Duration
               </p>
@@ -175,18 +208,18 @@ const CallLogs: React.FC = () => {
           {calllog?.map((log, index) => (
             <div
               key={index}
-              className="grid min-w-[900px] grid-cols-12 border-t  border-stroke  dark:border-strokedark"
+              className="grid min-w-[900px]  grid-cols-12 border-t  border-stroke  dark:border-strokedark"
             >
-              <div className=" flex items-center justify-start px-3 py-4">
+              <div className="col-span-2 flex items-center justify-start px-3 py-4">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
-                  {log.type}
+                  {log.agent_type}
                 </p>
               </div>
-              <div className="flex items-center justify-start">
+              <div className="flex   col-span-1 items-center justify-start">
                 <div className="flex items-center gap-1 px-3 py-4">
                   {' '}
                   <p className="break-all text-base font-normal text-black dark:text-[#D6D6D5]">
-                    {log.callId}
+                    {log.id}
                   </p>
                   <svg
                     onClick={() => handleCopy(log.callId)}
@@ -209,21 +242,17 @@ const CallLogs: React.FC = () => {
                 <div className="flex items-center gap-1 px-3 py-4">
                   {' '}
                   <p className="break-all text-base font-normal text-black dark:text-[#D6D6D5]">
-                    {log.status}
+                    {log.call_cost}
                   </p>
                 </div>
               </div>
               <div className="flex items-center justify-start px-3 py-4 ">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
-                  {log.call_cost}
+                  {log.status}
                 </p>
               </div>
 
-              <div className="flex items-center justify-start px-3 py-4 ">
-                <p className={`text-[11px] text-${log.endedReasonColor}`}>
-                  {log.endedReason}
-                </p>
-              </div>
+             
               <div className=" flex items-center justify-start gap-3 px-3 py-4">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
                   {log.assistant}
@@ -241,7 +270,7 @@ const CallLogs: React.FC = () => {
                   />
                 </svg>
               </div>
-              <div className="flex items-center justify-start px-3 py-4">
+              <div className="flex col-span-2 items-center justify-start px-3 py-4">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
                   {log?.phone_number}
                 </p>
@@ -249,12 +278,12 @@ const CallLogs: React.FC = () => {
 
               <div className=" flex items-center justify-start px-3 py-4">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
-                  {log.customer}
+                  {log?.tag}
                 </p>
               </div>
-              <div className=" col-span-3 flex items-center justify-start px-3 py-4">
+              <div className=" col-span-2 flex items-center justify-start px-3 py-4">
                 <p className="text-base font-normal text-black dark:text-[#D6D6D5]">
-                  {log.callTimeDuration}
+                  {log.call_duration}
                 </p>
               </div>
               {/* Dot icons */}

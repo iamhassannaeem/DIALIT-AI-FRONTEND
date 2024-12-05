@@ -69,11 +69,11 @@ const SignIn = () => {
       if (res?.status === 200) {
         setError({ error: '', success: res?.data?.message });
         if (res?.data?.access_token) {
-          const refresh = res?.data?.refresh_token;
-          const access = res?.data?.access_token;
-          dispatch(loginSuccess({ access, refresh }));
-          localStorage.setItem('access', access);
-          localStorage.setItem('refresh', refresh);
+            const refresh = res?.data?.refresh_token;
+            const access = res?.data?.access_token;
+            dispatch(loginSuccess({ access, refresh }));
+            localStorage.setItem('access', access);
+            localStorage.setItem('refresh', refresh);
           window.location.reload();
           setTimeout(() => {
             navigate('/dashboard');

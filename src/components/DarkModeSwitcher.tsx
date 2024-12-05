@@ -4,7 +4,7 @@ const DarkModeSwitcher = () => {
   const [colorMode, setColorMode] = useColorMode();
 
   return (
-    <div className='py-3 px-6'>
+    <div className='py-3 px-3'>
       <label
         className={`relative m-0 block h-7.5 w-14 rounded-full ${
           colorMode === 'dark' ? 'bg-primary' : 'bg-stroke'

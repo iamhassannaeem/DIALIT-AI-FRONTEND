@@ -30,6 +30,7 @@ import ActivateUser from './pages/Authentication/ActivateUser';
 import FeedbackCard from './components/playground/AgentTabs/FeedbackCard';
 import FeedbackReport from './components/reports/FeedbackReport';
 import WorkSpace from './pages/settings/WorkSpace';
+import SalesReport from './components/reports/SalesReport';
 
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
@@ -141,6 +142,17 @@ function App() {
                   </>
                 }
               />
+                <Route
+                path="/reports/sales/report"
+                element={
+                  <>
+                    <PageTitle title="Compaign" />
+                    <SalesReport />
+                  </>
+                }
+              />
+
+
               <Route
                 path="/billing"
                 element={
@@ -150,15 +162,7 @@ function App() {
                   </>
                 }
               />
-              <Route
-                path="/reset/password"
-                element={
-                  <>
-                    <PageTitle title="ResetPassword" />
-                    <ResetPassword />
-                  </>
-                }
-              />
+              
               <Route
                 path="/member"
                 element={

@@ -323,6 +323,47 @@ export const feedbackReport = async (): Promise<ApiResponse> => {
     return { success: false, message: error };
   }
 };
+// get Sales report  
+export const salesReport = async (): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(endpoints.salesReport);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// GET Billing List
+export const getBilling = async (): Promise<ApiResponse> => {
+  try {
+    const response = await axios.get(endpoints.billingsList);
+    return response as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error };
+  }
+};
+
+// filter on date
+export const filteronDate = async ( Date: string ): Promise<ApiResponse> => {
+  try {
+    
+
+
+    // Build the query parameters
+    const queryParams = new URLSearchParams();
+    queryParams.append('startDate', Date?.start_date);
+    queryParams.append('endDate', Date?.end_date);
+
+    // Send the GET request with the query parameters
+    const response = await axios.get(`${endpoints.filteronDate}?${queryParams.toString()}`);
+
+    return response.data as ApiResponse;
+  } catch (error: any) {
+    return { success: false, message: error.message || error };
+  }
+};
+
+
 // organisation create
 // export const organisationCreate = async (
 //   payload: Payload,

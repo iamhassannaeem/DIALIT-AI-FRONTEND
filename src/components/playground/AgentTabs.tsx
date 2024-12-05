@@ -50,7 +50,7 @@ const AgentTabs: React.FC = ({
     <div className="flex  w-full flex-col gap-[24px] rounded-sm shadow-default">
       <div className="flex flex-wrap items-center justify-around gap-5 border-b  sm:gap-10">
         <div
-          className={`flex w-[25%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
+          className={`flex w-[40%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
             openTab === 1 ? activeClasses : inactiveClasses
           }`}
           onClick={() => setOpenTab(1)}
@@ -71,7 +71,7 @@ const AgentTabs: React.FC = ({
           <span>Model</span>
         </div>
         <div
-          className={`flex  w-[25%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
+          className={`flex  w-[40%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
             openTab === 2 ? activeClasses : inactiveClasses
           }`}
           onClick={() => setOpenTab(2)}
@@ -120,8 +120,8 @@ const AgentTabs: React.FC = ({
             </>
           )}
         </div>
-        <div
-          className={`flex  w-[25%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
+        {/* <div
+          className={`flex  w-[40%] cursor-pointer items-center justify-center gap-1 border-b-2 p-3 hover:text-[#1D2532] dark:text-white sm:gap-[10px] md:text-base ${
             openTab === 3 ? activeClasses : inactiveClasses
           }`}
           onClick={() => setOpenTab(3)}
@@ -140,7 +140,7 @@ const AgentTabs: React.FC = ({
             />
           </svg>
           Audio
-        </div>
+        </div> */}
       </div>
 
       <div className="w-full">
@@ -158,6 +158,10 @@ const AgentTabs: React.FC = ({
             selectedModel={selectedModel}
             knowledge={knowledge}
             setKnowledge={setKnowledge}
+            gender={gender}
+            setGender={setGender}
+            voice={voice}
+            setVoice={setVoice}
           />
         </div>
         <div

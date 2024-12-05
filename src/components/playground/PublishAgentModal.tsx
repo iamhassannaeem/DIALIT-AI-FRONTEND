@@ -94,6 +94,7 @@ const PublishAgentModal = ({
     { file: company, file_type: 'company_information' },
     { file: services, file_type: 'product_information' },
   ];
+  console.log(selectedAgent)
   const handleDraft = async () => {
     setLoading(true);
 
@@ -102,13 +103,14 @@ const PublishAgentModal = ({
       first_message: firstMessage,
       active: false,
       gender: gender,
-      ai_model: selectedModel,
-      ai_tec: selectedProvider,
+      // ai_model: selectedModel,
+      // ai_tec: selectedProvider,
       voice_name: voice,
       agent_type: selectedAgent?.type,
       twillio_number: selectedOption?.id,
-      tts_technology_provider: ttsProvider,
-      stt_technology_provider: sttProvider,
+      // tts_technology_provider: ttsProvider,
+      // stt_technology_provider: sttProvider,
+      workflow: workFlow,
       ...(selectedAgent?.type === 'sales' && { files: files }),
     };
 
@@ -126,8 +128,14 @@ const PublishAgentModal = ({
         );
         setGetAgentDetails(res?.data);
       }
+      else{
+        console.log(res?.message?.response?.data?.error)
+        setError({ error: res?.message?.response?.data?.error, success: '' });
+        setLoading(false);
+      }
     } catch (error) {
-      console.error('Error in publishing agent:', error);
+      
+      console.log('Error in publishing agent:', res?.message?.response?.data?.error);
       setLoading(false);
     }
   };
@@ -139,14 +147,14 @@ const PublishAgentModal = ({
       first_message: firstMessage,
       active: true,
       gender: gender,
-      ai_model: selectedModel,
-      ai_tec: selectedProvider,
+      // ai_model: selectedModel,
+      // ai_tec: selectedProvider,
       voice_name: voice,
       workflow:workFlow,
       agent_type: selectedAgent?.type,
       twillio_number: selectedOption?.id,
-      tts_technology_provider: ttsProvider,
-      stt_technology_provider: sttProvider,
+      // tts_technology_provider: ttsProvider,
+      // stt_technology_provider: sttProvider,
       ...(selectedAgent?.type === 'sales' && { files: files }),
     };
 
@@ -222,7 +230,7 @@ const PublishAgentModal = ({
         </button>
         <button
           onClick={handleDraft}
-          className="rounded-[4px] bg-[#2691B6] p-3 py-3.5 text-xs font-semibold text-white"
+          className="rounded-[4px] border border-[#2691B6] p-3 py-3.5 text-xs font-semibold dark:text-white text-black"
         >
           {loading ? <BeatLoader color="white" /> : 'Save as Draft'}
         </button>

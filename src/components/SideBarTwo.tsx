@@ -8,93 +8,116 @@ import LoginCred from './LoginCred';
 import Notifications from './Notifications';
 
 interface SidebarProps {
-    sidebarOpen: boolean;
-    setSidebarOpen: (arg: boolean) => void;
+  sidebarOpen: boolean;
+  setSidebarOpen: (arg: boolean) => void;
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
-    const [tab, setTab] = useState(1);
-    const sidebar = useRef<any>(null);
+  const [tab, setTab] = useState(1);
+  const sidebar = useRef<any>(null);
 
-    return (
-        <div >
-            {/* Sidebar */}
-            <aside
-                ref={sidebar}
-                className={`flex-shrink-0 w-full p-4 bg-[#EEEEEE] dark:bg-[#1D2532]  duration-300 ease-linear 
+  return (
+    <div>
+      {/* Sidebar */}
+      <aside
+        ref={sidebar}
+        className={`w-full flex-shrink-0 bg-[#EEEEEE] p-4 duration-300  ease-linear dark:bg-[#1D2532] 
                     `}
-            >
-                <nav>
-                    <div className="ml-4 pt-4 mb-5 text-black dark:text-white font-bold text-lg">
-                        My Workspace
-                    </div>
+      >
+        <nav>
+          <div className=" text-lg font-bold text-black dark:text-white">
+            My Workspace
+          </div>
 
-                    <ul className=" flex flex-wrap py-5 justify-between mx-3 ">
-                        <Link
-                            to="#"
-                            className={`py-3 px-4 text-black dark:text-white text-sm  ${tab === 1 ? 'font-extrabold bg-white dark:bg-[#242E3E]' : ''
-                                }`}
-                            onClick={() => setTab(1)}
-                        >
-                            General
-                        </Link>
-                        <Link
-                            to="#"
-                            className={`py-3 px-4 text-sm text-black dark:text-white ${tab === 2 ? 'font-extrabold bg-white dark:bg-[#242E3E]' : ''
-                                }`}
-                            onClick={() => setTab(2)}
-                        >
-                            Members
-                        </Link>
-                        <Link
-                            to="#"
-                            className={`py-3 px-4 text-sm text-black dark:text-white ${tab === 3 ? 'font-extrabold bg-white dark:bg-[#242E3E]' : ''
-                                }`}
-                            onClick={() => setTab(3)}
-                        >
-                            Plan & Billing
-                        </Link>
-                        <Link
-                            to="#"
-                            className={`py-3 px-4 text-sm text-black dark:text-white ${tab === 4 ? 'font-extrabold bg-white dark:bg-[#242E3E]' : ''
-                                }`}
-                            onClick={() => setTab(4)}
-                        >
-                            Log in Credential
-                        </Link>
-                        <Link
-                            to="#"
-                            className={`py-3 px-4 text-sm text-black dark:text-white ${tab === 5 ? 'font-extrabold bg-white dark:bg-[#242E3E]' : ''
-                                }`}
-                            onClick={() => setTab(5)}
-                        >
-                            Notifications
-                        </Link>
-                    </ul>
-                </nav>
-
-            </aside>
-            <main className="flex-1 pl-4 mt-6 bg-[#EEEEEE] dark:bg-[#1D2532]  overflow-y-auto">
-                <div className={`${tab === 1 ? 'block' : 'hidden'}`}>
-                    <General />
-                </div>
-                <div className={`${tab === 2 ? 'block' : 'hidden'}`}>
-                    <Members />
-                </div>
-                <div className={`${tab === 3 ? 'block' : 'hidden'}`}>
-                    <PlanBilling />
-                </div>
-                <div className={`${tab === 4 ? 'block' : 'hidden'}`}>
-                    <LoginCred />
-                </div>
-                <div className={`${tab === 5 ? 'block' : 'hidden'}`}>
-                    <Notifications />
-                </div>
-            </main>
-            {/* Main Content */}
-
+          <ul className="mx-3 flex flex-wrap justify-between gap-3 py-4">
+            <li>
+              <button
+                className={`rounded-md py-2 px-6 text-sm font-medium transition-all duration-300 
+                ${
+                  tab === 1
+                    ? 'bg-white text-black shadow-lg dark:bg-[#242E3E] dark:text-white'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200 bg-transparent dark:hover:bg-[#2E3A4E]'
+                }`}
+                onClick={() => setTab(1)}
+              >
+                General
+              </button>
+            </li>
+            <li>
+              <button
+                className={`rounded-md py-2 px-6 text-sm font-medium transition-all duration-300 
+                ${
+                  tab === 2
+                    ? 'bg-white text-black shadow-lg dark:bg-[#242E3E] dark:text-white'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200 bg-transparent dark:hover:bg-[#2E3A4E]'
+                }`}
+                onClick={() => setTab(2)}
+              >
+                Members
+              </button>
+            </li>
+            <li>
+              <button
+                className={`rounded-md py-2 px-6 text-sm font-medium transition-all duration-300 
+                ${
+                  tab === 3
+                    ? 'bg-white text-black shadow-lg dark:bg-[#242E3E] dark:text-white'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200 bg-transparent dark:hover:bg-[#2E3A4E]'
+                }`}
+                onClick={() => setTab(3)}
+              >
+                Plan & Billing
+              </button>
+            </li>
+            <li>
+              <button
+                className={`rounded-md py-2 px-6 text-sm font-medium transition-all duration-300 
+                ${
+                  tab === 4
+                    ? 'bg-white text-black shadow-lg dark:bg-[#242E3E] dark:text-white'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200 bg-transparent dark:hover:bg-[#2E3A4E]'
+                }`}
+                onClick={() => setTab(4)}
+              >
+                Reset Password
+              </button>
+            </li>
+            <li>
+              <button
+                className={`rounded-md py-2 px-6 text-sm font-medium transition-all duration-300 
+                ${
+                  tab === 5
+                    ? 'bg-white text-black shadow-lg dark:bg-[#242E3E] dark:text-white'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray bg-transparent dark:hover:bg-[#2E3A4E]'
+                }`}
+                onClick={() => setTab(5)}
+              >
+                Notifications
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+      <main className="mt-6 flex-1 overflow-y-auto bg-[#EEEEEE] pl-4  dark:bg-[#1D2532]">
+        <div className={`${tab === 1 ? 'block' : 'hidden'}`}>
+          <General />
         </div>
-    );
+        <div className={`${tab === 2 ? 'block' : 'hidden'}`}>
+          <Members />
+        </div>
+        <div className={`${tab === 3 ? 'block' : 'hidden'}`}>
+          <PlanBilling />
+        </div>
+        <div className={`${tab === 4 ? 'block' : 'hidden'}`}>
+          <LoginCred />
+        </div>
+        <div className={`${tab === 5 ? 'block' : 'hidden'}`}>
+          <Notifications />
+        </div>
+      </main>
+      {/* Main Content */}
+    </div>
+  );
 };
 
 export default Sidebar;

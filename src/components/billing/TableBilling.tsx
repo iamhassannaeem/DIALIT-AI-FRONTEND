@@ -1,20 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Pagination from './Pagination';
+import Loader from '../../common/Loader';
 
-const TableData = [
-  { ID: 1, Date: '2024-09-13', Minutes: '0.00', Cost: '0.00' },
-  { ID: 2, Date: '2024-09-12', Minutes: '0.00', Cost: '0.00' },
-  { ID: 3, Date: '2024-09-11', Minutes: '0.00', Cost: '0.00' },
-  { ID: 4, Date: '2024-09-10', Minutes: '0.00', Cost: '0.00' },
-  { ID: 5, Date: '2024-09-09', Minutes: '0.00', Cost: '0.00' },
-  { ID: 6, Date: '2024-09-08', Minutes: '0.00', Cost: '0.00' },
-  { ID: 7, Date: '2024-09-07', Minutes: '0.00', Cost: '0.00' },
-  { ID: 8, Date: '2024-09-06', Minutes: '0.00', Cost: '0.00' },
-  { ID: 9, Date: '2024-09-05', Minutes: '0.00', Cost: '0.00' },
-  { ID: 10, Date: '2024-09-04', Minutes: '0.00', Cost: '0.00' },
-];
+function TableBilling({ data }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Adjust the number of rows per page
 
-function TableBilling() {
+  // Calculate data for the current page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const rowsPerPageOptions = [10, 20, 30, 50]; 
+  const getPaginationNumbers = () => {
+    const range = [];
+    for (let i = 1; i <= totalPages; i++) {
+      range.push(i);
+    }
+    return range;
+  };
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  
+  const totalPages = Math.ceil(data?.length / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  }
+
+
   return (
     <div className="mt-4">
       <div className="rounded-xl bg-[#EEEEEE] py-6 px-3  shadow-default dark:bg-[#1D2532]">
@@ -72,153 +85,121 @@ function TableBilling() {
               </p>
             </div>
           </div>
-          {TableData?.map((tableRow, index) => (
-            <div
-              key={index}
-              className="dark:border-stroke-dark grid grid-cols-3 border-b border-stroke dark:border-[#333B48] "
-            >
-              <div className="flex items-center justify-start px-3 py-4">
-                <p className="text-sm font-normal dark:text-[#D6D6D5] ">
-                  {tableRow?.Date}
-                </p>
-              </div>
+          
+           {data?.map((tableRow, index) => (
+              <div
+                key={index}
+                className="dark:border-stroke-dark grid grid-cols-3 border-b border-stroke dark:border-[#333B48] "
+              >
+                <div className="flex items-center justify-start px-3 py-4">
+                  <p className="text-sm font-normal dark:text-[#D6D6D5] ">
+                    {tableRow?.date}
+                  </p>
+                </div>
 
-              <div className="flex items-center justify-start px-3 py-4">
-                <p className="text-sm font-normal dark:text-[#D6D6D5]">
-                  {tableRow?.Minutes}
-                </p>
-              </div>
+                <div className="flex items-center justify-start px-3 py-4">
+                  <p className="text-sm font-normal dark:text-[#D6D6D5]">
+                    {tableRow?.total_duration}
+                  </p>
+                </div>
 
-              <div className="flex items-center justify-start px-3 py-4">
-                <p className="text-sm font-normal dark:text-[#D6D6D5]">
-                  {tableRow?.Cost}
-                </p>
+                <div className="flex items-center justify-start px-3 py-4">
+                  <p className="text-sm font-normal dark:text-[#D6D6D5]">
+                    {tableRow?.total_cost}
+                  </p>
+                </div>
               </div>
-            </div>
+            ))
+          }
+        </div>
+
+     <div className="flex items-center justify-between  p-4 text-white">
+      {/* Rows per page */}
+      <div className="flex items-center space-x-2">
+        <span className="text-sm">Rows</span>
+        <select
+          value={rowsPerPage}
+          onChange={(e) => setRowsPerPage(Number(e.target.value))}
+          className="rounded border border-gray-600 bg-[#2D3748] px-2 py-1 text-sm text-white focus:outline-none"
+        >
+          {rowsPerPageOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
           ))}
-        </div>
+        </select>
+        <span className="text-sm">Per Page</span>
+      </div>
 
-        <div className="mt-2 flex items-center justify-between bg-[#EEEEEE] px-3 py-4 dark:bg-[#1D2532] sm:px-6">
-          <div className="flex flex-1 justify-between sm:hidden">
-            <a href="#" className=" inline-flex items-center  px-2 py-2">
-              <span className="sr-only">Previous</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <path
-                  d="M10.8008 12L14.7008 15.9C14.8841 16.0833 14.9758 16.3167 14.9758 16.6C14.9758 16.8833 14.8841 17.1167 14.7008 17.3C14.5174 17.4833 14.2841 17.575 14.0008 17.575C13.7174 17.575 13.4841 17.4833 13.3008 17.3L8.70078 12.7C8.60078 12.6 8.52995 12.4917 8.48828 12.375C8.44661 12.2583 8.42578 12.1333 8.42578 12C8.42578 11.8667 8.44661 11.7417 8.48828 11.625C8.52995 11.5083 8.60078 11.4 8.70078 11.3L13.3008 6.69999C13.4841 6.51665 13.7174 6.42499 14.0008 6.42499C14.2841 6.42499 14.5174 6.51665 14.7008 6.69999C14.8841 6.88332 14.9758 7.11665 14.9758 7.39999C14.9758 7.68332 14.8841 7.91665 14.7008 8.09999L10.8008 12Z"
-                  fill="#D6D6D5"
-                />
-              </svg>
-            </a>
-            <a
-              href="#"
-              className=" text-gray-400 inline-flex items-center px-2 py-2"
+      {/* Pagination Numbers */}
+      <div className="flex items-center space-x-2">
+        {/* Previous Button */}
+        <button
+          className="inline-flex items-center px-2 py-1 text-sm hover:bg-gray-600 disabled:opacity-50"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            className="bi bi-chevron-left"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fillRule="evenodd"
+              d="M11.354 1.646a.5.5 0 0 1 0 .708L6.707 7l4.647 4.646a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 0 1 .708 0z"
+            />
+          </svg>
+        </button>
+
+        {/* Page Numbers */}
+        {getPaginationNumbers().map((page) =>
+          page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1 ? (
+            <button
+              key={page}
+              onClick={() => handlePageChange(page)}
+              className={`px-2 py-1 text-sm rounded ${
+                currentPage === page
+                  ? "bg-[#4A5568] text-white"
+                  : "hover:bg-gray-600"
+              }`}
             >
-              <span className="sr-only">Next</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <path
-                  d="M12.6008 12L8.70078 8.09999C8.51745 7.91665 8.42578 7.68332 8.42578 7.39999C8.42578 7.11665 8.51745 6.88332 8.70078 6.69999C8.88411 6.51665 9.11745 6.42499 9.40078 6.42499C9.68411 6.42499 9.91745 6.51665 10.1008 6.69999L14.7008 11.3C14.8008 11.4 14.8716 11.5083 14.9133 11.625C14.9549 11.7417 14.9758 11.8667 14.9758 12C14.9758 12.1333 14.9549 12.2583 14.9133 12.375C14.8716 12.4917 14.8008 12.6 14.7008 12.7L10.1008 17.3C9.91745 17.4833 9.68411 17.575 9.40078 17.575C9.11745 17.575 8.88411 17.4833 8.70078 17.3C8.51745 17.1167 8.42578 16.8833 8.42578 16.6C8.42578 16.3167 8.51745 16.0833 8.70078 15.9L12.6008 12Z"
-                  fill="white"
-                />
-              </svg>
-            </a>
-          </div>
-          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-            <div className="gap-4">
-              <label className="dark:text-[#D6D6D5] " htmlFor="rowsPerPage">
-                Row{'  '}
-                <select
-                  id="rowsPerPage"
-                  className=" rounded-md border-[1px] border-[#333B48] bg-[#EEEEEE] py-1 px-2.5 text-black dark:bg-[#1D2532] dark:text-[#D6D6D5]"
-                >
-                  <option value={10}>10</option>
-                  <option value={13}>13</option>
-                  <option value={15}>15</option>
-                </select>
-                {'  '}
-                Per Page
-              </label>
-            </div>
+              {page}
+            </button>
+          ) : (
+            <span
+              key={page}
+              className="px-2 py-1 text-sm text-gray-400"
+            >
+              ...
+            </span>
+          )
+        )}
 
-            <div>
-              <nav aria-label="Pagination" className="inline-flex gap-4">
-                <a href="#" className=" inline-flex items-center  px-2 py-2">
-                  <span className="sr-only dark:text-[#D6D6D5]">Previous</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M10.8008 12L14.7008 15.9C14.8841 16.0833 14.9758 16.3167 14.9758 16.6C14.9758 16.8833 14.8841 17.1167 14.7008 17.3C14.5174 17.4833 14.2841 17.575 14.0008 17.575C13.7174 17.575 13.4841 17.4833 13.3008 17.3L8.70078 12.7C8.60078 12.6 8.52995 12.4917 8.48828 12.375C8.44661 12.2583 8.42578 12.1333 8.42578 12C8.42578 11.8667 8.44661 11.7417 8.48828 11.625C8.52995 11.5083 8.60078 11.4 8.70078 11.3L13.3008 6.69999C13.4841 6.51665 13.7174 6.42499 14.0008 6.42499C14.2841 6.42499 14.5174 6.51665 14.7008 6.69999C14.8841 6.88332 14.9758 7.11665 14.9758 7.39999C14.9758 7.68332 14.8841 7.91665 14.7008 8.09999L10.8008 12Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </a>
-                <a
-                  href="#"
-                  aria-current="page"
-                  className="inline-flex items-center rounded-sm border-[1px] bg-[#EEEEEE] px-4 py-2 text-sm text-sm font-normal text-black dark:border-[#333B48] dark:bg-[#242E3E] dark:text-white"
-                >
-                  1
-                </a>
-                <a
-                  href="#"
-                  className="inline-flex items-center px-4 py-2 text-sm text-sm font-normal dark:text-[#D6D6D5] "
-                >
-                  2
-                </a>
-                <a
-                  href="#"
-                  className="inline-flex items-center px-4 py-2 text-sm text-sm font-normal dark:text-[#D6D6D5] "
-                >
-                  3
-                </a>
-                <span className="relative inline-flex items-center px-4 py-2 text-sm text-sm font-normal dark:text-[#D6D6D5]">
-                  ...
-                </span>
-
-                <a
-                  href="#"
-                  className=" inline-flex items-center px-4 py-2 text-sm text-sm font-normal dark:text-[#D6D6D5] "
-                >
-                  10
-                </a>
-                <a
-                  href="#"
-                  className="inline-flex items-center px-2 py-2 text-black dark:text-white"
-                >
-                  <span className="sr-only">Next</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M12.6008 12L8.70078 8.09999C8.51745 7.91665 8.42578 7.68332 8.42578 7.39999C8.42578 7.11665 8.51745 6.88332 8.70078 6.69999C8.88411 6.51665 9.11745 6.42499 9.40078 6.42499C9.68411 6.42499 9.91745 6.51665 10.1008 6.69999L14.7008 11.3C14.8008 11.4 14.8716 11.5083 14.9133 11.625C14.9549 11.7417 14.9758 11.8667 14.9758 12C14.9758 12.1333 14.9549 12.2583 14.9133 12.375C14.8716 12.4917 14.8008 12.6 14.7008 12.7L10.1008 17.3C9.91745 17.4833 9.68411 17.575 9.40078 17.575C9.11745 17.575 8.88411 17.4833 8.70078 17.3C8.51745 17.1167 8.42578 16.8833 8.42578 16.6C8.42578 16.3167 8.51745 16.0833 8.70078 15.9L12.6008 12Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </a>
-              </nav>
-            </div>
-          </div>
-        </div>
+        {/* Next Button */}
+        <button
+          className="inline-flex items-center px-2 py-1 text-sm hover:bg-gray-600 disabled:opacity-50"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            className="bi bi-chevron-right"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fillRule="evenodd"
+              d="M4.646 1.646a.5.5 0 0 1 .708 0l5 5a.5.5 0 0 1 0 .708l-5 5a.5.5 0 0 1-.708-.708L9.293 7 4.646 2.354a.5.5 0 0 1 0-.708z"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
       </div>
     </div>
   );

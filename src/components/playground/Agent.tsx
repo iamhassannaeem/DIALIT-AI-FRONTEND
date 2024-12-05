@@ -47,9 +47,9 @@ const Agent: React.FC = () => {
         if (firstAgent) {
           setSelectedAgent({
             id: firstAgent.id,
-            type: firstAgent.type,
+            type: firstAgent.agent_type,
           });
-          await handleSelectAgent(firstAgent.id, firstAgent.type, firstAgent?.active);
+          await handleSelectAgent(firstAgent.id, firstAgent.agent_type, firstAgent?.active);
         }
   
         setLoading(false);

@@ -46,6 +46,8 @@ const Header = (props: {
           return 'Compaign';
       case '/reports/feedback/report':
             return 'Feedback Report'; 
+      case '/reports/sales/report':
+            return 'Sales Report'; 
       default:
         return 'Home'; // default title
     }

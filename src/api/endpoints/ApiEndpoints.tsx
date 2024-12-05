@@ -21,7 +21,10 @@ export interface ApiEndpoints {
   compaignsList: string;
   callDetails: string;
   feedbackReport: string;
+  salesReport:string;
   stopCompaign: string;
+  billingsList: string;
+  filteronDate: string;
 }
 
 const endpoints: ApiEndpoints = {
@@ -47,7 +50,10 @@ const endpoints: ApiEndpoints = {
   compaignsList:'agent/campaigns/',
   callDetails:'agent/call/logs/',
   feedbackReport:'agent/call/contentlogs/',
-  stopCompaign:"/agent/stopcampaigns/"
+  salesReport:"/agent/contacts/",
+  stopCompaign:"/agent/stopcampaigns/",
+  billingsList:'/agent/call/logs/usage_statistics/',
+  filteronDate:"agent/call/logs/"
 };
 
 export default endpoints;

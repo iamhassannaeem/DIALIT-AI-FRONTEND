@@ -10,7 +10,11 @@ const ModelCard = ({
   selectedProvider,
   selectedModel,
   knowledge,
-  setKnowledge
+  setKnowledge,
+  gender,
+  setGender,
+  voice,
+  setVoice
 }) => {
   return (
     <div className=" flex items-center justify-center rounded-xl bg-[#faf7f7] p-2 dark:bg-[#242E3E] sm:p-4">
@@ -54,7 +58,7 @@ const ModelCard = ({
         </div>
 
         <div className="flex flex-wrap items-center justify-start gap-3">
-          <div className="w-full md:w-[32%]">
+          {/* <div className="w-full md:w-[32%]">
             <label
               className="mb-1 block text-sm font-normal text-[#7E7E7E] dark:text-[#D6D6D5]"
               htmlFor="provider"
@@ -90,7 +94,7 @@ const ModelCard = ({
                 <option value={item?.id}>{item?.ai_model_provider}</option>
               ))}
             </select>
-          </div>
+          </div> */}
           {!(selectedAgent?.type === 'feedback') && (
             <div className="w-full md:w-[32%]">
               <label
@@ -111,6 +115,34 @@ const ModelCard = ({
             </select>
             </div>
           )}
+          <div className="flex w-full flex-col justify-start md:w-[32%]">
+              <label className="text-sm font-normal text-[#9AAAB9]">
+                Gender
+              </label>
+              <select
+                className="w-full cursor-pointer rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+                value={gender} // Bind to state
+                onChange={(e) => setGender(e.target.value)} // Update state on change
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+            <div className="flex w-full flex-col justify-start md:w-[32%]">
+              <label className="text-sm font-normal text-[#9AAAB9]">
+                Audio
+              </label>
+              <select
+                id="provider"
+                onChange={(e) => setVoice(e.target.value)}
+                value={voice}
+                className="w-full rounded-md border-2 border-[#333B48] bg-[#EEEEEE] p-3 text-sm font-normal text-[#1D2532] focus:outline-none focus:ring dark:bg-[#242E3E] dark:text-white"
+              >
+                {model?.voices?.map((item) => (
+                  <option value={item?.id}>{item?.ai_audio_provider}</option>
+                ))}
+              </select>
+            </div>
         </div>
       </div>
     </div>
